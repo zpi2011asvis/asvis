@@ -9,8 +9,8 @@ use asvis\lib\Resource as Resource;
  */
 class CoreResource extends Resource {
 	function get($request) {
-		echo 'aaa';
-		$response = Response($request);
+		$response = new Response($request);
+		$response->json(array(1,2,3));
 		return $response;
 	}
 }
