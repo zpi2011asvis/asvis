@@ -1,10 +1,19 @@
 <?php
 
+namespace asvis;
+use \Request as Request;
+use \ResponseException as ResponseException;
+
 require_once 'vendor/tonic/lib/tonic.php';
-require_once 'lib/SplClassLoader.php';
+require_once 'lib/Resource.php';
+require_once 'lib/Response.php';
+require_once 'resources/include.php';
 
 $request = new Request(array( 
-	'baseUri' => '/backend'
+	'baseUri' => '/backend',
+	/*'mount' => array(
+		'asvis\resources' => '/additional_prefix'
+	)*/
 ));
 
 try {
@@ -12,9 +21,6 @@ try {
     $response = $resource->exec($request);
 }
 catch (ResponseException $e) {
-    switch ($e->getCode()) {
-		default:
-			$response = $e->response($request);
-    }
+	$response = $e->response($request);
 }
 $response->output();
