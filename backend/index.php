@@ -3,7 +3,9 @@
 namespace asvis;
 use \Request as Request;
 use \ResponseException as ResponseException;
+use asvis\Config as Config;
 
+require_once '../config.php';
 require_once 'vendor/tonic/lib/tonic.php';
 require_once 'lib/Resource.php';
 require_once 'lib/Response.php';
