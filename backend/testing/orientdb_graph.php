@@ -14,12 +14,30 @@ use Congow\Orient\Foundation\Binding;
 use Congow\Orient\Http\Client\Curl;
 
 $driver   = new Congow\Orient\Http\Client\Curl();
-$orient   = new Congow\Orient\Foundation\Binding($driver, '127.0.0.1', '2480', 'reader', 'reader', 'tinkerpop');
-$response = $orient->query("SELECT FROM OGraphVertex");
-$output   = json_decode($response->getBody());
+$orient   = new Congow\Orient\Foundation\Binding($driver, '127.0.0.1', '2480', 'admin', 'admin', 'asmap');
+// $response = $orient->query("SELECT FROM OGraphVertex");
+// $output   = json_decode($response->getBody());
 
-var_dump($output);
+// var_dump($output);
 
+$graph = new Graph();
+
+$rootNode = new Vertex(0);
+
+$nodes = array();
+$nodes[0] = $rootNode;
+
+for($i=1; $i<10; $i++) {
+	$nodes[$i] = new Vertex($i);
+	$nodes[$i-1]->connect($nodes[$i]);
+}
+
+for($i=0; $i<10; $i++) {
+	$graph->add($nodes[$i]);
+}
+
+$query = $orient->postDocument($graph);
+var_dump($query);
 
 
 /* JAVA :
