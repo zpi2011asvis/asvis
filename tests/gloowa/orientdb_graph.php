@@ -2,9 +2,13 @@
 
 <?php
 
-require_once '../vendor/SplClassLoader.php';
+// Report all PHP errors (see changelog)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-$classLoader = new SplClassLoader('Congow', '../vendor/orient-php/src/');
+require_once '../../backend/vendor/SplClassLoader.php';
+
+$classLoader = new SplClassLoader('Congow', '../../backend/vendor/orient-php/src/');
 $classLoader->register();
 
 use Congow\Orient\Graph;
