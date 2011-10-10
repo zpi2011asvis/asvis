@@ -42,7 +42,7 @@
         <storage name="temp" path="memory:temp" userName="admin" userPassword="admin" loaded-at-startup="true"/>
     </storages>
     <users>
-        <user name="root" password="EE2FDCF4C1DEC8F1362A242A71559331B8E5CEB9A4C570428F4E2D4E58BDCED9" resources="*"/>
+        <user name="root" password="root" resources="*"/>
     </users>
     <properties>
         <entry name="server.cache.file.static" value="false"/>

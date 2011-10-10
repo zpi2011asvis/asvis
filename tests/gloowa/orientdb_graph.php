@@ -11,14 +11,14 @@ require_once '../../backend/vendor/SplClassLoader.php';
 $classLoader = new SplClassLoader('Congow', '../../backend/vendor/orient-php/src/');
 $classLoader->register();
 
-use Congow\Orient\Graph;
-use Congow\Orient\Graph\Vertex;
-use Congow\Orient\Algorithm;
-use Congow\Orient\Foundation\Binding;
-use Congow\Orient\Http\Client\Curl;
+use Congow\Orient\Graph as Graph;
+use Congow\Orient\Graph\Vertex as Vertex;
+use Congow\Orient\Algorithm as Algorithm;
+use Congow\Orient\Foundation\Binding as Binding;
+use Congow\Orient\Http\Client\Curl as Curl;
 
-$driver   = new Congow\Orient\Http\Client\Curl();
-$orient   = new Congow\Orient\Foundation\Binding($driver, '127.0.0.1', '2480', 'admin', 'admin', 'asmap');
+$driver   = new Curl();
+$orient   = new Binding($driver, '127.0.0.1', '2480', 'admin', 'admin', 'test');
 // $response = $orient->query("SELECT FROM OGraphVertex");
 // $output   = json_decode($response->getBody());
 
@@ -26,22 +26,23 @@ $orient   = new Congow\Orient\Foundation\Binding($driver, '127.0.0.1', '2480', '
 
 $graph = new Graph();
 
-$rootNode = new Vertex(0);
+$rootNode = new Vertex('0');
 
 $nodes = array();
 $nodes[0] = $rootNode;
+$graph->add($nodes[0]);
 
 for($i=1; $i<10; $i++) {
-	$nodes[$i] = new Vertex($i);
+	$nodes[$i] = new Vertex('.'.$i);
 	$nodes[$i-1]->connect($nodes[$i]);
-}
 
-for($i=0; $i<10; $i++) {
 	$graph->add($nodes[$i]);
 }
 
-$query = $orient->postDocument($graph);
-var_dump($query);
+$orient->postDocument(json_encode(array(1,2,3)));
+
+//$query = $orient->postDocument($graph);
+//var_dump($query);
 
 
 /* JAVA :
