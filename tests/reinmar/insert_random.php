@@ -30,8 +30,8 @@ function insertASConn($orient, $vertices, $v1_num, $v2_num, $up) {
 
 //---------------------------
 $orient = new Binding(new Curl(), '127.0.0.1', '2480', 'admin', 'admin', 'asvis');
-const VERTICES = 10;
-const ASConnS = 20;
+const VERTICES = 100;
+const ASCONNS = 200;
 $vertices = array();
 
 //---------------------------
@@ -50,8 +50,8 @@ for ($i = 0; $i < VERTICES; ++$i) {
 }
 
 //---------------------------
-echo 'INSERT ' . ASConnS . ' ASConns' . "\n";
-for ($i = 0; $i < ASConnS; ++$i) {
+echo 'INSERT ' . ASCONNS . ' ASConns' . "\n";
+for ($i = 0; $i < ASCONNS; ++$i) {
 	insertASConn(
 		$orient, $vertices,
 		rand(0, VERTICES - 1),
@@ -61,8 +61,10 @@ for ($i = 0; $i < ASConnS; ++$i) {
 }
 
 
+
+
 //---------------------------
-//var_dump($orient->query("SELECT FROM ASNode"));
+var_dump($orient->query("SELECT FROM ASNode")->getBody());
 
 ?>
 
