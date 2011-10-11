@@ -15,23 +15,49 @@ use Congow\Orient\Foundation\Binding as Binding;
 use Congow\Orient\Http\Client\Curl as Curl;
 use Congow\Orient\Query as Query;
 
-function insertVertex($orient, $num) {
-	return $orient->command("INSERT INTO Vertex (num, name) VALUES ({$num}, 'AS{$num}')");
+function insertASNode($orient, $num) {
+	return $orient->command("INSERT INTO ASNode (num, name) VALUES ({$num}, 'AS{$num}')");
+}
+function insertASConn($orient, $vertices, $v1_num, $v2_num, $up) {
+	$rid1 = $vertices[$v1_num];
+	$rid2 = $vertices[$v2_num];
+	$ASConn = $orient->command("INSERT INTO ASConn (in, out, up) VALUES ({$rid1}, ${rid2}, {$up})")->getBody();
+	$conn_rid = explode('{', $ASConn);
+	$conn_rid = substr($conn_rid[0], 6);
+	$orient->command("UPDATE ASNode ADD out = {$conn_rid} WHERE @rid = {$rid1}");
+	$orient->command("UPDATE ASNode ADD in = {$conn_rid} WHERE @rid = {$rid2}");
 }
 
-$orient = new Binding(new Curl(), '127.0.0.1', '2480', 'admin', 'admin', 'test2');
-const VERTICES = 1000;
+//---------------------------
+$orient = new Binding(new Curl(), '127.0.0.1', '2480', 'admin', 'admin', 'tinkerpop');
+const VERTICES = 10;
+const ASConnS = 20;
+$vertices = array();
 
-var_dump($orient->query("SELECT FROM Vertex"));
-
+//---------------------------
 $query = new Query();
-echo 'DELETE all: ' . $orient->command($query->delete('Vertex')->getRaw())->getBody() ."\n";
+echo 'DELETE all: ' .
+	$orient->command($query->delete('ASNode')->getRaw())->getBody() . ', ' .
+	$orient->command($query->delete('ASConn')->getRaw())->getBody() . "\n";
 
+//---------------------------
+echo 'INSERT ' . VERTICES . ' ASNodes' . "\n";
 for ($i = 0; $i < VERTICES; ++$i) {
-	insertVertex($orient, $i);
+	$str = insertASNode($orient, $i)->getBody();
+	$rid = explode('{', $str);
+	$rid = substr($rid[0], 6);
+	$vertices[$i] = $rid;
 }
 
-var_dump($orient->query("SELECT FROM Vertex"));
+//---------------------------
+echo 'INSERT ' . ASConnS . ' ASConns' . "\n";
+for ($i = 0; $i < ASConnS; ++$i) {
+	insertASConn($orient, $vertices, rand(0, VERTICES - 1), rand(0, VERTICES - 1), rand(0, 10) > 5 ? 'true' : 'false');
+}
+
+
+//---------------------------
+//var_dump($orient->query("SELECT FROM ASNode"));
 
 ?>
 

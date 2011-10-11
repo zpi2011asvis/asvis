@@ -13,7 +13,7 @@
                 <parameter name="network.multicast.heartbeat" value="10"/>
                 <parameter name="server.update.delay" value="5000"/>
                 <parameter name="server.electedForLeadership" value="true"/>
-                <parameter name="security.key" value="04SHshT0RlDkX1Sy"/>
+                <parameter name="security.key" value="kCkS+Y4xnaPs0GZ8"/>
             </parameters>
         </handler>
     </handlers>
