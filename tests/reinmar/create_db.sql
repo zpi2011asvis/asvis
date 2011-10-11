@@ -1,0 +1,5 @@
+CREATE CLASS ASNode EXTENDS OGraphVertex;
+CREATE CLASS ASConn EXTENDS OGraphEdge;
+CREATE PROPERTY ASNode.name string;
+CREATE PROPERTY ASNode.num integer;
+CREATE PROPERTY ASConn.up boolean;
