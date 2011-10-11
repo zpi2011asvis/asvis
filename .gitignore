@@ -1,3 +1,4 @@
 db/vendor/orientdb/databases/*
 db/vendor/orientdb/log/*
 db/vendor/orientdb/bin/.orientdb_history
+config.php
