@@ -21,15 +21,15 @@ function insertASNode($orient, $num) {
 function insertASConn($orient, $vertices, $v1_num, $v2_num, $up) {
 	$rid1 = $vertices[$v1_num];
 	$rid2 = $vertices[$v2_num];
-	$ASConn = $orient->command("INSERT INTO ASConn (in, out, up) VALUES ({$rid1}, ${rid2}, {$up})")->getBody();
-	$conn_rid = explode('{', $ASConn);
+	$conn = $orient->command("INSERT INTO ASConn (in, out, up) VALUES ({$rid1}, ${rid2}, {$up})")->getBody();
+	$conn_rid = explode('{', $conn);
 	$conn_rid = substr($conn_rid[0], 6);
-	$orient->command("UPDATE ASNode ADD out = {$conn_rid} WHERE @rid = {$rid1}");
-	$orient->command("UPDATE ASNode ADD in = {$conn_rid} WHERE @rid = {$rid2}");
+	$orient->command("UPDATE ASNode ADD in = {$conn_rid} WHERE @rid = {$rid1}");
+	$orient->command("UPDATE ASNode ADD out = {$conn_rid} WHERE @rid = {$rid2}");
 }
 
 //---------------------------
-$orient = new Binding(new Curl(), '127.0.0.1', '2480', 'admin', 'admin', 'tinkerpop');
+$orient = new Binding(new Curl(), '127.0.0.1', '2480', 'admin', 'admin', 'asvis');
 const VERTICES = 10;
 const ASConnS = 20;
 $vertices = array();
@@ -52,7 +52,12 @@ for ($i = 0; $i < VERTICES; ++$i) {
 //---------------------------
 echo 'INSERT ' . ASConnS . ' ASConns' . "\n";
 for ($i = 0; $i < ASConnS; ++$i) {
-	insertASConn($orient, $vertices, rand(0, VERTICES - 1), rand(0, VERTICES - 1), rand(0, 10) > 5 ? 'true' : 'false');
+	insertASConn(
+		$orient, $vertices,
+		rand(0, VERTICES - 1),
+		rand(0, VERTICES - 1),
+		rand(0, 10) > 5 ? 'true' : 'false'
+	);
 }
 
 
