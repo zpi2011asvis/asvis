@@ -25,6 +25,8 @@ $orient->command($query->delete('ASConn')->getRaw())->getBody() . "\n";
 
 //---------------------------
 
+die("Aby zaimportować dane, zakomentuj tą linijkę.\n");
+
 function insertASNode($orient, $num, $name) {
 	$str = $orient->command("INSERT INTO ASNode (num, name) VALUES ({$num}, '{$name}')")->getBody();
 	$rid = explode('{', $str);
@@ -77,22 +79,28 @@ echo 'ASNode insert: ' . count($rids) . "\n";
 $conups = mysql_query('SELECT asnum, asnumup FROM asup WHERE asnumup <> -1 ORDER BY asnum');
 while ( ($conup = mysql_fetch_assoc($conups)) ) {
 	
+	echo "connect: ";
+	
 	$rid1 = $rids[$conup['asnum']];
 	$rid2 = $rids[$conup['asnumup']];
 	
-	echo "connect: ".$rid1." to ".$rid2."\n";
-	
 	insertASConn($orient, $rid1, $rid2, 'true');
+	
+	echo $rid1." to ".$rid2."\n";
 	
 }
 
-$condns = mysql_query('SELECT asnum, asnumdown FROM asdown WHERE asnumup <> -1 ORDER BY asnum');
+$condns = mysql_query('SELECT asnum, asnumdown FROM asdown WHERE asnumdown <> -1 ORDER BY asnum');
 while ( ($condn = mysql_fetch_assoc($condns)) ) {
-
+	
+	echo "connect: ";
+	
 	$rid1 = $rids[$condn['asnum']];
 	$rid2 = $rids[$condn['asnumdown']];
 
 	insertASConn($orient, $rid1, $rid2, 'false');
+	
+	echo $rid1." to ".$rid2."\n";
 
 }
 
