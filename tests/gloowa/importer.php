@@ -1,6 +1,6 @@
 <?php
 
-echo '<pre>';
+echo getcwd()."\n";
 
 require_once '../../config.php';
 require_once '../../backend/vendor/SplClassLoader.php';
@@ -57,39 +57,43 @@ if(!$isDBSelected) {
 	die('Nie można wybrać bazy '.$MYSQL_NAME);
 }
 
-$SELECT_ASES = 'SELECT DISTINCT a.asnum, asname FROM aspool a JOIN ases b ON a.asnum = b.asnum ORDER BY a.asnum LIMIT 100';
-$SELECT_ASUP = 'SELECT asnum, asnumup FROM asup WHERE asnumup <> -1 ORDER BY asnum';
-$SELECT_ASDN = 'SELECT asnum, asnumdown FROM asdown WHERE asnumdown <> -1 ORDER BY asnum ';
-
 $rids = array();
 
-$result = mysql_query($SELECT_ASES);
-while ( ($as = mysql_fetch_assoc($result)) ) {
-	$nodes[] = $as;
-	$asnum = $as['asnum'];
-	$rid = insertASNode($orient, $asnum, $as['asname']);
+$ases = mysql_query('SELECT DISTINCT p.asnum, asname FROM aspool p JOIN ases a ON p.asnum = a.asnum ORDER BY p.asnum');
+while ( ($as = mysql_fetch_assoc($ases)) ) {
+	$asnum  = $as['asnum'];
+	$asname = $as['asname'];
+	
+	$rid = insertASNode($orient, $asnum, $asname);
 	$rids[$asnum] = $rid;
+	echo $rid."\n";
 }
 
-$resultUp = mysql_query($SELECT_ASUP);
-while ( ($asup = mysql_fetch_assoc($resultUp)) ) {
-	if ( isset($rids[$asup['asnum']]) && isset ($rids[$asup['asnumup']]) ) {		
-		$rid1 = $rids[$asup['asnum']];
-		$rid2 = $rids[$asup['asnumup']];
-		
-		insertASConn($orient, $rid1, $rid2, 'true');
-	}
+echo 'ASNode insert: ' . count($rids) . "\n";
+
+// die();
+
+
+$conups = mysql_query('SELECT asnum, asnumup FROM asup WHERE asnumup <> -1 ORDER BY asnum');
+while ( ($conup = mysql_fetch_assoc($conups)) ) {
+	
+	$rid1 = $rids[$conup['asnum']];
+	$rid2 = $rids[$conup['asnumup']];
+	
+	echo "connect: ".$rid1." to ".$rid2."\n";
+	
+	insertASConn($orient, $rid1, $rid2, 'true');
+	
 }
 
+$condns = mysql_query('SELECT asnum, asnumdown FROM asdown WHERE asnumup <> -1 ORDER BY asnum');
+while ( ($condn = mysql_fetch_assoc($condns)) ) {
 
-$resultDn = mysql_query($SELECT_ASDN);
-while ( ($asdn = mysql_fetch_assoc($resultDn)) ) {
-	if ( isset($rids[$asdn['asnum']]) && isset ($rids[$asdn['asnumup']]) ) {
-		$rid1 = $rids[$asdn['asnum']];
-		$rid2 = $rids[$asdn['asnumup']];
+	$rid1 = $rids[$condn['asnum']];
+	$rid2 = $rids[$condn['asnumdown']];
 
-		insertASConn($orient, $rid1, $rid2, 'true');
-	}
+	insertASConn($orient, $rid1, $rid2, 'false');
+
 }
 
 mysql_close($mysqlConnection);
