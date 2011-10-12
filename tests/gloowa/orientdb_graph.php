@@ -3,12 +3,12 @@
 <?php
 
 // Report all PHP errors (see changelog)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
 require_once '../../backend/vendor/SplClassLoader.php';
 
-$classLoader = new SplClassLoader('Congow', '../../backend/vendor/orient-php/src/');
+$classLoader = new SplClassLoader('Congow', '../../backend/vendor/orient-php/src');
 $classLoader->register();
 
 use Congow\Orient\Graph as Graph;
@@ -16,12 +16,13 @@ use Congow\Orient\Graph\Vertex as Vertex;
 use Congow\Orient\Algorithm as Algorithm;
 use Congow\Orient\Foundation\Binding as Binding;
 use Congow\Orient\Http\Client\Curl as Curl;
+use Congow\Orient\Algorithm\Dijkstra as Dijkstra;
 
 $driver   = new Curl();
-$orient   = new Binding($driver, '127.0.0.1', '2480', 'admin', 'admin', 'test');
-// $response = $orient->query("SELECT FROM OGraphVertex");
-// $output   = json_decode($response->getBody());
+$orient   = new Binding($driver, '127.0.0.1', '2480', 'admin', 'admin', 'tinkerpop');
 
+// $response = $orient->query("SELECT FROM OUser");
+// $output   = json_decode($response->getBody());
 // var_dump($output);
 
 $graph = new Graph();
@@ -39,11 +40,14 @@ for($i=1; $i<10; $i++) {
 	$graph->add($nodes[$i]);
 }
 
-$orient->postDocument(json_encode(array(1,2,3)));
+// var_dump($graph);
 
-//$query = $orient->postDocument($graph);
-//var_dump($query);
+$dijkstra = new Dijkstra($graph);
+$dijkstra->setStartingVertex($rootNode);
+$dijkstra->setEndingVertex($nodes[5]);
+var_dump($dijkstra->getLiteralShortestPath());
 
+$orient->postDocument($graph);
 
 /* JAVA :
 
