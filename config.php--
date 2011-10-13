@@ -13,6 +13,11 @@ class Config {
 		'mysql_db_name'			=> 'database_name',
 		'mysql_db_user'			=> 'username',
 		'mysql_db_pass'			=> 'password',
+
+		'orient_db_host'		=> 'localhost',
+		'orient_db_name'		=> 'asvis',
+		'orient_db_user'		=> 'admin',
+		'orient_db_pass'		=> 'admin',
 	);
 
 	public static function get($name) {
