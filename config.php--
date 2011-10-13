@@ -4,13 +4,15 @@ namespace asvis;
 
 class Config {
 	private static $opts = array(
-		'env'			=> 'dev', //or 'prod'
-		'example'		=> 'value',
+		'env'					=> 'dev', //or 'prod'
+
+		'frontend_base_uri'		=> '/frontend',
+		'backend_base_uri'		=> '/backend',
 		
-		'mysql_db_host'	=> 'localhost',
-		'mysql_db_name'	=> 'nazwabazy',
-		'mysql_db_user'	=> 'uzytkownik',
-		'mysql_db_pass'	=> 'haslo',
+		'mysql_db_host'			=> 'localhost',
+		'mysql_db_name'			=> 'database_name',
+		'mysql_db_user'			=> 'username',
+		'mysql_db_pass'			=> 'password',
 	);
 
 	public static function get($name) {

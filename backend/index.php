@@ -20,7 +20,7 @@ if (Config::get('env') === 'dev') {
 }
 
 $request = new Request(array( 
-	'baseUri' => '/backend',
+	'baseUri' => Config::get('backend_base_uri'),
 	/*'mount' => array(
 		'asvis\resources' => '/additional_prefix'
 	)*/
