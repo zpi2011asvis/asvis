@@ -10,3 +10,21 @@
 [submodule "frontend/js/vendor/node_modules/deferred"]
 	path = frontend/js/vendor/node_modules/deferred
 	url = https://github.com/medikoo/deferred.git
+[submodule "frontend/js/vendor/node_modules/es5-ext"]
+	path = frontend/js/vendor/node_modules/es5-ext
+	url = https://github.com/medikoo/es5-ext.git
+[submodule "frontend/js/vendor/node_modules/next"]
+	path = frontend/js/vendor/node_modules/next
+	url = https://github.com/medikoo/node-ext.git
+[submodule "frontend/js/vendor/node_modules/webmake"]
+	path = frontend/js/vendor/node_modules/webmake
+	url = https://github.com/medikoo/modules-webmake.git
+[submodule "frontend/js/vendor/node_modules/optimist"]
+	path = frontend/js/vendor/node_modules/optimist
+	url = https://github.com/substack/node-optimist.git
+[submodule "frontend/js/vendor/node_modules/wordwrap"]
+	path = frontend/js/vendor/node_modules/wordwrap
+	url = https://github.com/substack/node-wordwrap
+[submodule "frontend/js/vendor/node_modules/clock"]
+	path = frontend/js/vendor/node_modules/clock
+	url = https://github.com/medikoo/clock.git

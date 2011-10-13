@@ -29,6 +29,7 @@ function includeJS($paths) {
 		'vendor/signals.js',
 		'vendor/crossroads.js',
 		'vendor/xui.js',
+		'vendor/cjs_exports_webmade.js',
 		'app.js',
 	)) ?>
 	<script>
