@@ -79,10 +79,14 @@ class ASImporter {
 
 	protected function _deleteAll() {
 		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'TRUNCATE CLASS ASNode');
+		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM index:ASNode.num');
 		echo PHP_EOL.'DELETED '.$result.' ASNodes'. PHP_EOL;
 
 		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'TRUNCATE CLASS ASConn');
+		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM index:ASConn.out');
+		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM index:ASConn.in');
 		echo 'DELETED '.$result.' ASConns'. PHP_EOL;
+
 	}
 
 	protected function _insertASNodes() {
@@ -144,7 +148,6 @@ class ASImporter {
 		}
 
 		$recordPosition = $result->__get('recordPos');
-		// 	echo 'Created record: ' . $result . '. Record position: '.$recordPosition . PHP_EOL;
 		return $recordPosition;
 	}
 
@@ -166,13 +169,12 @@ class ASImporter {
 		$fromList = implode(',', $fromList);
 		$toList = implode(',', $toList);
 
-		echo 'UPDATING ASNode: ' .
-			"UPDATE ASNode SET in = [{$fromList}], out = [{$toList}] WHERE @rid = {$asNodeRID}" . PHP_EOL;
+		//echo "UPDATE {$asNodeRID} SET in = [{$fromList}], out = [{$toList}]" . PHP_EOL;
 		
 		try {
 			$result = $this->_db->command(
 				OrientDB::COMMAND_QUERY,
-				"UPDATE ASNode SET in = [{$fromList}], out = [{$toList}] WHERE @rid = {$asNodeRID}"
+				"UPDATE {$asNodeRID} SET in = [{$fromList}], out = [{$toList}]" 
 			);
 		} catch (OrientDBException $e) {
 			echo $e->getMessage() . PHP_EOL;
