@@ -7,3 +7,6 @@
 [submodule "backend/vendor/orient-php-raw"]
 	path = backend/vendor/orient-php-raw
 	url = https://github.com/AntonTerekhov/OrientDB-PHP.git
+[submodule "frontend/js/vendor/node_modules/deferred"]
+	path = frontend/js/vendor/node_modules/deferred
+	url = https://github.com/medikoo/deferred.git
