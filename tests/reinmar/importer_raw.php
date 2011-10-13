@@ -11,7 +11,8 @@ class ASImporter {
 	protected $_db = null;
 	protected $_asrids = null;
 
-	const LIMIT_CONNS = 2000;
+	// -1 to disable limits
+	const LIMIT_CONNS = -1;
 
 	function __construct() {
 		$this->_connect2MySQLDB();
