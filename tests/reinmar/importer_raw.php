@@ -78,13 +78,10 @@ class ASImporter {
 	}
 
 	protected function _deleteAll() {
-		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'TRUNCATE CLASS ASNode');
-		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM index:ASNode.num');
+		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM ASNode');
 		echo PHP_EOL.'DELETED '.$result.' ASNodes'. PHP_EOL;
 
-		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'TRUNCATE CLASS ASConn');
-		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM index:ASConn.out');
-		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM index:ASConn.in');
+		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM ASConn');
 		echo 'DELETED '.$result.' ASConns'. PHP_EOL;
 
 	}
