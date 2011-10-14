@@ -9,6 +9,10 @@
 			return method + path;
 		};
 
+		var _isInternalPath = function (path) {
+			return path.indexOf('/') === 0;
+		};
+
 		var dispatcher = global.crossroads.create();
 		dispatcher._superAddRoute = dispatcher.addRoute;
 		dispatcher = extend(dispatcher, {
@@ -36,13 +40,15 @@
 					};
 
 				//TODO improve get params passing (wtf are input and index)
+				
+				global.history.pushState(params, '', path);
 
 				if (route) {
 					params ? route.matched.dispatch.call(route.matched, params) : route.matched.dispatch();
 					this.routed.dispatch(path, route, params);
 				}
 				else {
-					this.bypassed.dispatch(path);
+					this.bypassed.dispatch(path, params);
 				}
 			},
 
@@ -52,10 +58,30 @@
 		});
 
 		container_el.delegate('click', 'a', function (event, el) {
-			event.preventDefault();
+			var path = el.getAttribute('href');
+			if (_isInternalPath(path)) {
+				event.preventDefault();
+				dispatcher.get(path);
+			}
 		});
+
 		container_el.delegate('submit', 'form', function (event, el) {
 			event.preventDefault();
+
+			// TODO serialize form and dispatch post
+		});
+
+		global.addEventListener('popstate', function (event) {
+			var state = event.state,
+				method = state && state.method ? state.method : 'get',
+				location = global.location;
+		
+			dispatcher[method](location.pathname + location.search + location.hash);
+		});
+
+		dispatcher.bypassed.add(function (path, params) {
+			global.history.pushState(params, '', path);
+			alert('Błąd. Strona o podanym adresie nie istnieje.');
 		});
 
 		return dispatcher;
