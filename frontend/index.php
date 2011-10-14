@@ -29,6 +29,10 @@ function includeJS($paths) {
 		<a href="/abc">/abc</a><br>
 		<a href="/kopytko">/kopytko</a><br>
 		<a href="/kopytko/134">/kopytko/134</a><br>
+		<form action="/dupa" method="post">
+			<input type="text" name="a" value="v">
+			<button type="submit">send</button>
+		</form>
 	</div>
 	
 	<? includeJS(array(

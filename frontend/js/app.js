@@ -8,23 +8,21 @@
 		start: function app_start(opts) {
 			this.opts = opts;
 			this.dispatcher = app.lib.DispatcherAdapter(
-				this._getRouter(),
 				global.x$('#container')
 			);
+			this._addRoutes();
 		},
 
-		_getRouter: function _app_start() {
-			var router = global.crossroads;
+		_addRoutes: function _app_start() {
+			var dispatcher = this.dispatcher;
 
-			router.addRoute('/get/', function router_root() {
+			dispatcher.get('/', function router_root() {
 				console.log('IN: /');
 			});
 
-			router.addRoute('/get/kopytko/{id}', function router_kopytko(id) {
-				console.log('IN: /kopytko, id: ' + id);
+			dispatcher.get('/kopytko/{id}', function router_kopytko(request) {
+				console.log('IN: /kopytko, id: ', request);
 			});
-
-			return router;
 		}
 	};
 
