@@ -1,4 +1,4 @@
-CREATE DATABASE remote:localhost/asvis root root local
+CREATE DATABASE remote:localhost/asvis root root local;
 CREATE CLASS ASNode;
 CREATE CLASS ASConn;
 CREATE PROPERTY ASNode.in linkset ASConn;

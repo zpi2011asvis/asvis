@@ -33,7 +33,7 @@ class ASImporter {
 			$this->_db = new OrientDB(Config::get('orient_db_host'), 2424);
 		}
 		catch (Exception $e) {
-			die('Failed to connect: ' . $e->getMessage());
+			die('Failed to connect: ' . $e->getMessage().PHP_EOL);
 		}
 
 		echo 'Opening DB...' . PHP_EOL;
@@ -67,13 +67,13 @@ class ASImporter {
 		$mysqlConnection = mysql_connect($mysqlHost, $mysqlUser, $mysqlPass);
 
 		if(!$mysqlConnection) {
-			die('Nie można połączyć z bazą MySQL '.$mysqlName.' jako uzytkownik '.$mysqlUser);
+			die('Nie można połączyć z bazą MySQL '.$mysqlName.' jako uzytkownik '.$mysqlUser.PHP_EOL);
 		}
 
 		$isDBSelected = mysql_select_db($mysqlName);
 
 		if(!$isDBSelected) {
-			die('Nie można wybrać bazy '.$mysqlName);
+			die('Nie można wybrać bazy '.$mysqlName.PHP_EOL);
 		}
 	}
 
