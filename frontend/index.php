@@ -42,7 +42,11 @@ function includeJS($paths) {
 		'vendor/cjs_exports_webmade.js',
 		'xui_extends.js',
 		'app.js',
-		'dispatcher_adapter.js',
+		'lib/dispatcher_adapter.js',
+		'lib/local_db.js',
+		'lib/stores/store.js',
+		'lib/resources/resource.js',
+		'lib/resources/nodes_resource.js'
 	)) ?>
 	<script>
 		app.start({
