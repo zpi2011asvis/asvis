@@ -3,14 +3,19 @@ this.app.lib.stores = {};
 (function (exports, global) {
 	'use strict';
 
-	var Signal = global.signals.Signal;
+	var Signal = global.signals.Signal,
+		merge = global.es5ext.Object.plain.merge.call,
+		clone = global.es5ext.Object.plain.clone.call;
 	
-	var Store = function Store() {
+	var Store = function Store(opts) {
 		this.reseted = new Signal();
 		this._next = null;
+		this._opts = merge(clone(this.default_opts), opts || {});
 	};
 
 	Store.prototype = {
+		default_opts: {},
+
 		setNext: function setNext(store) {
 			var that = this;
 			that._next = store;
@@ -24,14 +29,13 @@ this.app.lib.stores = {};
 		},
 
 		get: function get(resource_name, cache_it, params) {
-			// TODO how partial request should be cached
+			// TODO how complex requests should be cached
 			// cache_type parameter? 'array' means indexes are indexes in db,
 			// 'object' keys are keys, etc.
-			return 1;
 		},
 
 		_reset: function _reset() {
-			//abstract
+			//do nothing?
 		}
 	};
 

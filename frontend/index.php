@@ -45,6 +45,7 @@ function includeJS($paths) {
 		'lib/dispatcher_adapter.js',
 		'lib/local_db.js',
 		'lib/stores/store.js',
+		'lib/stores/remote_store.js',
 		'lib/resources/resource.js',
 		'lib/resources/nodes_resource.js'
 	)) ?>

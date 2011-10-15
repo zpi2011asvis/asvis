@@ -14,7 +14,7 @@
 				stores = global.app.lib.stores;
 
 			this.db = new app.lib.LocalDB([
-				new stores.Store()
+				new stores.RemoteStore()
 			], [
 				new resources.NodesResource()
 			]);
