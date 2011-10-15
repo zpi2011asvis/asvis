@@ -28,10 +28,18 @@ this.app.lib.stores = {};
 			});
 		},
 
-		get: function get(resource_name, cache_it, params) {
+		get: function get(opts) {
 			// TODO how complex requests should be cached
-			// cache_type parameter? 'array' means indexes are indexes in db,
+			// resource_type parameter? 'array' means indexes are indexes in db,
 			// 'object' keys are keys, etc.
+			//
+			// opts:
+			// * cache - resource value should be cached
+			// * type - 'plain', 'array', 'object' 
+			// * url
+			// * name
+			// * method
+			// * params
 		},
 
 		_reset: function _reset() {

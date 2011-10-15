@@ -10,7 +10,9 @@
 
 	NodesResource.prototype = merge(new Resource(), {
 		name: 'nodes',
-		cache: true
+		_url: 'nodes/find',
+		_cache: true,
+		_method: 'post'
 	});
 
 	exports.NodesResource = NodesResource;

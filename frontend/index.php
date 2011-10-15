@@ -43,6 +43,7 @@ function includeJS($paths) {
 		'xui_extends.js',
 		'app.js',
 		'lib/dispatcher_adapter.js',
+		'lib/xhr_adapter_xui.js',
 		'lib/local_db.js',
 		'lib/stores/store.js',
 		'lib/stores/remote_store.js',
@@ -50,6 +51,7 @@ function includeJS($paths) {
 		'lib/resources/nodes_resource.js'
 	)) ?>
 	<script>
+		this.DEBUG = <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
 		app.start({
 		});
 	</script>

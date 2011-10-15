@@ -13,12 +13,19 @@ this.app.lib.resources = {};
 
 	Resource.prototype = {
 		name: null,
-		cache: false,
 		default_opts: {},
+		_url: null,
+		_cache: false,
+		_method: null,
 
 		get: function get(params) {
 			return this._prepareData(
-				this._store.get(this.name, this.cache, params)
+				this._store.get({
+					url: this._url,
+					method: this._method,
+					cache: this._cache,
+					params: params
+				})
 			);
 		},
 

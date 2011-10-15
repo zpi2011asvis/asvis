@@ -1,7 +1,7 @@
 (function (exports, global) {
 	'use strict';
 	
-	var x = global.x$;
+	var x = global.x$;	
 
 	exports.app = {
 		lib: {},
@@ -14,7 +14,7 @@
 				stores = global.app.lib.stores;
 
 			this.db = new app.lib.LocalDB([
-				new stores.RemoteStore()
+				new stores.RemoteStore('/backend', global.app.lib.XHRAdapterXUI)
 			], [
 				new resources.NodesResource()
 			]);

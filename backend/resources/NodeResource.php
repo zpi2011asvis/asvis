@@ -8,7 +8,7 @@ use asvis\lib\Resource as Resource;
  * @uri /nodes/find
  */
 class NodesFindResource extends Resource {
-	function get($request) {
+	function post($request) {
 		$response = new Response($request);
 		$response->json(array(1,2,3,4,5,6));
 		return $response;
