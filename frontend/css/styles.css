@@ -1,0 +1,110 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+a {
+	text-decoration: none;
+}
+a:hover, a:focus {
+	text-decoration: underline;
+}
+
+/*
+ * LAYOUT ----------------------------------------------------------------------
+ */
+
+body {
+	font-family: Arial, sans-serif;
+}
+
+#top {
+	height: 30px;
+	line-height: 30px;
+	border-bottom: solid 1px #EEE;
+	box-sizing: border-box;
+	background-color: #A60;
+	background-image: linear-gradient(bottom, #A60 0%, #C70 100%);
+	background-image: -webkit-linear-gradient(bottom, #A60 0%, #C70 100%);
+	background-image: -moz-linear-gradient(bottom, #A60 0%, #C70 100%);
+	color: #FFF;
+	text-shadow: 0 0 1px #000;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+	z-index: 100;
+	position: relative;
+}
+#top a {
+	color: #FFF;
+}
+#top h1 > a {
+	font-weight: bold;
+	padding: 0 15px;
+}
+
+#graph {
+	position: absolute;
+	top: 30px;
+	left: 0;
+	right: 300px;
+	bottom: 0;
+	background: #222;
+	z-index: 10;
+}
+#grap_renderer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#sidebar {
+	position: absolute;
+	right: 0;
+	top: 30px;
+	bottom: 0;
+	width: 300px;
+	overflow: auto;
+	background: #EEE;
+	z-index: 10;
+	padding: 10px 0;
+}

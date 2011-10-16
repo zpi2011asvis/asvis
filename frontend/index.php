@@ -22,9 +22,16 @@ function includeJS($paths) {
 <head>
 	<meta charset="utf-8">
 	<title>ASvis</title>
+	<link rel="stylesheet" href="<?= Config::get('frontend_base_uri') ?>/css/styles.css">
 </head>
-<body>
-	<div id="container">
+<body id="container">
+	<header id="top">
+		<h1><a href="/">Asvis</a></h1>
+	</header>
+	<div id="graph">
+		<div id="graph_renderer"></div>
+	</div>
+	<aside id="sidebar">
 		<a href="/">/</a><br>
 		<a href="/abc">/abc</a><br>
 		<a href="/kopytko">/kopytko</a><br>
@@ -33,7 +40,7 @@ function includeJS($paths) {
 			<input type="text" name="a" value="v">
 			<button type="submit">send</button>
 		</form>
-	</div>
+	</aside>
 	
 	<? includeJS(array(
 		'vendor/signals.js',
