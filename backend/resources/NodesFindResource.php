@@ -10,8 +10,11 @@ use asvis\lib\Resource as Resource;
 class NodesFindResource extends Resource {
 	function post($request) {
 		$response = new Response($request);
-		$response->json(array(1,2,3,4,5,6));
+		$response->json(array(
+			"34567"=>array("name"=>"AS34567"),
+			"34579"=>array("name"=>"AS34579"),
+			"345"=>array("name"=>"AS345")
+		));
 		return $response;
 	}
 }
-
