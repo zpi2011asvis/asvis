@@ -4,7 +4,7 @@
 	var app = global.app,
 		Store = app.lib.stores.Store,
 		merge = global.es5ext.Object.plain.merge.call,
-		clone = global.es5ext.Object.plain.clone.call,
+		clone = global.es5ext.Object.plain.clone.call;
 	
 	var RemoteStore = function RemoteStore(url, xhr_adapter, opts) {
 		Store.call(this, opts);

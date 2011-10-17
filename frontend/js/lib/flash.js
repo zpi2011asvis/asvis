@@ -26,8 +26,12 @@
 		var callers = _waiters[sname],
 			i = callers.indexOf(caller);
 	
-		//TODO what's when caller is different than one started?
-		callers.splice(i, 1); //remove
+		// when caller is different than one started
+		if (!~i) {
+			throw new Error('Couldn\'t find caller ' + caller.toString());
+		}
+
+		callers.splice(i, 1); //remove element from array
 		_callers_number--;
 
 		if (_callers_number === 0) {
@@ -55,14 +59,14 @@
 			var sname, signal;
 
 			_inited = true;
-			_el = x(el);
+			_el = el;
 
 			for (sname in signals) {
 				signal = signals[sname];
 
 				_waiters[sname] = [];
-				signal.started.on(_start.bind(sname));
-				signal.ended.on(_end.bind(sname));
+				signal.started.add(_start.bind(null, sname));
+				signal.ended.add(_end.bind(null, sname));
 			}
 		},
 

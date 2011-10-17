@@ -28,6 +28,7 @@ function includeJS($paths) {
 	<header id="top">
 		<h1><a href="/">Asvis</a></h1>
 	</header>
+	<p id="flash"><span class="message"></span></p>
 	<div id="graph">
 		<div id="graph_renderer"></div>
 	</div>

@@ -29,6 +29,10 @@
 
 			this.dispatcher = app.lib.DispatcherAdapter(x('#container'));
 			this._addRoutes();
+
+			app.lib.Flash.init({
+				data_loading: this.signals.data_loading
+			}, x('#flash .message'));
 		},
 
 		_addRoutes: function _addRoutes() {
