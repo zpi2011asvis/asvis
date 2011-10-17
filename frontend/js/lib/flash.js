@@ -25,7 +25,8 @@
 	var _end = function _end(sname, caller) {
 		var callers = _waiters[sname],
 			i = callers.indexOf(caller);
-
+	
+		//TODO what's when caller is different than one started?
 		callers.splice(i, 1); //remove
 		_callers_number--;
 
