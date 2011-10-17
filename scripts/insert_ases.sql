@@ -1,0 +1,1 @@
+insert into ases (ASNum, ASName) select distinct(ASNum), concat('AS', ASNum) from (select asnum from aspool union select asnum from asdown union select asnum from asup union select asnumdown as asnum from asdown union select asnumup as asnum from asup) as asnums where asnum > -1;
