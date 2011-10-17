@@ -24,7 +24,7 @@ this.app.lib.stores = {};
 			//reset and pass this message further
 			store.reseted.add(function () {
 				that._reset();
-				that.reseted.dispatch();
+				that.reseted.dispatch(that);
 			});
 		},
 

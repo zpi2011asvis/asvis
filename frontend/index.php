@@ -52,6 +52,7 @@ function includeJS($paths) {
 		'lib/dispatcher_adapter.js',
 		'lib/xhr_adapter_xui.js',
 		'lib/local_db.js',
+		'lib/flash.js',
 		'lib/stores/store.js',
 		'lib/stores/remote_store.js',
 		'lib/resources/resource.js',

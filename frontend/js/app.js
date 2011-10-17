@@ -1,11 +1,19 @@
 (function (exports, global) {
 	'use strict';
 	
-	var x = global.x$;	
+	var x = global.x$,
+		Signal = global.signals.Signal;	
 
 	exports.app = {
 		lib: {},
 		opts: null,
+		signals : {
+			data_loading: {
+				started: new Signal(),
+				ended: new Signal()
+			},
+			data_reseted: new Signal()
+		},
 		
 		start: function start(opts) {
 			this.opts = opts;
