@@ -1,19 +1,21 @@
 <?php
 
 namespace asvis\resources;
+use asvis\lib\Engine;
+
 use asvis\lib\Response as Response;
 use asvis\lib\Resource as Resource;
 
 /**
- * @uri /structure/graph
+ * @uri /structure/graph/{number}/{depth}
  */
 class StructureGraphResource extends Resource {
-	function get($request) {
+	function get($request, $number, $depth) {
+		
+// 		var_dump($number);
+		
 		$response = new Response($request);
-		$response->json(array(
-			"345"=>array("connections_up"=>array(3245,2345,2356),"connections_down"=>array(34765,1235,5325)),
-			"4234"=>array("connections_up"=>array(3245,2345,2356),"connections_down"=>array())
-		));
+		$response->json(Engine::structureGraph($number, $depth));
 		return $response;
 	}
 }

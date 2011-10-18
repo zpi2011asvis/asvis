@@ -7,6 +7,9 @@ use asvis\Config as Config;
 use \OrientDB as OrientDB;
 
 class DB {
+	/**
+	 * @var OrientDB
+	 */
 	protected $_driver = null;
 
 	function __construct() {
@@ -24,10 +27,23 @@ class DB {
 		return $result;
 	}
 	
-	public function loadRecord($rid, $fetchPlan) {
+	public function loadGraph($asNum, $fetchPlan) {
+		$rid = $this->getRID($asNum);
 		$result = $this->_driver->recordLoad($rid, $fetchPlan);
 		
+		$ret = array (
+			'origin' => $result,
+			'connected' => $this->_driver->cachedRecords
+		);
 		
-		return $result;
+		return $ret;
 	}
+	
+	private function getRID($asNum) {
+		$query = 'SELECT FROM ASNode WHERE num = '.$asNum;
+		$result = $this->query($query);
+		
+		return $result[0]->recordID;
+	}
+	
 }
