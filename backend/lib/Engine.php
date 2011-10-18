@@ -3,15 +3,15 @@
 namespace asvis\lib;
 
 class Engine {
-	static $_db = null;
+	protected static $_db = null;
 
-	public static function init() {
-		//?
+	public static function init($db) {
+		self::$_db = $db;
 	}
 
-	public static function nodesFind($db, $number) {
-		$query = 'SELECT FROM ASNode WHERE name LIKE "'.$number.'%"';
-		$result = $db->query($query);
+	public static function nodesFind($number) {
+		$query = 'SELECT FROM ASNode WHERE num.asString() LIKE "'.$number.'%"';
+		$result = self::$_db->query($query);
 		
 		$nodes = array();
 		

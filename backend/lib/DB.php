@@ -1,9 +1,10 @@
 <?php
 
+namespace asvis\lib;
 require_once '../config.php';
-require_once 'vendor/SplClassLoader.php';
 require_once 'vendor/orient-php-raw/OrientDB/OrientDB.php';
 use asvis\Config as Config;
+use \OrientDB as OrientDB;
 
 class DB {
 	protected $_driver = null;
