@@ -15,7 +15,7 @@ class Engine {
 		
 		$nodes = array();
 		
-		if($result) {
+		if ($result) {
 			foreach ($result as $oDBRecord) {			
 				$oDBRecord->parse();
 				$num = $oDBRecord->data->num;
