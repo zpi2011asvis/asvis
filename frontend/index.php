@@ -28,6 +28,7 @@ function includeJS($paths) {
 	<header id="top">
 		<h1><a href="/">Asvis</a></h1>
 	</header>
+	<p id="flash"><span class="message"></span></p>
 	<div id="graph">
 		<div id="graph_renderer"></div>
 	</div>
@@ -52,6 +53,7 @@ function includeJS($paths) {
 		'lib/dispatcher_adapter.js',
 		'lib/xhr_adapter_xui.js',
 		'lib/local_db.js',
+		'lib/flash.js',
 		'lib/stores/store.js',
 		'lib/stores/remote_store.js',
 		'lib/resources/resource.js',

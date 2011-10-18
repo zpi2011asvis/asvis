@@ -55,6 +55,8 @@ a:hover, a:focus {
 
 body {
 	font-family: Arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
 }
 
 #top {
@@ -68,7 +70,7 @@ body {
 	background-image: -moz-linear-gradient(bottom, #A60 0%, #C70 100%);
 	color: #FFF;
 	text-shadow: 0 0 1px #000;
-	box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 	z-index: 100;
 	position: relative;
 }
@@ -103,8 +105,36 @@ body {
 	top: 30px;
 	bottom: 0;
 	width: 300px;
+	border-left: solid 1px #FFF;
+	box-sizing: border-box;
 	overflow: auto;
-	background: #EEE;
+	background: #FFF;
+	background-image: linear-gradient(left, #DDD 0%, #FFF 1%);
+	background-image: -webkit-linear-gradient(left, #DDD 0%, #FFF 1%);
+	background-image: -moz-linear-gradient(left, #DDD 0%, #FFF 1%);
 	z-index: 10;
 	padding: 10px 0;
+}
+
+#flash {
+	position: absolute;
+	top: 30px;
+	left: 0;
+	right: 300px;
+	z-index: 50;
+	text-align: center;
+}
+#flash > .message {
+	display: none;
+	padding: 5px 20px;
+	background: #CB0;
+	color: #FFF;
+	text-shadow: 0 0 1px #000;
+	font-weight: bold;
+	border-radius: 0 0 3px 3px;
+	text-transform: uppercase;
+	font-size: 12px;
+}
+#flash > .message.opened {
+	display: inline-block;
 }

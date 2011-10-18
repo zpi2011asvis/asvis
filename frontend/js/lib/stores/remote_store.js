@@ -1,7 +1,8 @@
 (function (exports, global) {
 	'use strict';
 
-	var Store = global.app.lib.stores.Store,
+	var app = global.app,
+		Store = app.lib.stores.Store,
 		merge = global.es5ext.Object.plain.merge.call,
 		clone = global.es5ext.Object.plain.clone.call;
 	
@@ -18,14 +19,18 @@
 		}),
 
 		get: function get(opts) {
-			return this._xhr_adapter(
-				this._absoluteURL(opts.url),
+			var that = this;
+			app.signals.data_loading.started.dispatch();
+
+			return that._xhr_adapter(
+				that._absoluteURL(opts.url),
 				{
 					method: opts.method,
 					params: opts.params
 				}
 			)
 			(function (data) {
+				app.signals.data_loading.ended.dispatch(that);
 				return JSON.parse(data);
 			});
 		},

@@ -1,11 +1,19 @@
 (function (exports, global) {
 	'use strict';
 	
-	var x = global.x$;	
+	var x = global.x$,
+		Signal = global.signals.Signal;	
 
 	exports.app = {
 		lib: {},
 		opts: null,
+		signals : {
+			data_loading: {
+				started: new Signal(),
+				ended: new Signal()
+			},
+			data_reseted: new Signal()
+		},
 		
 		start: function start(opts) {
 			this.opts = opts;
@@ -21,6 +29,10 @@
 
 			this.dispatcher = app.lib.DispatcherAdapter(x('#container'));
 			this._addRoutes();
+
+			app.lib.Flash.init({
+				data_loading: this.signals.data_loading
+			}, x('#flash .message'));
 		},
 
 		_addRoutes: function _addRoutes() {
