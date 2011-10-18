@@ -28,4 +28,9 @@ class Engine {
 
 		return $nodes;			
 	}
+	
+	public static function structureGraph($nodeNum, $depth) {
+		
+	}
 }
+

@@ -23,4 +23,11 @@ class DB {
 		
 		return $result;
 	}
+	
+	public function loadRecord($rid, $fetchPlan) {
+		$result = $this->_driver->recordLoad($rid, $fetchPlan);
+		
+		
+		return $result;
+	}
 }

@@ -18,4 +18,12 @@ class Resource extends TonicResource {
 		
 		Engine::init(new DB());
 	}
+	
+	protected function getGet($paramName) {
+		return $this->_get[$paramName];
+	}
+	
+	protected function getPost($paramName) {
+		return $this->_get[$paramName];
+	}
 }
