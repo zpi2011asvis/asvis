@@ -25,7 +25,7 @@
 	var _end = function _end(sname, caller) {
 		var callers = _waiters[sname],
 			i = callers.indexOf(caller);
-	
+
 		// when caller is different than one started
 		if (!~i) {
 			throw new Error('Couldn\'t find caller ' + caller.toString());

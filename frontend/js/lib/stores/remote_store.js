@@ -19,23 +19,38 @@
 		}),
 
 		get: function get(opts) {
-			var that = this;
-			app.signals.data_loading.started.dispatch();
+			var that = this,
+				//clone because of changes that will be done
+				params = clone(opts.params);
+
+			app.signals.data_loading.started.dispatch(that);
 
 			return that._xhr_adapter(
-				that._absoluteURL(opts.url),
+				that._absoluteURL(opts.url, params),
 				{
 					method: opts.method,
-					params: opts.params
+					params: params
 				}
 			)
 			(function (data) {
+				//close flash when ok
 				app.signals.data_loading.ended.dispatch(that);
+				//and return parsed response
 				return JSON.parse(data);
+			},
+			function (err) {
+				//close it anyway
+				app.signals.data_loading.ended.dispatch(that);
+				return err;
 			});
 		},
 
-		_absoluteURL: function _absoluteURL(resource_url) {
+		_absoluteURL: function _absoluteURL(resource_url, params) {
+			for (var p in params) {
+				//TODO url encoding
+				resource_url = resource_url.replace(':' + p, params[p]);
+				delete params[p];
+			}
 			return this._url + '/' + resource_url;
 		}
 	});

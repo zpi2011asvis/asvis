@@ -10,9 +10,9 @@
 
 	NodesResource.prototype = merge(new Resource(), {
 		name: 'nodes',
-		_url: 'nodes/find',
+		_url: 'nodes/find/:number',
 		_cache: true,
-		_method: 'post'
+		_method: 'get'
 	});
 
 	exports.NodesResource = NodesResource;
