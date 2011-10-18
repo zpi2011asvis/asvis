@@ -44,6 +44,7 @@ function includeJS($paths) {
 	</aside>
 	
 	<? includeJS(array(
+		'vendor/three_webgl.js',
 		'vendor/signals.js',
 		'vendor/crossroads.js',
 		'vendor/xui.js',
