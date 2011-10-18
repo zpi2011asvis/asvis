@@ -11,7 +11,7 @@ use asvis\lib\Engine as Engine;
 class NodesFindResource extends Resource {
 	function get($request) {
 		$response = new Response($request);
-		$number = $_GET['number'];
+		$number = $this->_get['number'];
 		
 		$response->json(Engine::nodesFind($number));
 		
