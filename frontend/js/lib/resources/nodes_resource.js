@@ -4,17 +4,19 @@
 	var Resource = global.app.lib.resources.Resource,
 		merge = global.es5ext.Object.plain.merge.call;
 
-	var NodesResource = function NodesResource(opts) {
+	var NodesFindResource = function NodesFindResource(opts) {
 		Resource.call(this, opts);
 	};
 
-	NodesResource.prototype = merge(new Resource(), {
-		name: 'nodes',
+	NodesFindResource.prototype = merge(new Resource(), {
+		name: 'nodes_find',
 		_url: 'nodes/find/:number',
 		_cache: true,
 		_method: 'get'
 	});
 
-	exports.NodesResource = NodesResource;
+	//TODO exports can be object
+	//so we have to handle objects while initialization
+	exports.NodesFindResource = NodesFindResource;
 
 }.call({}, this.app.lib.resources, this));
