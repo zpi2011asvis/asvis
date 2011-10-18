@@ -33,7 +33,7 @@ try {
 catch (ResponseException $e) {
 	$response = $e->response($request);
 }
-catch ($e) {
+catch (Exception $e) {
 	# TODO lepsza obsługa exceptionów - zależna od środowiska
 	echo '<pre>';
 	var_dump($e);

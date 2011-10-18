@@ -1,18 +1,31 @@
 <?php
 
-require_once '../../config.php';
-use asvis\Config as Config;
+namespace asvis\lib;
 
 class Engine {
-	protected $_db = null;
+	static $_db = null;
 
-	public static init($db) {
-		$this->_db = $db;	
+	public static function init() {
+		//?
 	}
 
-	public static nodesFind($number) {
-				
+	public static function nodesFind($db, $number) {
+		$query = 'SELECT FROM ASNode WHERE name LIKE "'.$number.'%"';
+		$result = $db->query($query);
+		
+		$nodes = array();
+		
+		if($result) {
+			foreach ($result as $oDBRecord) {			
+				$oDBRecord->parse();
+				$num = $oDBRecord->data->num;
+				$name = $oDBRecord->data->name;
+				$nodes[$num] = array(
+					'name' => $name
+				);
+			}
+		}
+
+		return $nodes;			
 	}
 }
-
-

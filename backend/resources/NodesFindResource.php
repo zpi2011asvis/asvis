@@ -3,18 +3,19 @@
 namespace asvis\resources;
 use asvis\lib\Response as Response;
 use asvis\lib\Resource as Resource;
+use asvis\lib\Engine as Engine;
+
+require_once 'lib/Engine.php';
 
 /**
  * @uri /nodes/find
  */
 class NodesFindResource extends Resource {
-	function post($request) {
+	function get($request, $number) {
 		$response = new Response($request);
-		$response->json(array(
-			"34567"=>array("name"=>"AS34567"),
-			"34579"=>array("name"=>"AS34579"),
-			"345"=>array("name"=>"AS345")
-		));
+		
+		$response->json(Engine::nodesFind($this->_db, $number));
+		
 		return $response;
 	}
 }
