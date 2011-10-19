@@ -6,8 +6,11 @@
 	var StartFormWidgets = Widget.create(
 		function StartFormWidgets() {},
 		{
+			_destroy: function () {
+			}
 		},
 		{
+			multiple: false
 		}
 	);
 

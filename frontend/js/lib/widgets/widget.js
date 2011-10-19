@@ -8,10 +8,11 @@ this.app.lib.widgets = {};
 		clone = global.es5ext.Object.plain.clone.call;
 
 	var Widget = function Widget() {
+		this.destroyed = new Signal();
 	};
 
 	Widget.prototype = {
-		destroyed: new Signal(),
+		destroyed: null,
 		destroy: function () {
 			this._destroy();
 			this.destroyed.dispatch();
@@ -58,7 +59,7 @@ this.app.lib.widgets = {};
 		constructor.prototype = merge(new Widget(), prototype);
 		var fn = function () {
 			var obj = new constructor();
-			Resource.apply(obj, arguments);
+			Widget.apply(obj, arguments);
 			return obj;
 		};
 		return merge(merge(fn, Widget._statics), statics);
