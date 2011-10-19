@@ -1,4 +1,4 @@
-(function (exports, global) {
+(function (exports, global, lib) {
 	'use strict';
 
 	var LocalDB = function LocalDB(stores, resources) {
@@ -42,4 +42,4 @@
 
 	exports.LocalDB = LocalDB;
 
-}.call({}, this.app.lib, this));
+}.call({}, this.app.lib, this, this.app.lib));

@@ -58,7 +58,10 @@ function includeJS($paths) {
 		'lib/stores/store.js',
 		'lib/stores/remote_store.js',
 		'lib/resources/resource.js',
-		'lib/resources/nodes_resource.js'
+		'lib/resources/nodes_resource.js',
+		'lib/resources/structures_resource.js',
+		'lib/widgets/widget.js',
+		'lib/widgets/start_form_widget.js',
 	)) ?>
 	<script>
 		this.DEBUG = <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;

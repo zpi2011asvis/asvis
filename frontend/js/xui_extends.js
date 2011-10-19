@@ -2,12 +2,16 @@
 	'use strict';
 
 	var	exts = {
-		first: function () { return this[0]; },
-		last: function () { return this[this.length - 1]; },
+		first: function () {
+			return this[0];
+		},
+		last: function () {
+			return this[this.length - 1];
+		},
 		delegate: function (type, q, fn) {
 			var that = this;
 			that.on(type, function (event) {
-				// event target matches to given selector
+				// event target matches given selector
 				if (that.find(q).has(event.target).length > 0) {
 					fn(event, event.target);
 				}

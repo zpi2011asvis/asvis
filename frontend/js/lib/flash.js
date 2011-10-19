@@ -1,4 +1,4 @@
-(function (exports, global) {
+(function (exports, global, lib) {
 	'use strict';
 
 	var MESSAGES = {
@@ -74,4 +74,4 @@
 
 	exports.Flash = Flash;
 
-}.call({}, this.app.lib, this));
+}.call({}, this.app.lib, this, this.app.lib));

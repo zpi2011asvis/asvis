@@ -1,6 +1,6 @@
 this.app.lib.resources = {};
 
-(function (exports, global) {
+(function (exports, global, lib) {
 	'use strict';
 
 	var merge = global.es5ext.Object.plain.merge.call,
@@ -39,6 +39,16 @@ this.app.lib.resources = {};
 		}
 	};
 
+	// simple factory
+	Resource.create = function create(constructor, prototype) {
+		constructor.prototype = merge(new Resource(), prototype);
+		return function () {
+			var obj = new constructor();
+			Resource.apply(obj, arguments);
+			return obj;
+		}
+	};
+
 	exports.Resource = Resource;
 
-}.call({}, this.app.lib.resources, this));
+}.call({}, this.app.lib.resources, this, this.app.lib));

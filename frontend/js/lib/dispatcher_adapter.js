@@ -1,4 +1,4 @@
-(function (exports, global) {
+(function (exports, global, lib) {
 	'use strict';
 
 	var extend = global.es5ext.Object.plain.extend.call,
@@ -33,14 +33,13 @@
 			parse: function parse(method, path, post_params) {
 				var request = _methodedPath(method, path),
 					route = this._getMatchedRoute(request),
+					//getParamsArray ommision disables routes rules.normalize option
 					params = {
-						get: route ? route._getParamsArray(request) : null,
+						get: route ? route._getParamValuesObject(request) : null,
 						post: post_params || null,
 						method: method
 					};
 
-				//TODO improve get params passing (wtf are input and index)
-				
 				global.history.pushState(params, '', path);
 
 				if (route) {
@@ -48,6 +47,7 @@
 					this.routed.dispatch(path, route, params);
 				}
 				else {
+					global.DEBUG && console.log('Page "' + path + '" not found');
 					this.bypassed.dispatch(path, params);
 				}
 			},
@@ -89,4 +89,4 @@
 		return dispatcher;
 	};
 
-}.call({}, this.app.lib, this));
+}.call({}, this.app.lib, this, this.app.lib));

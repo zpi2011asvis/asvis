@@ -1,6 +1,6 @@
 this.app.lib.stores = {};
 
-(function (exports, global) {
+(function (exports, global, lib) {
 	'use strict';
 
 	var Signal = global.signals.Signal,
@@ -49,4 +49,4 @@ this.app.lib.stores = {};
 
 	exports.Store = Store;
 
-}.call({}, this.app.lib.stores, this));
+}.call({}, this.app.lib.stores, this, this.app.lib));

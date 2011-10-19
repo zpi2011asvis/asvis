@@ -1,8 +1,7 @@
-(function (exports, global) {
+(function (exports, global, lib) {
 	'use strict';
 
-	var app = global.app,
-		Store = app.lib.stores.Store,
+	var Store = lib.stores.Store,
 		merge = global.es5ext.Object.plain.merge.call,
 		clone = global.es5ext.Object.plain.clone.call;
 	
@@ -23,7 +22,7 @@
 				//clone because of changes that will be done
 				params = clone(opts.params);
 
-			app.signals.data_loading.started.dispatch(that);
+			global.app.signals.data_loading.started.dispatch(that);
 
 			return that._xhr_adapter(
 				that._absoluteURL(opts.url, params),
@@ -34,13 +33,13 @@
 			)
 			(function (data) {
 				//close flash when ok
-				app.signals.data_loading.ended.dispatch(that);
+				global.app.signals.data_loading.ended.dispatch(that);
 				//and return parsed response
 				return JSON.parse(data);
 			},
 			function (err) {
 				//close it anyway
-				app.signals.data_loading.ended.dispatch(that);
+				global.app.signals.data_loading.ended.dispatch(that);
 				return err;
 			});
 		},
@@ -57,4 +56,4 @@
 
 	exports.RemoteStore = RemoteStore;
 
-}.call({}, this.app.lib.stores, this));
+}.call({}, this.app.lib.stores, this, this.app.lib));

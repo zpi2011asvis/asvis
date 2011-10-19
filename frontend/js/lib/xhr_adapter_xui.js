@@ -1,4 +1,4 @@
-(function (exports, global) {
+(function (exports, global, lib) {
 	'use strict';
 
 	var XHRAdapterXUI = function XHRAdapterXUI(url, opts) {
@@ -16,7 +16,7 @@
 			},
 			error: function () {
 				var error = new Error(this.statusText + ': ' + this.responseText);
-				if (global.DEBUG) console.log(error);
+				global.DEBUG && console.log(error.message);
 				d.resolve(error);
 			}
 		});
@@ -26,4 +26,4 @@
 
 	exports.XHRAdapterXUI = XHRAdapterXUI;
 
-}.call({}, this.app.lib, this));
+}.call({}, this.app.lib, this, this.app.lib));

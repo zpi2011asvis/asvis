@@ -2,7 +2,6 @@
 
 namespace asvis\resources;
 use asvis\lib\Engine;
-
 use asvis\lib\Response as Response;
 use asvis\lib\Resource as Resource;
 
