@@ -84,8 +84,7 @@ class Engine {
 		return array(
 				'connections_up' => $connections_up,
 				'connections_down' => $connections_down,
-				'connections_count' => $connections_count,
-				'node_num'			=> $asNode->data->num
+				'connections_count' => $connections_count
 		);
 	}
 	
