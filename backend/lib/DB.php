@@ -30,12 +30,9 @@ class DB {
 	public function loadGraph($asNum, $fetchPlan) {
 		$rid = $this->getRID($asNum);
 		$result = $this->_driver->recordLoad($rid, $fetchPlan);
-
-// 		$result = $this->_driver->selectAsync('SELECT * FROM ASNode WHERE num = '.$asNum, $fetchPlan);
 		
 		$ret = array (
 			'origin' => $result,
-// 			'origin' => $result[0],
 			'connected' => $this->_driver->cachedRecords
 		);
 		

@@ -39,20 +39,22 @@ class Engine {
 		$connected = $result['connected'];
 		
 		$origin->parse();
-		$nodes = array();		
-		
-		$num = $origin->data->num;
-		$nodes[$num] = self::parseASNode($origin, $connected);
-		
 		foreach ($connected as $object) {
-			if($object->__get('className') === 'ASNode') {
-				$object->parse();
-				$num = $object->data->num;
-				$nodes[$num] = self::parseASNode($object, $connected);
-			}
+			$object->parse();
 		}
 		
+		$nodes = array();
+		
+		$nodes[$origin->data->num] = self::parseASNode($origin, $connected);
+		
+		foreach($connected as $object) {
+			if($object->className === 'ASNode') {
+				$nodes[$object->data->num] = self::parseASNode($object, $connected);
+			}
+		}
+
 		uasort($nodes, array('asvis\lib\Engine','compareParsedNodes'));
+
 		return $nodes;
 	}
 	
@@ -66,33 +68,34 @@ class Engine {
 		
 		foreach ($asNode->data->out as $link) {
 			if(!isset($connected[$link->get()])) {
-				continue; // podlinkowany element jest spoza zakresu $depth
+				continue;
 			}
 			
-			$asconn = $connected[$link->get()];
-			$linkedASnode = self::parseASConn($asconn, $connected);
-				
-			if($asconn->data->up === true) {
-				$connections_up[] = $linkedASnode->data->num;
+			$asConn = $connected[$link->get()];
+			$linkedNode = self::parseASConn($asConn, $connected);
+			
+			if($asConn->data->up === true) {
+// 				echo 'ASConn '.$asConn->recordID.' is UP'.PHP_EOL;
+				$connections_up[] = $linkedNode->data->num;
 			} else {
-				$connections_down[] = $linkedASnode->data->num;
+// 				echo 'ASConn '.$asConn->recordID.' is DOWN'.PHP_EOL;
+				$connections_down[] = $linkedNode->data->num;
 			}
+			
 		}
 		
 		$connections_count = count($connections_up) + count($connections_down);
 		
 		return array(
-				'connections_up' => $connections_up,
-				'connections_down' => $connections_down,
-				'connections_count' => $connections_count
+			'connections_up' => $connections_up,
+			'connections_down' => $connections_down,
+			'connections_count' => $connections_count
 		);
 	}
 	
-	private static function parseASConn($asConn, $connected) {		
-		$asConn->parse();
-		
-		$linkedASnode = $connected[$asConn->data->out->get()];
-		$linkedASnode->parse();
+	private static function parseASConn($asConn, $connected) {
+		$link = $asConn->data->out;
+		$linkedASnode = $connected[$link->get()];
 		
 		return $linkedASnode;
 	}
