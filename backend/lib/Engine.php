@@ -35,10 +35,10 @@ class Engine {
 	public static function structureGraph($nodeNum, $depth) {
 		$result = self::$_db->loadGraph($nodeNum, '*:'.($depth*2));
 		
-		$origin = $result['origin'];		
-		$origin->parse();		
+		$origin = $result['origin'];
 		$connected = $result['connected'];
 		
+		$origin->parse();
 		$nodes = array();		
 		
 		$num = $origin->data->num;
@@ -46,12 +46,18 @@ class Engine {
 		
 		foreach ($connected as $object) {
 			if($object->__get('className') === 'ASNode') {
-				$nodes[$object->data->num] = self::parseASNode($object, $connected);
+				$object->parse();
+				$num = $object->data->num;
+				$nodes[$num] = self::parseASNode($object, $connected);
 			}
 		}
 		
-		usort($nodes, array('asvis\lib\Engine','compareParsedNodes'));
+		uasort($nodes, array('asvis\lib\Engine','compareParsedNodes'));
 		return $nodes;
+	}
+	
+	public function structureTree($nodeNum, $depth) {
+		
 	}
 	
 	private static function parseASNode($asNode, $connected) {
@@ -79,6 +85,7 @@ class Engine {
 				'connections_up' => $connections_up,
 				'connections_down' => $connections_down,
 				'connections_count' => $connections_count,
+				'node_num'			=> $asNode->data->num
 		);
 	}
 	
