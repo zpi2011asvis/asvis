@@ -20,7 +20,7 @@ class Engine {
 		
 		if ($result) {
 			foreach ($result as $oDBRecord) {			
-				$oDBRecord->parse();
+//				$oDBRecord->parse();
 				$num  = $oDBRecord->data->num;
 				$name = $oDBRecord->data->name;
 				$nodes[$num] = array(
@@ -38,16 +38,20 @@ class Engine {
 		$origin = $result['origin'];
 		$connected = $result['connected'];
 		
+//		$t = microtime(true);
+/*
 		$origin->parse();
 		foreach ($connected as $object) {
 			$object->parse();
 		}
-		
+*/
+//		echo (microtime(true) - $t) . PHP_EOL;
+
 		$nodes = array();
 		
 		$nodes[$origin->data->num] = self::parseASNode($origin, $connected);
 		
-		foreach($connected as $object) {
+		foreach ($connected as $object) {
 			if($object->className === 'ASNode') {
 				$nodes[$object->data->num] = self::parseASNode($object, $connected);
 			}
@@ -67,7 +71,7 @@ class Engine {
 		$connections_down = array();
 		
 		foreach ($asNode->data->out as $link) {
-			if(!isset($connected[$link->get()])) {
+			if (!isset($connected[$link->get()])) {
 				continue;
 			}
 			
@@ -87,9 +91,9 @@ class Engine {
 		$connections_count = count($connections_up) + count($connections_down);
 		
 		return array(
-			'connections_up' => $connections_up,
-			'connections_down' => $connections_down,
-			'connections_count' => $connections_count
+			'up' => $connections_up,
+			'down' => $connections_down,
+			'count' => $connections_count
 		);
 	}
 	
@@ -102,11 +106,7 @@ class Engine {
 	
 	
 	static function compareParsedNodes($a, $b) {
-		if ($a['connections_count'] == $b['connections_count']) {
-			return 0;
-		}
-	
-		return ($a['connections_count'] > $b['connections_count']) ? -1 : 1;
+		return $b['count'] - $a['count'];
 	}
 }
 

@@ -3,10 +3,13 @@
 
 	var Widget = lib.widgets.Widget;
 
-	var StartFormWidgets = Widget.create(
+	var StartFormWidget = Widget.create(
 		function StartFormWidgets() {},
 		{
-			_destroy: function () {
+			_destroy: function _destroy() {
+			},
+
+			render: function render() {
 			}
 		},
 		{
@@ -14,5 +17,5 @@
 		}
 	);
 
-	exports.StartFormWidgets = StartFormWidgets;
+	exports.StartFormWidget = StartFormWidget;
 }.call({}, this.app.lib.widgets, this, this.app.lib));

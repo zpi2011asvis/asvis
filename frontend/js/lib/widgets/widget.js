@@ -7,16 +7,21 @@ this.app.lib.widgets = {};
 		merge = global.es5ext.Object.plain.merge.call,
 		clone = global.es5ext.Object.plain.clone.call;
 
-	var Widget = function Widget() {
+	var Widget = function Widget(el, position) {
+		this._el = el;
+		this._position = position;
 		this.destroyed = new Signal();
 	};
 
 	Widget.prototype = {
 		destroyed: null,
-		destroy: function () {
+		_el: null,
+		_position: null,
+
+		destroy: function destroy() {
 			this._destroy();
 			this.destroyed.dispatch();
-		}
+		},
 	};
 
 	Widget._statics = {
@@ -40,7 +45,7 @@ this.app.lib.widgets = {};
 				obj = repository[0];
 			}
 			else {
-				obj = new this();
+				obj = this(arguments);
 				repository.push(obj);
 				obj.destroyed.add(function () {
 					var i = repository.indexOf(obj);
