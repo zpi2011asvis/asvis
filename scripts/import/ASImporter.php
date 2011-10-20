@@ -114,7 +114,7 @@ class ASImporter {
 		// nieterminalnych Connów
 		// inner join jest 1e10x szybszy niż IN ()
 		// należy się zastanowić czy inne zapytania do bazy też nie powinny
-		// odsiać niepotrzebnych wierszów
+		// odsiać niepotrzebnych wierszy
 		// w przypadku asconn nnajpewniej sam warunek <>-1 załatwia sprawę
 		// a co w przypadku aspooli?
 		$ases = mysql_query(
@@ -186,7 +186,7 @@ class ASImporter {
 	}
 
 	protected function _updateASNodes() {
-		echo PHP_EOL . 'Begginning ASNode UPDATE(s).' . PHP_EOL;
+		echo PHP_EOL . 'Beginning ASNode UPDATE(s).' . PHP_EOL;
 		$timeBegin = microtime(true);
 
 		foreach ($this->_asrids as $asnum => $asdata) {
