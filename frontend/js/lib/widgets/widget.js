@@ -5,7 +5,8 @@ this.app.lib.widgets = {};
 
 	var Signal = global.signals.Signal,
 		merge = global.es5ext.Object.plain.merge.call,
-		clone = global.es5ext.Object.plain.clone.call;
+		clone = global.es5ext.Object.plain.clone.call,
+		create = global.es5ext.Object.plain.create;
 
 	var Widget = function Widget(el, position) {
 		this._el = el;
@@ -71,13 +72,21 @@ this.app.lib.widgets = {};
 	};
 
 
-	var WidgetRenderer = function WidgetRenderer() {
+	var Renderer = function WidgetRenderer() {
+	};
+	Renderer.prototype = {
+		b: 1
+	};
+	Renderer.create = function (constructor, prototype) {
+		constructor.prototype = merge(new Renderer(), prototype);
+		return function () {
+			var obj = new constructor();
+			Renderer.apply(obj, arguments);
+			return obj;
+		}
 	};
 
-	WidgetRenderer.prototype = {
-	};
-
+	Widget.Renderer = Renderer;
 	exports.Widget = Widget;
-	exports.WidgetRenderer = WidgetRenderer;
 
 }.call({}, this.app.lib.widgets, this, this.app.lib));

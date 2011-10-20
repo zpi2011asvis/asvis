@@ -4,7 +4,7 @@
 	var Widget = lib.widgets.Widget;
 
 	var StartFormWidget = Widget.create(
-		function StartFormWidgets() {},
+		function StartFormWidget() {},
 		{
 			_destroy: function _destroy() {
 			},
@@ -14,6 +14,16 @@
 		},
 		{
 			multiple: false
+		}
+	);
+
+	StartFormWidget.Renderer = Widget.Renderer.create(
+		function StartFormWidgetRenderer(el) {
+			this._el = el;
+		},
+		{
+			render: function render(data) {
+			}
 		}
 	);
 
