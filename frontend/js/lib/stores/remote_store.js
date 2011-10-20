@@ -5,17 +5,19 @@
 		merge = global.es5ext.Object.plain.merge.call,
 		clone = global.es5ext.Object.plain.clone.call;
 	
-	var RemoteStore = function RemoteStore(url, xhr_adapter, opts) {
-		Store.call(this, opts);
-		this._url = url;
-		this._xhr_adapter = xhr_adapter;
-	};
-
-	RemoteStore.prototype = merge(new Store(), {
+	var RemoteStore = Store.create(function RemoteStore(url, xhr_adapter, opts) {}, {
 		default_opts: merge(clone(Store.prototype.default_opts), {
-			buffer: true, //merge array and object resources queries
-			buffer_delay: 10, //ms
+			buffer: true,		//merge array and object resources queries
+			buffer_delay: 10,	//ms
 		}),
+		_url: null,
+		_xhr_adapter: null,
+
+		init: function init(url, xhr_adapter, opts) {
+			this._sInit(opts);
+			this._url = url;
+			this._xhr_adapter = xhr_adapter;
+		},
 
 		get: function get(opts) {
 			var that = this,

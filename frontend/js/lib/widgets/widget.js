@@ -4,34 +4,32 @@ this.app.lib.widgets = {};
 	'use strict';
 
 	var Signal = global.signals.Signal,
+		classy = global.util.classy,
 		merge = global.es5ext.Object.plain.merge.call,
 		clone = global.es5ext.Object.plain.clone.call,
 		create = global.es5ext.Object.plain.create;
 
-	var Widget = function Widget(el, position) {
-		this._el = el;
-		this._position = position;
-		this.destroyed = new Signal();
-	};
-
-	Widget.prototype = {
+	var Widget = classy(function Widget(el, position) {}, {
 		destroyed: null,
 		_el: null,
 		_position: null,
 
+		init: function init(el, position) {
+			this._el = el;
+			this._position = position;
+			this.destroyed = new Signal();
+		},
+
 		destroy: function destroy() {
-			this._destroy();
 			this.destroyed.dispatch();
 		},
-	};
-
-	Widget._statics = {
+	},
+	{
 		//are multiple instances of this widget allowed
 		multiple: true,
-
 		_repository: null,
-
-		new: function () {
+	
+		new: function neww() {
 			var obj,
 				repository = this._repository;
 
@@ -46,7 +44,7 @@ this.app.lib.widgets = {};
 				obj = repository[0];
 			}
 			else {
-				obj = this(arguments);
+				obj = this._sNew.apply(this, arguments);
 				repository.push(obj);
 				obj.destroyed.add(function () {
 					var i = repository.indexOf(obj);
@@ -57,34 +55,11 @@ this.app.lib.widgets = {};
 				});
 			}
 			return obj;
-		},
-	};
-
-	// simple factory
-	Widget.create = function create(constructor, prototype, statics) {
-		constructor.prototype = merge(new Widget(), prototype);
-		var fn = function () {
-			var obj = new constructor();
-			Widget.apply(obj, arguments);
-			return obj;
-		};
-		return merge(merge(fn, Widget._statics), statics);
-	};
-
-
-	var Renderer = function WidgetRenderer() {
-	};
-	Renderer.prototype = {
-		b: 1
-	};
-	Renderer.create = function (constructor, prototype) {
-		constructor.prototype = merge(new Renderer(), prototype);
-		return function () {
-			var obj = new constructor();
-			Renderer.apply(obj, arguments);
-			return obj;
 		}
-	};
+	});
+
+	var Renderer = classy(function WidgetRenderer() {}, {
+	});
 
 	Widget.Renderer = Renderer;
 	exports.Widget = Widget;

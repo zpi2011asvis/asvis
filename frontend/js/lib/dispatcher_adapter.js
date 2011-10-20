@@ -5,11 +5,11 @@
 		isFunction = global.es5ext.Function.isFunction;
 	
 	exports.DispatcherAdapter = function DispatcherAdapter(container_el) {
-		var _methodedPath = function (method, path) {
+		var _methodedPath = function _methodedPath(method, path) {
 			return method + path;
 		};
 
-		var _isInternalPath = function (path) {
+		var _isInternalPath = function _isInternalPath(path) {
 			return path.indexOf('/') === 0;
 		};
 
@@ -17,20 +17,26 @@
 		dispatcher._superAddRoute = dispatcher.addRoute;
 		dispatcher = extend(dispatcher, {
 			get: function get(path, fn) {
-				if (fn)
+				if (fn) {
 					this.addRoute('get', path, fn);
-				else 
+				}
+				else  {
 					this.parse('get', path);
+				}
 			},
 
 			post: function post(path, obj) {
-				if (isFunction(obj))
+				if (isFunction(obj)) {
 					this.addRoute('post', path, obj);
-				else 
+				}
+				else {
 					this.parse('post', path, obj);
+				}
 			},
 
 			parse: function parse(method, path, post_params) {
+				global.DEBUG && console.log('Dispatcher parsing: ' + path);
+
 				var request = _methodedPath(method, path),
 					route = this._getMatchedRoute(request),
 					//getParamsArray ommision disables routes rules.normalize option
@@ -59,7 +65,7 @@
 
 		dispatcher.constructor = DispatcherAdapter;
 
-		container_el.delegate('click', 'a', function (event, el) {
+		container_el.delegate('click', 'a', function onDelegate(event, el) {
 			var path = el.getAttribute('href');
 			if (_isInternalPath(path)) {
 				event.preventDefault();
@@ -67,13 +73,13 @@
 			}
 		});
 
-		container_el.delegate('submit', 'form', function (event, el) {
+		container_el.delegate('submit', 'form', function onSubmit(event, el) {
 			event.preventDefault();
 
 			// TODO serialize form and dispatch post
 		});
 
-		global.addEventListener('popstate', function (event) {
+		global.addEventListener('popstate', function onPopstate(event) {
 			var state = event.state,
 				method = state && state.method ? state.method : 'get',
 				location = global.location;

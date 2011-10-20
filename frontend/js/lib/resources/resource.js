@@ -4,19 +4,20 @@ this.app.lib.resources = {};
 	'use strict';
 
 	var merge = global.es5ext.Object.plain.merge.call,
-		clone = global.es5ext.Object.plain.clone.call;
+		clone = global.es5ext.Object.plain.clone.call,
+		classy = global.util.classy;
 
-	var Resource = function Resource(opts) {
-		this._store = null;
-		this._opts = merge(clone(this.default_opts), opts || {});
-	};
-
-	Resource.prototype = {
+	var Resource = classy(function Resource() {}, {
 		name: null,
 		default_opts: {},
 		_url: null,
 		_cache: false,
 		_method: null,
+
+		init: function init(opts) {
+			this._store = null;
+			this._opts = merge(clone(this.default_opts), opts || {});
+		},
 
 		get: function get(params) {
 			return this._prepareData(
@@ -37,17 +38,7 @@ this.app.lib.resources = {};
 		_prepareData: function _prepareData(data) {
 			return data;
 		}
-	};
-
-	// simple factory
-	Resource.create = function create(constructor, prototype) {
-		constructor.prototype = merge(new Resource(), prototype);
-		return function () {
-			var obj = new constructor();
-			Resource.apply(obj, arguments);
-			return obj;
-		}
-	};
+	});
 
 	exports.Resource = Resource;
 
