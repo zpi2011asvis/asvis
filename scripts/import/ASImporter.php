@@ -13,7 +13,7 @@ class ASImporter {
 	protected $_asrids = null;
 
 	// -1 to disable limits
-	const LIMIT_CONNS = 2000;
+	const LIMIT_CONNS = -1;
 
 	function __construct($doImport = false) {
 		if($doImport === true) {

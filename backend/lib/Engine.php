@@ -38,28 +38,26 @@ class Engine {
 		$nodes = array();
 		
 		foreach ($num_array as $number) {
-			$query = 'SELECT FROM ASNode WHERE num = '.$number;
-			$result = self::$_db->query($query);
-		
-			$nodes = array();
+			$result = self::$_db->loadGraph($number, 'pools:1');
 			
-			if ($result) {
-				foreach ($result as $oDBRecord) {
-					$num  = $oDBRecord->data->num;
-					$name = $oDBRecord->data->name;
-					//$network = $oDBRecord->data->network;
-					//$mask = $oDBRecord->data->netmask;
-					$nodes[$num] = array(
-						'name' => $name,
-						'pools' => array(
-							//'network' => $network,
-							//'netmask' => $netmask
-						)
-					);
-				}
+			$origin = $result['origin'];
+			$connected = $result['connected'];
+			
+			$num = $origin->data->num;
+			$name = $origin->data->name;
+			
+			$pools = array();
+			
+			foreach ($connected as $object) {
+				$network = $object->data->network;
+				$netmask = $object->data->netmask;
+				
+				$pools[] = array('network'=>$network, 'netmask'=>$netmask);	
 			}
-		}
-
+			
+			$nodes[$num] = array('name'=>$name, "pools"=>$pools); 
+		}	
+		
 		return $nodes;
 	}
 	
