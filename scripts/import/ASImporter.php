@@ -13,7 +13,7 @@ class ASImporter {
 	protected $_asrids = null;
 
 	// -1 to disable limits
-	const LIMIT_CONNS = 2000;
+	const LIMIT_CONNS = -1;
 
 	function __construct($doImport = false) {
 		if($doImport === true) {
@@ -208,7 +208,7 @@ class ASImporter {
 	protected function _insertASPool($node, $network, $netmask) {
 		try {
 			$result = $this->_db->command(
-			OrientDB::COMMAND_QUERY,
+				OrientDB::COMMAND_QUERY,
 				"INSERT INTO ASPool (network, netmask) VALUES ('{$network}', '{$netmask}')"
 			);
 		} catch (OrientDBException $e) {
@@ -228,7 +228,7 @@ class ASImporter {
 
 		try {
 			$result = $this->_db->command(
-			OrientDB::COMMAND_QUERY,
+				OrientDB::COMMAND_QUERY,
 				"UPDATE {$asNodeRID} SET in = [{$fromList}], out = [{$toList}], pools = [{$poolList}]" 
 			);
 		} catch (OrientDBException $e) {
@@ -243,7 +243,7 @@ class ASImporter {
 		echo PHP_EOL . "Querying MySQL as{$dir}... ";
 		$ases = mysql_query(
 			"SELECT asnum, asnum{$dir} FROM as{$dir} WHERE asnum{$dir} <> -1".
-		(ASImporter::LIMIT_CONNS > 0 ? ' LIMIT '. ASImporter::LIMIT_CONNS : '')
+			(ASImporter::LIMIT_CONNS > 0 ? ' LIMIT '. ASImporter::LIMIT_CONNS : '')
 		);
 		echo 'finished' . PHP_EOL;
 
