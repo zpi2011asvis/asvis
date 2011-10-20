@@ -28,3 +28,6 @@
 [submodule "frontend/js/vendor/threejs"]
 	path = frontend/js/vendor/threejs
 	url = https://github.com/mrdoob/three.js.git
+[submodule "backend/vendor/orient-php"]
+	path = backend/vendor/orient-php
+	url = https://github.com/Reinmar/Orient.git
