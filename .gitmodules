@@ -3,7 +3,7 @@
 	url = https://github.com/peej/tonic.git
 [submodule "backend/vendor/orient-php"]
 	path = backend/vendor/orient-php
-	url = https://github.com/congow/Orient.git
+	url = https://github.com/Reinmar/Orient.git
 [submodule "backend/vendor/orient-php-raw"]
 	path = backend/vendor/orient-php-raw
 	url = https://github.com/AntonTerekhov/OrientDB-PHP.git
