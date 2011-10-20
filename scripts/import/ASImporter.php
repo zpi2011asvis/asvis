@@ -8,11 +8,12 @@ use asvis\Config as Config;
 class ASImporter {
 	protected $_nodeClusterID = null;
 	protected $_connClusterID = null;
+	protected $_poolClusterID = null;
 	protected $_db = null;
 	protected $_asrids = null;
 
 	// -1 to disable limits
-	const LIMIT_CONNS = -1;
+	const LIMIT_CONNS = 2000;
 
 	function __construct($doImport = false) {
 		if($doImport === true) {
@@ -38,6 +39,7 @@ class ASImporter {
 		
 		$this->_insertASNodes();
 		$this->_insertASConns();
+		$this->_insertASPools();
 		$this->_updateASNodes();
 	}
 
@@ -64,6 +66,9 @@ class ASImporter {
 				}
 				if ($cluster->name === 'asconn') {
 					$this->_connClusterID = $cluster->id;
+				}
+				if ($cluster->name === 'aspool') {
+					$this->_poolClusterID = $cluster->id;
 				}
 			}
 		}
@@ -97,7 +102,9 @@ class ASImporter {
 
 		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM ASConn');
 		echo 'DELETED '.$result.' ASConns'. PHP_EOL;
-
+		
+		$result = $this->_db->command(OrientDB::COMMAND_QUERY, 'DELETE FROM ASPool');
+		echo 'DELETED '.$result.' ASPools'. PHP_EOL;
 	}
 
 	protected function _insertASNodes() {
@@ -118,6 +125,7 @@ class ASImporter {
 				'rid'	=> '#'. $this->_nodeClusterID .':'. $rid,
 				'in'	=> array(),
 				'out'	=> array(),
+				'pools' => array()
 			);
 		}
 
@@ -135,13 +143,34 @@ class ASImporter {
 		$timeEnd = microtime(true);
 		echo PHP_EOL . 'ASConn INSERT(s) finished in '. ($timeEnd - $timeBegin) . 's.' . PHP_EOL;
 	}
+	
+	public function _insertASPools() {
+		$pools = mysql_query('SELECT asnum, asnetwork, asnetmask FROM aspool ORDER BY asnum');
+		echo PHP_EOL . 'MySQL query finished.'. PHP_EOL;
+
+		echo PHP_EOL . 'Beginning OrientDB ASPool INSERT(s).'. PHP_EOL;
+		$timeBegin = microtime(true);
+
+		while ($pool = mysql_fetch_assoc($pools)) {
+			$asnum = $pool['asnum'];
+			$asnetwork = $pool['asnetwork'];
+			$asnetmask = $pool['asnetmask'];
+			
+			$rid = $this->_insertASPool($asnum, $asnetwork, $asnetmask);
+			$this->_asrids[$asnum]['pools'][] = '#'. $this->_poolClusterID .':'. $rid;
+		}
+
+
+		$timeEnd = microtime(true);
+		echo PHP_EOL . 'ASPool INSERT(s) finished in '. ($timeEnd - $timeBegin) . 's.' . PHP_EOL;
+	}
 
 	protected function _updateASNodes() {
 		echo PHP_EOL . 'Begginning ASNode UPDATE(s).' . PHP_EOL;
 		$timeBegin = microtime(true);
 
 		foreach ($this->_asrids as $asnum => $asdata) {
-			$this->_updateASNode($asdata['rid'], $asdata['in'], $asdata['out']);
+			$this->_updateASNode($asdata['rid'], $asdata['in'], $asdata['out'], $asdata['pools']);
 		}
 
 		$timeEnd = microtime(true);
@@ -152,7 +181,7 @@ class ASImporter {
 		try {
 			$result = $this->_db->command(
 			OrientDB::COMMAND_QUERY,
-				"INSERT INTO ASNode (num, name) VALUES ('{$num}', '{$name}')"
+				"INSERT INTO ASNode (name, num, num_as_string) VALUES ('{$name}', {$num}, '{$num}')"
 			);
 		} catch (OrientDBException $e) {
 			echo $e->getMessage() . PHP_EOL;
@@ -175,17 +204,32 @@ class ASImporter {
 		$recordPosition = $result->__get('recordPos');
 		return $recordPosition;
 	}
+	
+	protected function _insertASPool($node, $network, $netmask) {
+		try {
+			$result = $this->_db->command(
+			OrientDB::COMMAND_QUERY,
+				"INSERT INTO ASPool (network, netmask) VALUES ('{$network}', '{$netmask}')"
+			);
+		} catch (OrientDBException $e) {
+			echo $e->getMessage() . PHP_EOL;
+		}
 
-	protected function _updateASNode($asNodeRID, $fromList, $toList) {
+		$recordPosition = $result->__get('recordPos');
+		return $recordPosition;
+	}
+
+	protected function _updateASNode($asNodeRID, $fromList, $toList, $poolList) {
 		$fromList = implode(',', $fromList);
 		$toList = implode(',', $toList);
+		$poolList = implode(',', $poolList);
 
 		//echo "UPDATE {$asNodeRID} SET in = [{$fromList}], out = [{$toList}]" . PHP_EOL;
 
 		try {
 			$result = $this->_db->command(
 			OrientDB::COMMAND_QUERY,
-				"UPDATE {$asNodeRID} SET in = [{$fromList}], out = [{$toList}]" 
+				"UPDATE {$asNodeRID} SET in = [{$fromList}], out = [{$toList}], pools = [{$poolList}]" 
 			);
 		} catch (OrientDBException $e) {
 			echo $e->getMessage() . PHP_EOL;
