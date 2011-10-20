@@ -16,10 +16,11 @@ CREATE PROPERTY ASConn.in link ASNode;
 CREATE PROPERTY ASConn.out link ASNode;
 CREATE PROPERTY ASConn.up boolean;
 
-CREATE PROPERTY ASPool.node linkset ASNode;
+CREATE PROPERTY ASPool.node link ASNode;
 CREATE PROPERTY ASPool.asnetwork integer;
 CREATE PROPERTY ASPool.asnetmask integer;
 
 CREATE INDEX ASNode.num unique;
+CREATE INDEX ASNode.num_as_string unique;
 CREATE INDEX ASConn.in notunique;
 CREATE INDEX ASConn.out notunique;

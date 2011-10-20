@@ -1,18 +1,14 @@
 (function (exports, global, lib) {
 	'use strict';
 	
-	var Resource = lib.resources.Resource,
-		merge = global.es5ext.Object.plain.merge.call;
+	var Resource = lib.resources.Resource;
 
-	var NodesFindResource = Resource.create(
-		function NodesFindResource(opts) {},
-		{
-			name: 'nodes/find',
-			_url: 'nodes/find/:number',
-			_cache: true,
-			_method: 'get'
-		}
-	);
+	var NodesFindResource = Resource.create(function NodesFindResource() {}, {
+		name: 'nodes/find',
+		_url: 'nodes/find/:number',
+		_cache: true,
+		_method: 'get',
+	});
 
 	exports.nodes = {
 		NodesFindResource: NodesFindResource

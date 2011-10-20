@@ -5,16 +5,17 @@ this.app.lib.stores = {};
 
 	var Signal = global.signals.Signal,
 		merge = global.es5ext.Object.plain.merge.call,
-		clone = global.es5ext.Object.plain.clone.call;
+		clone = global.es5ext.Object.plain.clone.call,
+		classy = global.util.classy;
 	
-	var Store = function Store(opts) {
-		this.reseted = new Signal();
-		this._next = null;
-		this._opts = merge(clone(this.default_opts), opts || {});
-	};
-
-	Store.prototype = {
+	var Store = classy(function Store(opts) {},	{
 		default_opts: {},
+
+		init: function init(opts) {
+			this.reseted = new Signal();
+			this._next = null;
+			this._opts = merge(clone(this.default_opts), opts || {});
+		},
 
 		setNext: function setNext(store) {
 			var that = this;
@@ -45,7 +46,7 @@ this.app.lib.stores = {};
 		_reset: function _reset() {
 			//do nothing?
 		}
-	};
+	});
 
 	exports.Store = Store;
 

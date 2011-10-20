@@ -51,6 +51,7 @@ function includeJS($paths) {
 		'vendor/cjs_exports_webmade.js',
 		'xui_extends.js',
 		'app.js',
+		'util.js',
 		'lib/dispatcher_adapter.js',
 		'lib/xhr_adapter_xui.js',
 		'lib/local_db.js',

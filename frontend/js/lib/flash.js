@@ -55,7 +55,7 @@
 	};
 
 	var Flash = {
-		init: function (signals, el) {
+		init: function init(signals, el) {
 			var sname, signal;
 
 			_inited = true;

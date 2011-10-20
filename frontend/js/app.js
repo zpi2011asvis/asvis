@@ -39,11 +39,11 @@
 			var resources = lib.resources,
 				stores = lib.stores;
 
-			this.db = new app.lib.LocalDB([
-				new stores.RemoteStore('/backend', app.lib.XHRAdapterXUI)
+			this.db = app.lib.LocalDB.new([
+				stores.RemoteStore.new('/backend', app.lib.XHRAdapterXUI)
 			], [
-				new resources.nodes.NodesFindResource(),
-				new resources.structures.StructureGraphResource()
+				resources.nodes.NodesFindResource.new(),
+				resources.structures.StructureGraphResource.new()
 			]);
 
 			this.dispatcher = lib.DispatcherAdapter(x('#container'));

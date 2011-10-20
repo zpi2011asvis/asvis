@@ -109,9 +109,29 @@ class ASImporter {
 
 	protected function _insertASNodes() {
 		$this->_asrids = array();
-
-		$ases = mysql_query('SELECT asnum, asname FROM ases ORDER BY asnum');
+		
+		// wszystkie ASy które są połączone do jakichkolwiek
+		// nieterminalnych Connów
+		// inner join jest 1e10x szybszy niż IN ()
+		// należy się zastanowić czy inne zapytania do bazy też nie powinny
+		// odsiać niepotrzebnych wierszy
+		// w przypadku asconn nnajpewniej sam warunek <>-1 załatwia sprawę
+		// a co w przypadku aspooli?
+		$ases = mysql_query(
+			'SELECT ases.asnum AS asnum, ases.asname AS asname FROM ases ' .
+			'INNER JOIN (' .
+				'SELECT DISTINCT(asnum) as asnum FROM (' .
+					'SELECT asnum FROM asup WHERE asnumup <> -1 UNION ' .
+					'SELECT asnum FROM asdown WHERE asnumdown <> -1 UNION ' .
+					'SELECT asnumup AS asnum FROM asup WHERE asnumup <> -1 UNION ' .
+					'SELECT asnumdown AS asnum FROM asdown WHERE asnumdown <> -1' .
+				') AS asnums) ' .
+			'AS asnums ON ases.asnum = asnums.asnum ' .
+			'ORDER BY ases.asnum'
+		);
 		echo PHP_EOL . 'MySQL query finished.'. PHP_EOL;
+		//var_dump(mysql_fetch_assoc($ases));
+		//die();
 
 		echo PHP_EOL . 'Beginning OrientDB ASNode INSERT(s).'. PHP_EOL;
 		$timeBegin = microtime(true);
@@ -156,7 +176,7 @@ class ASImporter {
 			$asnetwork = $pool['asnetwork'];
 			$asnetmask = $pool['asnetmask'];
 			
-			$rid = $this->_insertASPool($asnum, $asnetwork, $asnetmask);
+			$rid = $this->_insertASPool($this->_asrids[$asnum]['rid'], $asnetwork, $asnetmask);
 			$this->_asrids[$asnum]['pools'][] = '#'. $this->_poolClusterID .':'. $rid;
 		}
 
@@ -166,7 +186,7 @@ class ASImporter {
 	}
 
 	protected function _updateASNodes() {
-		echo PHP_EOL . 'Begginning ASNode UPDATE(s).' . PHP_EOL;
+		echo PHP_EOL . 'Beginning ASNode UPDATE(s).' . PHP_EOL;
 		$timeBegin = microtime(true);
 
 		foreach ($this->_asrids as $asnum => $asdata) {
@@ -208,8 +228,8 @@ class ASImporter {
 	protected function _insertASPool($node, $network, $netmask) {
 		try {
 			$result = $this->_db->command(
-			OrientDB::COMMAND_QUERY,
-				"INSERT INTO ASPool (network, netmask) VALUES ('{$network}', '{$netmask}')"
+				OrientDB::COMMAND_QUERY,
+				"INSERT INTO ASPool (network, netmask, node) VALUES ({$network}, {$netmask}, {$node})"
 			);
 		} catch (OrientDBException $e) {
 			echo $e->getMessage() . PHP_EOL;
@@ -228,7 +248,7 @@ class ASImporter {
 
 		try {
 			$result = $this->_db->command(
-			OrientDB::COMMAND_QUERY,
+				OrientDB::COMMAND_QUERY,
 				"UPDATE {$asNodeRID} SET in = [{$fromList}], out = [{$toList}], pools = [{$poolList}]" 
 			);
 		} catch (OrientDBException $e) {
@@ -243,7 +263,7 @@ class ASImporter {
 		echo PHP_EOL . "Querying MySQL as{$dir}... ";
 		$ases = mysql_query(
 			"SELECT asnum, asnum{$dir} FROM as{$dir} WHERE asnum{$dir} <> -1".
-		(ASImporter::LIMIT_CONNS > 0 ? ' LIMIT '. ASImporter::LIMIT_CONNS : '')
+			(ASImporter::LIMIT_CONNS > 0 ? ' LIMIT '. ASImporter::LIMIT_CONNS : '')
 		);
 		echo 'finished' . PHP_EOL;
 

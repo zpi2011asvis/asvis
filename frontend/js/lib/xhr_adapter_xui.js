@@ -11,10 +11,10 @@
 			headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
 			method: opts.method,
 			data: opts.params,
-			callback: function () {
+			callback: function callback() {
 				d.resolve(this.responseText);
 			},
-			error: function () {
+			error: function errror() {
 				var error = new Error(this.statusText + ': ' + this.responseText);
 				global.DEBUG && console.log(error.message);
 				d.resolve(error);
