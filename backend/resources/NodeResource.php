@@ -12,7 +12,7 @@ class NodesFindResource extends Resource {
 	function get($request, $number) {
 		$response = new Response($request);
 		
-		$response->json(Engine::nodesFind($number));
+		$response->json($this->_engine->nodesFind($number));
 		
 		return $response;
 	}

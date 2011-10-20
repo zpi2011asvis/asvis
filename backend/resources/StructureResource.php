@@ -14,7 +14,7 @@ class StructureGraphResource extends Resource {
 // 		var_dump($number);
 		
 		$response = new Response($request);
-		$response->json(Engine::structureGraph($number, $depth));
+		$response->json($this->_engine->structureGraph($number, $depth));
 		return $response;
 	}
 }
