@@ -109,9 +109,6 @@ body {
 	box-sizing: border-box;
 	overflow: auto;
 	background: #FFF;
-	background-image: linear-gradient(left, #DDD 0%, #FFF 1%);
-	background-image: -webkit-linear-gradient(left, #DDD 0%, #FFF 1%);
-	background-image: -moz-linear-gradient(left, #DDD 0%, #FFF 1%);
 	z-index: 10;
 	padding: 10px 0;
 }
@@ -131,10 +128,47 @@ body {
 	color: #FFF;
 	text-shadow: 0 0 1px #000;
 	font-weight: bold;
-	border-radius: 0 0 3px 3px;
+	border-radius: 0 0 4px 4px;
 	text-transform: uppercase;
 	font-size: 12px;
 }
 #flash > .message.opened {
 	display: inline-block;
+}
+
+/*
+ * POPUPS ---------------------------------------------------------------------
+ */
+
+.fullscreen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 100;
+	background: rgba(0, 0, 0, 0.2);
+}
+
+.popup {
+	margin: 100px auto;
+	width: 500px;
+	background: #FFF;
+	border-radius: 6px;
+	box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+}
+
+.popup > header {
+	height: 35px;
+	line-height: 35px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 6px 6px 0 0;
+	padding: 0 20px;
+}
+.popup > header > h1 {
+	font-weight: bold;
+	font-size: 16px;
+}
+.popup > .content {
+	padding: 10px 20px;
 }

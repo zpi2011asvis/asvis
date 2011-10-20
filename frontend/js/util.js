@@ -20,6 +20,7 @@ this.util = {};
 	// neww because new is reserved keyword
 	var neww = function neww() {
 		var obj = new this;
+		obj.constructor = this;
 		obj.init && obj.init.apply(obj, arguments);
 		return obj;
 	};

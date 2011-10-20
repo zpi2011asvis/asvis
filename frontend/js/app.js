@@ -3,6 +3,7 @@
 	
 	var lib = {},
 		x = global.x$,
+		invoke = global.es5ext.Function.invoke,
 		Signal = global.signals.Signal;
 
 	var app = exports.app = {
@@ -21,33 +22,38 @@
 			_widgets: [],
 
 			add: function add(widget) {
-				this._widgets.push(widget);
-				return this;
+				var that = this;
+				that._widgets.push(widget);
+				widget.destroyed.add(function () {
+					that._remove(widget);
+				});
+				return that;
 			},
 
 			destroy: function destroy() {
-				this._widgets.forEach(function (w) {
-					w.destroy();
-				});
+				this._widgets.forEach(invoke('destroy'));
 				this._widgets = [];
+			},
+
+			renderAll: function renderAll() {
+				this._widgets.forEach(invoke('render'));
+			},
+
+			_remove: function _remove(widget) {
+				var i = this._widgets.indexOf(widget);
+				if (!~i) {
+					throw new Error('Couldn\'t find widget in repository');
+				}
+				this._widgets.splice(i, 1);
 			}
 		},
 
 		start: function start(opts) {
 			this.opts = opts;
 			this._container_el = x('#container');
-
-			var resources = lib.resources,
-				stores = lib.stores;
-
-			this.db = app.lib.LocalDB.new([
-				stores.RemoteStore.new('/backend', app.lib.XHRAdapterXUI)
-			], [
-				resources.nodes.NodesFindResource.new(),
-				resources.structures.StructureGraphResource.new()
-			]);
-
-			this.dispatcher = lib.DispatcherAdapter(x('#container'));
+			
+			this._initDB();
+			this.dispatcher = lib.DispatcherAdapter(this._container_el);
 			this._addRoutes();
 
 			lib.Flash.init({
@@ -63,10 +69,7 @@
 				widgets = lib.widgets;
 
 			dispatcher.get('/', function routerRoot() {
-				var w = widgets.StartFormWidget.new(
-					that._container_el
-				);
-				console.log(w);
+				var w = widgets.StartFormWidget.new(that._container_el);
 
 				that.widgets.add(w);
 				that.render();
@@ -78,8 +81,20 @@
 			});
 		},
 
-		render: function render(params) {
-			
+		_initDB: function _initDB() {
+			var resources = lib.resources,
+				stores = lib.stores;
+
+			this.db = app.lib.LocalDB.new([
+				stores.RemoteStore.new('/backend', app.lib.XHRAdapterXUI)
+			], [
+				resources.nodes.NodesFindResource.new(),
+				resources.structures.StructureGraphResource.new()
+			]);
+		},
+
+		render: function render() {
+			this.widgets.renderAll();
 		}
 	};
 

@@ -5,6 +5,11 @@
 		isFunction = global.es5ext.Function.isFunction;
 	
 	exports.DispatcherAdapter = function DispatcherAdapter(container_el) {
+		// used for fixing the 
+		// difference between Fx and Chrome - Fx does not 
+		// automaticly fire onpopstate on page load
+		var _popped = false;
+
 		var _methodedPath = function _methodedPath(method, path) {
 			return method + path;
 		};
@@ -14,7 +19,7 @@
 		};
 
 		var dispatcher = global.crossroads.create();
-		dispatcher._superAddRoute = dispatcher.addRoute;
+		dispatcher._sAddRoute = dispatcher.addRoute;
 		dispatcher = extend(dispatcher, {
 			get: function get(path, fn) {
 				if (fn) {
@@ -59,7 +64,7 @@
 			},
 
 			addRoute: function addRoute(method, path, fn) {
-				this._superAddRoute(_methodedPath(method, path), fn);
+				this._sAddRoute(_methodedPath(method, path), fn);
 			}
 		});
 
@@ -83,6 +88,8 @@
 			var state = event.state,
 				method = state && state.method ? state.method : 'get',
 				location = global.location;
+
+			_popped = true;
 		
 			dispatcher[method](location.pathname + location.search + location.hash);
 		});
@@ -91,6 +98,14 @@
 			global.history.pushState(params, '', path);
 			alert('Błąd. Strona o podanym adresie nie istnieje.');
 		});
+
+		// fixing difference in behaviour on page load
+		// see comment for _popped
+		setTimeout(function() {
+			if (!_popped) {
+				dispatcher.get(location.pathname + location.search + location.hash);
+			}
+		}, 100);
 
 		return dispatcher;
 	};
