@@ -13,7 +13,7 @@ class Engine {
 	}
 
 	public static function nodesFind($number) {
-		$query = 'SELECT FROM ASNode WHERE num.asString() LIKE "'.$number.'%"';
+		$query = 'SELECT FROM ASNode WHERE num_as_string LIKE "'.$number.'%"';
 		$result = self::$_db->query($query);
 		
 		$nodes = array();
