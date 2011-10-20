@@ -10,11 +10,8 @@ use asvis\lib\Resource as Resource;
  */
 class StructureGraphResource extends Resource {
 	function get($request, $number, $depth) {
-		
-// 		var_dump($number);
-		
 		$response = new Response($request);
-		$response->json(Engine::structureGraph($number, $depth));
+		$response->json(Engine::structureGraph((int) $number, (int) $depth));
 		return $response;
 	}
 }

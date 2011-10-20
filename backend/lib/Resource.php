@@ -19,11 +19,21 @@ class Resource extends TonicResource {
 		Engine::init(new DB());
 	}
 	
-	protected function getGet($paramName) {
-		return $this->_get[$paramName];
+	protected function getGet($paramName, $default = null) {
+		if (array_key_exists($paramName, $this->_post)) {
+			return $this->_get[$paramName];
+		}
+		else {
+			return $default;
+		}
 	}
 	
-	protected function getPost($paramName) {
-		return $this->_post[$paramName];
+	protected function getPost($paramName, $default = null) {
+		if (array_key_exists($paramName, $this->_post)) {
+			return $this->_post[$paramName];
+		}
+		else {
+			return $default;
+		}
 	}
 }

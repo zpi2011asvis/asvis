@@ -33,11 +33,9 @@ class Engine {
 	}
 	
 	public static function nodesMeta($numbers) {
-		$num_array = explode(',', $numbers);
-		
 		$nodes = array();
 		
-		foreach ($num_array as $number) {
+		foreach ($numbers as $number) {
 			$result = self::$_db->loadGraph($number, 'pools:1');
 			
 			$origin = $result['origin'];

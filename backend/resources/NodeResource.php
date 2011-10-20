@@ -12,7 +12,7 @@ class NodesFindResource extends Resource {
 	function get($request, $number) {
 		$response = new Response($request);
 		
-		$response->json(Engine::nodesFind($number));
+		$response->json(Engine::nodesFind((int) $number));
 		
 		return $response;
 	}
@@ -25,7 +25,7 @@ class NodesMetaResource extends Resource {
 	function post($request) {
 		$response = new Response($request);
 		
-		$numbers = $this->getPost('numbers');
+		$numbers = json_decode($this->getPost('numbers', '[]'));
 		$response->json(Engine::nodesMeta($numbers));
 		
 		return $response;
