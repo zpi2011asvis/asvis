@@ -10,9 +10,50 @@ if (Config::get('env') === 'dev') {
 	ini_set('display_errors', 1);
 }
 
+function getSubdirFiles($main_dir) {
+	$result = array();
+
+	$dirs = scandir($main_dir); 
+	foreach ($dirs as $dir)  { 
+		$sub_dir = $main_dir .'/'. $dir;
+		if ($dir === '.' || $dir === '..') { 
+			continue;
+		} 
+
+		if (is_file($sub_dir)) {
+			$result[] = $sub_dir;
+		}
+		else {
+			$files = scandir($sub_dir); 
+			foreach ($files as $file)  { 
+				if ($file === '.' || $file === '..') { 
+					continue; 
+				}
+				else { 
+					$result[] = $sub_dir .'/'. $file; 
+				} 
+			}
+		} 
+	}    
+	return $result; 
+}
+
 function includeJS($paths) {
 	foreach ($paths as $path) {
 		printf('<script src="%s/js/%s"></script>', Config::get('frontend_base_uri'), $path);
+	}
+}
+
+function includeTemplates() {
+	$dir = __DIR__ . '/templates';
+	
+	$files = getSubdirFiles($dir);
+	foreach ($files as $file) {
+		$name = str_replace($dir.'/', '', $file);
+		$name = substr($name, 0, strrpos($name, '.'));
+		echo '<script type="text/ejs" class="template" data-name="'. $name .'">';
+		readfile($file);
+		echo '</script>';
 	}
 }
 
@@ -49,6 +90,7 @@ function includeJS($paths) {
 		'vendor/crossroads.js',
 		'vendor/xui.js',
 		'vendor/cjs_exports_webmade.js',
+		'vendor/ejs.js',
 		'xui_extends.js',
 		'app.js',
 		'util.js',
@@ -56,6 +98,7 @@ function includeJS($paths) {
 		'lib/xhr_adapter_xui.js',
 		'lib/local_db.js',
 		'lib/flash.js',
+		'lib/templates.js',
 		'lib/stores/store.js',
 		'lib/stores/remote_store.js',
 		'lib/resources/resource.js',
@@ -64,6 +107,7 @@ function includeJS($paths) {
 		'lib/widgets/widget.js',
 		'lib/widgets/start_form_widget.js',
 	)) ?>
+	<? includeTemplates() ?>
 	<script>
 		this.DEBUG = <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
 		app.start({

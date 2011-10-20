@@ -9,14 +9,14 @@ this.app.lib.widgets = {};
 		clone = global.es5ext.Object.plain.clone.call,
 		create = global.es5ext.Object.plain.create;
 
-	var Widget = classy(function Widget(el, position) {}, {
+	var Widget = classy(function Widget() {}, {
 		destroyed: null,
 		_el: null,
 		_position: null,
 
 		init: function init(el, position) {
 			this._el = el;
-			this._position = position;
+			this._position = position || 'bottom';
 			this.destroyed = new Signal();
 		},
 

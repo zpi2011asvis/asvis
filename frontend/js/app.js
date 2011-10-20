@@ -8,6 +8,7 @@
 	var app = exports.app = {
 		lib: lib,
 		opts: null,
+		_container_el: null,
 		signals : {
 			data_loading: {
 				started: new Signal(),
@@ -19,10 +20,9 @@
 		widgets: {
 			_widgets: [],
 
-			add: function add(widget_constructor) {
-				var widget = widget_constructor.new();
+			add: function add(widget) {
 				this._widgets.push(widget);
-				return widget;
+				return this;
 			},
 
 			destroy: function destroy() {
@@ -35,6 +35,7 @@
 
 		start: function start(opts) {
 			this.opts = opts;
+			this._container_el = x('#container');
 
 			var resources = lib.resources,
 				stores = lib.stores;
@@ -52,6 +53,8 @@
 			lib.Flash.init({
 				data_loading: this.signals.data_loading
 			}, x('#flash .message'));
+
+			lib.Templates.load(x('script.template'));
 		},
 
 		_addRoutes: function _addRoutes() {
@@ -60,7 +63,12 @@
 				widgets = lib.widgets;
 
 			dispatcher.get('/', function routerRoot() {
-				that.widgets.add(widgets.StartFormWidget);
+				var w = widgets.StartFormWidget.new(
+					that._container_el
+				);
+				console.log(w);
+
+				that.widgets.add(w);
 				that.render();
 			});
 
