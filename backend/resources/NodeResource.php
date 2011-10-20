@@ -24,10 +24,10 @@ class NodesFindResource extends Resource {
 class NodesMetaResource extends Resource {
 	function post($request) {
 		$response = new Response($request);
-		$response->json(array(
-			"1234"=>array("name"=>"AS1234", "pools"=>array("netmask"=>24)),
-			"4234"=>array("name"=>"AS4234", "pools"=>array("netmask"=>12))
-		));
+		
+		$numbers = $this->getPost('numbers');
+		$response->json(Engine::nodesMeta($numbers));
+		
 		return $response;
 	}
 }

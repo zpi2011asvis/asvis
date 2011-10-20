@@ -24,6 +24,6 @@ class Resource extends TonicResource {
 	}
 	
 	protected function getPost($paramName) {
-		return $this->_get[$paramName];
+		return $this->_post[$paramName];
 	}
 }

@@ -32,6 +32,37 @@ class Engine {
 		return $nodes;			
 	}
 	
+	public static function nodesMeta($numbers) {
+		$num_array = explode(',', $numbers);
+		
+		$nodes = array();
+		
+		foreach ($num_array as $number) {
+			$query = 'SELECT FROM ASNode WHERE num = '.$number;
+			$result = self::$_db->query($query);
+		
+			$nodes = array();
+			
+			if ($result) {
+				foreach ($result as $oDBRecord) {
+					$num  = $oDBRecord->data->num;
+					$name = $oDBRecord->data->name;
+					//$network = $oDBRecord->data->network;
+					//$mask = $oDBRecord->data->netmask;
+					$nodes[$num] = array(
+						'name' => $name,
+						'pools' => array(
+							//'network' => $network,
+							//'netmask' => $netmask
+						)
+					);
+				}
+			}
+		}
+
+		return $nodes;
+	}
+	
 	public static function structureGraph($nodeNum, $depth) {
 		$result = self::$_db->loadGraph($nodeNum, '*:'.($depth*2));
 		
