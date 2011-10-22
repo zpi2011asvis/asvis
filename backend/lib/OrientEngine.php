@@ -75,7 +75,7 @@ class OrientEngine implements Engine {
 		
 // 		H::pre($result);
 		
-		die;
+// 		die;
 		return $result;
 	}
 	
@@ -91,47 +91,48 @@ class OrientEngine implements Engine {
 			$atClass = '@class';
 			
 			$originRID = $object->$atRID;
-			echo '@rid = ' . $originRID . '<br/>';
 			
 			if($object->$atClass === 'ASNode') {
 				if(isset($object->out)) {
 					$out = $object->out;
 					$connections_out = array();
 					
-					echo '--- OUT : <br/>';
-					
 					if(is_array($out)) {
 						foreach($out as $conn) {
-							
-// 							H::pre($conn);
 							$num = $this->mapConnection($conn, $rid2num);
 							$result[$rid2num[$originRID]][] = $num;
-// 							H::pre($result);
+							
+							$result = $this->mapConnections($conn, $rid2num, $result);
 						}
 					} elseif(is_string($out)) {
 						$num = $rid2num[$out];
 						$result[$rid2num[$originRID]][] = $num;
+						
+						$result = $this->mapConnections($conn, $rid2num, $result);
 					}					
 				}
 			}
+			
+			return $result;
 		}
 	}
 	
-	private function mapConnection($object, $rid2num) {
-		echo ' --------------------- MAP CONNECTION -----------------------<br/>';
-		H::pre($object);
+	private function mapConnection($object, $rid2num) {		
 		if($object && is_object($object)) {
 			$atRID = '@rid';
 			$atClass = '@class';
-				
+
 			if($object->$atClass === 'ASConn') {
-				if(isset($object->out)) {
-					return $rid2num[$object->out];			
+				if(isset($object->out)) {				
+					if(is_string($object->out)) {
+						return $rid2num[$object->out];
+					} elseif(is_object($object->out)) {
+						return $rid2num[$object->out->$atRID];
+					}	
 				}
 			}
 		}
-		
-		echo ' --------------------- END MAP CONNECTION -----------------------<br/>';
+
 		return null;
 	}
 	
@@ -171,8 +172,7 @@ class OrientEngine implements Engine {
 			
 		}	
 		
-		return $result;
-		
+		return $result;		
 	}
 	
 }
