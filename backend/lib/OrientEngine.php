@@ -68,16 +68,121 @@ class OrientEngine implements Engine {
 		$result = $this->_orient->query('SELECT FROM ASNode WHERE num = '.$nodeNum, null, -1, '*:'.$depth);
 		$result = json_decode($result->getBody());
 		$result = $result->result;
-
-// 		H::pre($result);
 		
 		$rid2num = $this->mapRIDs($result[0]);
 		
-		return $rid2num;
+		$result = $this->mapConnections($result[0], $rid2num);
+		
+// 		H::pre($result);
+		
+		die;
+		return $result;
 	}
 	
 	public function structureTree($nodeNum, $depth) {
 		
 	}
 	
+	private function mapConnections($object, $rid2num, $result = array()) {
+// 		H::pre($object);
+		
+		if($object && is_object($object)) {
+			$atRID = '@rid';
+			$atClass = '@class';
+			
+			$originRID = $object->$atRID;
+			echo '@rid = ' . $originRID . '<br/>';
+			
+			if($object->$atClass === 'ASNode') {
+				if(isset($object->out)) {
+					$out = $object->out;
+					$connections_out = array();
+					
+					echo '--- OUT : <br/>';
+					
+					if(is_array($out)) {
+						foreach($out as $conn) {
+							
+// 							H::pre($conn);
+							$num = $this->mapConnection($conn, $rid2num);
+							$result[$rid2num[$originRID]][] = $num;
+// 							H::pre($result);
+						}
+					} elseif(is_string($out)) {
+						$num = $rid2num[$out];
+						$result[$rid2num[$originRID]][] = $num;
+					}					
+				}
+			}
+		}
+	}
+	
+	private function mapConnection($object, $rid2num) {
+		echo ' --------------------- MAP CONNECTION -----------------------<br/>';
+		H::pre($object);
+		if($object && is_object($object)) {
+			$atRID = '@rid';
+			$atClass = '@class';
+				
+			if($object->$atClass === 'ASConn') {
+				if(isset($object->out)) {
+					return $rid2num[$object->out];			
+				}
+			}
+		}
+		
+		echo ' --------------------- END MAP CONNECTION -----------------------<br/>';
+		return null;
+	}
+	
+	private function mapRIDs($object, $result = array()) {
+		if($object && is_object($object)) {
+			$atRID = '@rid';
+			$atClass = '@class';
+			
+			if($object->$atClass === 'ASNode') {
+				$rid = $object->$atRID;
+				$num = $object->num;
+				
+				$result[$rid] = $num;
+			}
+			
+			if(isset($object->in)) {
+				$in = $object->in;			
+				if(is_array($in)) {
+					foreach ($in as $obj) {
+						$result = $this->mapRIDs($obj, $result);
+					}
+				} else {
+					$result = $this->mapRIDs($in, $result);
+				}
+			}
+			
+			if(isset($object->out)) {
+				$out = $object->out;			
+				if(is_array($out)) {
+					foreach ($out as $obj) {
+						$result = $this->mapRIDs($obj, $result);
+					}
+				} else {
+					$result = $this->mapRIDs($out, $result);
+				}
+			}
+			
+		}	
+		
+		return $result;
+		
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
