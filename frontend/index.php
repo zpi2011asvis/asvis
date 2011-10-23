@@ -102,6 +102,7 @@ function includeTemplates() {
 		'lib/local_db.js',
 		'lib/flash.js',
 		'lib/templates.js',
+		'lib/vizir.js',
 		'lib/renderer.js',
 		'lib/stores/store.js',
 		'lib/stores/remote_store.js',
@@ -116,6 +117,7 @@ function includeTemplates() {
 	<script>
 		this.DEBUG = <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
 		app.start({
+			root: '<?= Config::get('frontend_base_uri') ?>/'
 		});
 	</script>
 </body>

@@ -2,6 +2,7 @@
 	'use strict';
 
 	var T = global.THREE,
+		Vizir = lib.Vizir,
 		requestAnimationFrame = global.util.requestAnimationFrame;
 
 	var Renderer = function Renderer(widget_view, opts) {
@@ -9,10 +10,17 @@
 		var that = this,
 			FOG = { color: 0x000000, density: 0.002 },
 			PARTICLE = {
-				material: new T.ParticleBasicMaterial({
-					color: 0x55FF55,
-					size: 5
-				})
+				material: (function () {
+					var sprite = T.ImageUtils.loadTexture(app.opts.root + 'img/square_1.png'),
+						material = new T.ParticleBasicMaterial({
+							color: 0x77FF77,
+							size: 10,
+							sizeAttenuation: false,
+							map: sprite
+						});
+
+					return material
+				}())
 			};
 
 		// properties
@@ -21,14 +29,15 @@
 			_scene,
 			_psystems = [], //particle systems
 			_geometries = [], //particle geometries
+			_vizir,
 			_started = false,
 			_view = {
 				fov: 45,
 				fov_step: 3,
 				width: null,
 				height: null,
-				distance: 300,
-				distance_step: 20
+				distance: 500,
+				distance_step: 25
 			};
 
 		// methods
@@ -61,7 +70,7 @@
 		/*
 		 * @param graph {Object} result of /structure/graph
 		 * @param as_structure {Boolean} if true this is the part of graph that
-		 * should be rendered
+		 * should be rendered (graph is at once a structure)
 		 */
 		this.setStructure = function setStructure(graph, as_structure) {
 			var was_started = _started,
@@ -70,7 +79,7 @@
 
 			this.stop();
 
-			for (var p = 0; p < 10000; p++) {
+			for (var p = 0; p < 5000; p++) {
 				// create a particle with random
 				// position values, -100 -> 100
 				var pX = Math.random() * 400 - 200,
@@ -84,6 +93,7 @@
 				geometry.vertices.push(particle);
 			}
 
+			//psystem.sortParticles = true;
 			_scene.add(psystem);
 			_psystems.push(psystem);
 			_geometries.push(geometry);
@@ -119,7 +129,7 @@
 		};
 
 		_newCamera = function _newCamera() {
-			_camera = new T.PerspectiveCamera(_view.fov, _view.width / _view.height, 1, 10000);
+			_camera = new T.PerspectiveCamera(_view.fov, _view.width / _view.height, 10, 10000);
 			_camera.position.z = _view.distance;
 				
 			_scene.fog = new T.Fog(FOG.color, +(_view.distance / 3), _view.distance * 2);
@@ -138,10 +148,11 @@
 		 */
 
 		_renderer = new T.WebGLRenderer({
-			antialias: true
+			antialias: true,
+			clearAlpha: 0,
 		});
-		_renderer.setClearColorHex(0x111111, 1.0);
 		_scene = new T.Scene();
+		_vizir = new Vizir();
 
 		_resize(opts.size.width, opts.size.height);
 
