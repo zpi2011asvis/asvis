@@ -85,7 +85,10 @@ function includeTemplates() {
 	</aside>
 	
 	<? includeJS(array(
-		'vendor/three_webgl.js',
+		'../data/sample_1.js',
+		'../data/sample_2.js',
+		'../data/sample_3.js',
+		'vendor/three.js',
 		'vendor/signals.js',
 		'vendor/crossroads.js',
 		'vendor/xui.js',
@@ -99,6 +102,7 @@ function includeTemplates() {
 		'lib/local_db.js',
 		'lib/flash.js',
 		'lib/templates.js',
+		'lib/renderer.js',
 		'lib/stores/store.js',
 		'lib/stores/remote_store.js',
 		'lib/resources/resource.js',
@@ -106,6 +110,7 @@ function includeTemplates() {
 		'lib/resources/structures_resource.js',
 		'lib/widgets/widget.js',
 		'lib/widgets/start_form_widget.js',
+		'lib/widgets/graph_widget.js',
 	)) ?>
 	<? includeTemplates() ?>
 	<script>

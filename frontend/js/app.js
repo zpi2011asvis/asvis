@@ -82,6 +82,11 @@
 			dispatcher.get('/node/{number}/{depth}', function routerNode(request) {
 				var num = request.get.number,
 					depth = request.get.depth;
+
+				var w = widgets.GraphWidget.new(that._container_el.find('#graph_renderer'));
+
+				that.widgets.add(w);
+				that.render();
 			});
 		},
 
