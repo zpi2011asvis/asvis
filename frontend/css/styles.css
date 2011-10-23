@@ -88,15 +88,16 @@ body {
 	left: 0;
 	right: 300px;
 	bottom: 0;
-	background: #222;
+	background: #111;
 	z-index: 10;
 }
-#grap_renderer {
+#graph_renderer {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 }
 
 #sidebar {
