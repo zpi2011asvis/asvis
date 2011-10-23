@@ -21,12 +21,15 @@
 		var dispatcher = global.crossroads.create();
 		dispatcher._sAddRoute = dispatcher.addRoute;
 		dispatcher = extend(dispatcher, {
+			/*
+			 * @param fn {Function|Object} callback or params
+			 */
 			get: function get(path, fn) {
-				if (fn) {
+				if (typeof fn === 'function') {
 					this.addRoute('get', path, fn);
 				}
 				else  {
-					this.parse('get', path);
+					this.parse('get', this._create(path, fn || {}));
 				}
 			},
 
@@ -65,6 +68,13 @@
 
 			addRoute: function addRoute(method, path, fn) {
 				this._sAddRoute(_methodedPath(method, path), fn);
+			},
+
+			_create: function _create(path, params) {
+				for (var p in params) {
+					path = path.replace('{' + p + '}', params[p]);
+				}
+				return path;
 			}
 		});
 

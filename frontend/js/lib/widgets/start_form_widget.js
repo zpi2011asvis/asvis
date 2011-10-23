@@ -6,7 +6,16 @@
 
 	var StartFormWidget = Widget.create(function StartFormWidget() {}, {
 		_init: function _init() {
-			this._view.signals.bg_clicked.add(this.destroy.bind(this));
+			var that = this;
+
+			that.signals.submitted = new Signal();
+
+			that._view.signals.bg_clicked.add(that.destroy.bind(that));
+
+			that._view.signals.submitted.add(function (params) {
+				that.destroy();
+				that.signals.submitted.dispatch(params);
+			});
 		}
 	},
 	{
@@ -15,12 +24,14 @@
 
 	StartFormWidget.View = Widget.View.create(function StartFormWidgetView() {}, {
 		signals: {
-			bg_clicked: null
+			bg_clicked: null,
+			submitted: null,
 		},
 	
 		_init: function _init() {
 			this.signals = {
-				bg_clicked: new Signal()
+				bg_clicked: new Signal(),
+				submitted: new Signal()
 			};
 		},
 
@@ -40,9 +51,13 @@
 					return false;
 				}
 			});
+			that._el.find('.submit > button').on('click', function (event) {
+				that.signals.submitted.dispatch({
+					number: +that._el.find('input[name=number]').first().value,
+					depth: +that._el.find('input[name=depth]').first().value
+				});
+			});
 		},
-	},
-	{
 	});
 
 	exports.StartFormWidget = StartFormWidget;

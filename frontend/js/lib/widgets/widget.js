@@ -11,7 +11,9 @@ this.app.lib.widgets = {};
 		create = global.es5ext.Object.plain.create;
 
 	var Widget = classy(function Widget() {}, {
-		destroyed: null,
+		signals: {
+			destroyed: null,
+		},
 		_container_el: null,
 		_data: null,
 		_dirty: true,
@@ -20,7 +22,9 @@ this.app.lib.widgets = {};
 
 		init: function init(container_el, position) {
 			this._container_el = container_el;
-			this.destroyed = new Signal();
+			this.signals = {
+				destroyed: new Signal()
+			};
 			this._data = {};
 			this._dirty_keys = [];
 			this._view = this.constructor.View.new(container_el, position || 'bottom');
@@ -28,8 +32,8 @@ this.app.lib.widgets = {};
 		},
 
 		destroy: function destroy() {
-			this.destroyed.dispatch();
 			this._view.destroy();
+			this.signals.destroyed.dispatch();
 		},
 
 		set: function set(key, data) {
@@ -68,7 +72,7 @@ this.app.lib.widgets = {};
 			else {
 				obj = this._sNew.apply(this, arguments);
 				repository.push(obj);
-				obj.destroyed.add(function () {
+				obj.signals.destroyed.add(function () {
 					var i = repository.indexOf(obj);
 					if (!~i) {
 						throw new Error('Couldn\'t find widget in repository');

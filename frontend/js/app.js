@@ -24,7 +24,7 @@
 			add: function add(widget) {
 				var that = this;
 				that._widgets.push(widget);
-				widget.destroyed.add(function () {
+				widget.signals.destroyed.add(function () {
 					that._remove(widget);
 				});
 				return that;
@@ -70,6 +70,10 @@
 
 			dispatcher.get('/', function routerRoot() {
 				var w = widgets.StartFormWidget.new(that._container_el);
+
+				w.signals.submitted.add(function (params) {
+					that.dispatcher.get('/node/{number}/{depth}', params);
+				});
 
 				that.widgets.add(w);
 				that.render();
