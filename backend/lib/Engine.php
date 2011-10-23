@@ -83,10 +83,12 @@ class Engine {
 				$nodes[$object->data->num] = self::parseASNode($object, $connected);
 			}
 		}
+		
+		$distance_order = array_keys($nodes);
 
 		uasort($nodes, array('asvis\lib\Engine','compareParsedNodes'));
 
-		return $nodes;
+		return array('structure'=>$nodes, 'count_order'=>array_keys($nodes), 'distance_order'=>$distance_order);
 	}
 	
 	public function structureTree($nodeNum, $depth) {

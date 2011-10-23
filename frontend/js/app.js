@@ -78,7 +78,7 @@
 				that.widgets.add(w);
 				that.render();
 			});
-
+		
 			dispatcher.get('/node/{number}/{depth}', function routerNode(request) {
 				var num = request.get.number,
 					depth = request.get.depth;

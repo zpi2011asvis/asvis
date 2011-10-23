@@ -15,12 +15,18 @@
 						material = new T.ParticleBasicMaterial({
 							color: 0x77FF77,
 							size: 10,
-							sizeAttenuation: false,
+							sizeAttenuation: false, // true - enable perspective (far is smaller)
 							map: sprite
 						});
 
 					return material
 				}())
+			},
+			LINE = {
+				material: new THREE.LineBasicMaterial({
+					color: 0xFFFFFF,
+					lineWidth: 1
+				})
 			};
 
 		// properties
@@ -69,34 +75,43 @@
 
 		/*
 		 * @param graph {Object} result of /structure/graph
+		 * @param root {Integer} root vertex number
 		 * @param as_structure {Boolean} if true this is the part of graph that
 		 * should be rendered (graph is at once a structure)
 		 */
-		this.setStructure = function setStructure(graph, as_structure) {
+		this.setStructure = function setStructure(graph, root, as_structure) {
 			var was_started = _started,
-				geometry = new T.Geometry(),
-				psystem = new THREE.ParticleSystem(geometry, PARTICLE.material);
+				verts_geometry = new T.Geometry(),
+				edges_geometry = new T.Geometry(),
+				psystem = new T.ParticleSystem(verts_geometry, PARTICLE.material),
+				line = new T.Line(edges_geometry, LINE.material),
+				vertices,
+				edges;
 
 			this.stop();
 
-			for (var p = 0; p < 5000; p++) {
-				// create a particle with random
-				// position values, -100 -> 100
-				var pX = Math.random() * 400 - 200,
-					pY = Math.random() * 200 - 100,
-					pZ = Math.random() * 200 - 100,
-					particle = new T.Vertex(
-						new T.Vector3(pX, pY, pZ)
-					);
+			_vizir.clear().setGraph(graph).setRoot(root);
 
-				// add it to the geometry
-				geometry.vertices.push(particle);
+			vertices = _vizir.getVertices();
+			for (var i = 0, il = vertices.length; i < il; i++) {
+				verts_geometry.vertices.push(vertices[i]);
 			}
 
+			edges = _vizir.getEdges();
+			for (var i = 0, il = edges.length; i < il; i++) {
+				edges_geometry.vertices.push(edges[i]);
+			}
+
+			// needed when point texture has opacity
+			// veeerryyy heavy
 			//psystem.sortParticles = true;
 			_scene.add(psystem);
 			_psystems.push(psystem);
-			_geometries.push(geometry);
+			_geometries.push(verts_geometry);
+
+			line.type = T.Lines;
+			_scene.add(line);
+			_geometries.push(edges_geometry);
 
 			if (was_started) {
 				this.start();
@@ -110,11 +125,6 @@
 
 		_refresh = function _refresh() {
 			if (_started) {
-				for (var i = 0, l = _psystems.length; i < l; ++i) {
-					_psystems[i].rotation.y += 0.001;
-				}
-
-
 				_renderer.render(_scene, _camera);
 				requestAnimationFrame(_refresh, that.getEl());
 			}
