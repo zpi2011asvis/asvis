@@ -55,10 +55,7 @@ class MySQLEngine implements Engine {
 	
 	public function structureGraph($nodeNum, $depth) {
 		$str = $this->mapNode($nodeNum, 1, $depth);
-		
-// 		H::pre($str);
-// 		die;
-		
+		$str = $this->removeOverhead($str);
 		return $str;
 	}
 	
@@ -75,24 +72,60 @@ class MySQLEngine implements Engine {
 			return $structure;
 		}
 
-		if($currentDepth < $depth) {
+// 		if($currentDepth < $depth) {
 			$structure[$nodeNum] = $this->getOutgoingConnections($nodeNum);
-		} else {
-			$structure[$nodeNum] = array(
-				'up'	=> array(),
-				'down'	=> array(),
-				'count'	=> 0,
-			);
-		}
+			
+			foreach ($structure[$nodeNum]['up'] as $node) {
+				$structure = $this->mapNode($node, $currentDepth+1, $depth, $structure);
+			}
+			
+			foreach ($structure[$nodeNum]['down'] as $node) {
+				$structure = $this->mapNode($node, $currentDepth+1, $depth, $structure);
+			}
+// 		}
 
-		foreach ($structure[$nodeNum]['up'] as $node) {
-			$structure = $this->mapNode($node, $currentDepth+1, $depth, $structure);
+		
+				
+		return $structure;
+	}
+	
+	private function removeOverhead($structure) {
+		$result = array();
+		
+		foreach ($structure as $num => $node) {
+			
+			$up = $node['up'];
+			
+			$result = $this->initNode($num, $result);
+			
+			foreach($up as $index => $linkedNum) {
+				if(isset($structure[$linkedNum])) {
+					$result[$num]['up'][] = $linkedNum;
+					$result[$num]['count']++;
+				}
+			}
+			
+			$down = $node['down'];
+				
+			foreach($down as $index => $linkedNum) {
+				if(isset($structure[$linkedNum])) {
+					$result[$num]['down'][] = $linkedNum;
+					$result[$num]['count']++;
+				}
+			}
+			
 		}
 		
-		foreach ($structure[$nodeNum]['down'] as $node) {
-			$structure = $this->mapNode($node, $currentDepth+1, $depth, $structure);
-		}
-				
+		return $result;
+	}
+	
+	private function initNode($nodeNum, $structure) {
+		$structure[$nodeNum] = array(
+			'up'	=> array(),
+			'down'	=> array(),
+			'count' => 0,
+		);
+		
 		return $structure;
 	}
 	
@@ -109,7 +142,7 @@ class MySQLEngine implements Engine {
 		}
 		
 		while ( ($as = mysql_fetch_assoc($result)) ) {
-			$ret['up'][] = $as['ASNumUp'];
+			$ret['up'][] = (int)$as['ASNumUp'];
 			$ret['count']++;
 		}
 		
@@ -121,7 +154,7 @@ class MySQLEngine implements Engine {
 		}
 		
 		while ( ($as = mysql_fetch_assoc($result)) ) {
-			$ret['down'][] = $as['ASNumDown'];
+			$ret['down'][] = (int)$as['ASNumDown'];
 			$ret['count']++;
 		}
 		

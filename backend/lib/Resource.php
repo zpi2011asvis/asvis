@@ -24,6 +24,7 @@ class Resource extends TonicResource {
 		$this->_post = $_POST;
 		
 		$this->_engine = new MySQLEngine();
+// 		$this->_engine = new OrientEngine();
 	}
 	
 	protected function getGet($paramName) {
