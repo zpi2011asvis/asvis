@@ -17,8 +17,9 @@ CREATE PROPERTY ASConn.out link ASNode;
 CREATE PROPERTY ASConn.up boolean;
 
 CREATE PROPERTY ASPool.node link ASNode;
-CREATE PROPERTY ASPool.asnetwork integer;
-CREATE PROPERTY ASPool.asnetmask integer;
+CREATE PROPERTY ASPool.network long;
+CREATE PROPERTY ASPool.netmask integer;
+CREATE PROPERTY ASPool.network_as_string string;
 
 CREATE INDEX ASNode.num unique;
 CREATE INDEX ASNode.num_as_string unique;

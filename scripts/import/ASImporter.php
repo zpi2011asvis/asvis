@@ -226,10 +226,11 @@ class ASImporter {
 	}
 	
 	protected function _insertASPool($node, $network, $netmask) {
+		$network_as_string = long2ip($network);
 		try {
 			$result = $this->_db->command(
 				OrientDB::COMMAND_QUERY,
-				"INSERT INTO ASPool (network, netmask, node) VALUES ({$network}, {$netmask}, {$node})"
+				"INSERT INTO ASPool (network, network_as_string, netmask, node) VALUES ({$network}, '{$network_as_string}', {$netmask}, {$node})"
 			);
 		} catch (OrientDBException $e) {
 			echo $e->getMessage() . PHP_EOL;
