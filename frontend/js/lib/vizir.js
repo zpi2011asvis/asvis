@@ -8,7 +8,7 @@
 	
 	var Vizir = function Vizir() {
 		// consts
-		var BASE = 100, //base length
+		var BASE = 50, //base length
 			WEIGHT_FACTOR = 1.5,
 			MAX_X = 200,
 			MAX_Y = 100,
@@ -113,9 +113,7 @@
 				current_pos,
 				new_pos,
 				new_num,
-				rot_angle,
-				rot_matrix_z,
-				rot_matrix_y,
+				rot_angle = A360 / 36 * 1.5, //10deg
 				rotated = 0; // already rotated in current surface 
 
 			_done.push(num);
@@ -126,28 +124,16 @@
 
 			// break if no children
 			if (consl === 0) return;
-	
-			//if (consl < 20) {
-				// when number of connections is small
-				// place them on plane
-				// +1 because don't want to make full circle
-				rot_angle = (A360 / (consl + 1));
-			//}
-			//else {
-				// calculate how many vertices can be placed on sphere
-				// +2 because of north and south pole (leave them empty)
-			//	rot_angle = A360 / (Math.ceil(Math.sqrt(consl)) + 2);
-			//}
-			// e.g. when number of cons is small don't draw sparse circle
-			if (rot_angle > MAX_ANGLE) rot_angle = MAX_ANGLE;
+		
+			//generating vector inclined from tree generation direction
+			var m = new T_Matrix4(),
+				p = _nvec(0, 1, 0).crossSelf(vector).normalize();
+			m.setRotationAxis(p, rot_angle);
+			m.multiplyVector3(vector);
 
-			//console.log(rot_angle);
-
-			// primary rotation
-			rot_matrix_z = new T_Matrix4().setRotationZ(rot_angle);
-			// secondary one
-			rot_matrix_y = new T_Matrix4().setRotationY(rot_angle);
-			
+			// generating matrix for "circular" rotations
+			var m2 = new T_Matrix4();
+			m2.setRotationAxis(_nvec(1, 0, 0), rot_angle);
 
 			for (var i = 0; i < consl; ++i) {
 				new_num = cons[i];
@@ -155,22 +141,21 @@
 				// traversing for the first time
 				if (_done.indexOf(new_num) === -1) {
 					new_pos = pos.clone().addSelf(vector);
-					_recursiveVertexPos(cons[i], new_pos, vector.clone().multiplyScalar(0.45));
+					_recursiveVertexPos(cons[i], new_pos, vector.clone().multiplyScalar(0.95));
 					_edges.push(current_pos, new_pos);
 
-					rot_matrix_z.multiplyVector3(vector);
+					m2.multiplyVector3(vector);
+					rotated += rot_angle;
+					if (rotated >= A360) {
+						m.multiplyVector3(vector);
+						rotated = 0;
+					}
 				}
 				// traversing again (push only edge)
 				else {
 					_edges.push(current_pos, _graph[new_num].pos);
 				}
 
-				/*rotated += rot_angle;
-				if (rotated > A360) {
-					rotated = 0;
-					rot_matrix_y.multiplyVector3(vector);
-					rot_matrix_z.multiplySelf(rot_matrix_y);
-				}*/
 			}
 		};
 

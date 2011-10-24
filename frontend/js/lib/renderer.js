@@ -178,6 +178,7 @@
 		_controls = new THREE.TrackballControls(_camera, _renderer.domElement);
 		_controls.rotateSpeed = 0.5;
 		_controls.zoomSpeed = 0.8;
+		_controls.panSpeed = 0.2;
 
 
 		widget_view.signals.resized.add(function (size) {

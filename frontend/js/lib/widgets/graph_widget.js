@@ -60,7 +60,8 @@
 
 
 			renderer.start();
-			renderer.setStructure(global.data[2], 578, true);
+			//renderer.setStructure(global.data[2], 578, true);
+			renderer.setStructure(global.data[0], 7345, true);
 
 			/**
 			var s = { 1: { up: [], down: [] } };
