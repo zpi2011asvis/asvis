@@ -19,12 +19,14 @@
 		signals: {
 			resized: null,
 			scrolled: null,
+			dragged: null
 		},
 		_renderer: null,
 
 		_init: function _init() {
 			this.signals.resized = new Signal();
 			this.signals.scrolled = new Signal();
+			this.signals.dragged = new Signal();
 		},
 
 		render: function render() {
@@ -52,7 +54,8 @@
 			});
 
 			that._el.ondrag(function (event, change) {
-
+				event.preventDefault();
+				that.signals.dragged.dispatch(change, { ctrl: event.ctrlKey });
 			});
 
 

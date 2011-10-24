@@ -107,22 +107,22 @@
 		 * @param vector {Vector3} child_pos - parent_pos
 		 */
 		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector) {
-			// break if already done (e.g. connections up and down)
-			if (_done.indexOf(num) > -1) return; 
-			_done.push(num);
-	
 			var data = _graph[num],
 				cons = data.up.concat(data.down),
 				consl = cons.length,
 				current_pos,
 				new_pos,
+				new_num,
 				rot_angle,
 				rot_matrix_z,
 				rot_matrix_y,
-				rotated = 0; // already rotated in one surface
+				rotated = 0; // already rotated in current surface 
 
+			_done.push(num);
 			current_pos = pos.clone();
 			_vertices.push(current_pos);
+			data.pos = current_pos;
+	
 
 			// break if no children
 			if (consl === 0) return;
@@ -150,17 +150,27 @@
 			
 
 			for (var i = 0; i < consl; ++i) {
-				new_pos = pos.clone().addSelf(vector);
-				//console.log(new_pos);
-				_recursiveVertexPos(cons[i], new_pos, vector.clone().multiplyScalar(0.45));
-				_edges.push(current_pos, new_pos);
-				rot_matrix_z.multiplyVector3(vector);
-			//	rotated += rot_angle;
-			//	if (rotated > A360) {
-			//		rotated = 0;
-			//		rot_matrix_y.multiplyVector3(vector);
-			//		rot_matrix_z.multiplySelf(rot_matrix_y);
-			//	}
+				new_num = cons[i];
+			
+				// traversing for the first time
+				if (_done.indexOf(new_num) === -1) {
+					new_pos = pos.clone().addSelf(vector);
+					_recursiveVertexPos(cons[i], new_pos, vector.clone().multiplyScalar(0.45));
+					_edges.push(current_pos, new_pos);
+
+					rot_matrix_z.multiplyVector3(vector);
+				}
+				// traversing again (push only edge)
+				else {
+					_edges.push(current_pos, _graph[new_num].pos);
+				}
+
+				/*rotated += rot_angle;
+				if (rotated > A360) {
+					rotated = 0;
+					rot_matrix_y.multiplyVector3(vector);
+					rot_matrix_z.multiplySelf(rot_matrix_y);
+				}*/
 			}
 		};
 

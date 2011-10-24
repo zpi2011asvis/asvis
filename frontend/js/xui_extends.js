@@ -38,6 +38,37 @@
 				fn(event, event.wheelDeltaY < 0);
 			});
 
+		},
+
+		ondrag: function ondrag(fn) {
+			var that = this,
+				last_mouse_poses = [];
+
+			that.each(function (el, i) {
+				el.addEventListener('mousedown', function (event) {
+					last_mouse_poses[i] = {
+						x: event.screenX,
+						y: event.screenY
+					};
+				}, false);
+
+				el.addEventListener('mousemove', function (event) {
+					var pos = last_mouse_poses[i];
+					if (!pos) return;
+
+					var diff = { x: event.screenX - pos.x, y: event.screenY - pos.y };
+					if (diff.x || diff.y) {
+						fn(event, diff);
+					}
+
+					pos.x = event.screenX;
+					pos.y = event.screenY;
+				}, false);
+
+				el.addEventListener('mouseup', function (event) {
+					last_mouse_poses[i] = null;
+				}, false);
+			});
 		}
 	};
 	global.xui.extend(exts);

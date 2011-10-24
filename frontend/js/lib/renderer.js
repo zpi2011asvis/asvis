@@ -50,7 +50,9 @@
 		var _refresh,
 			_resize,
 			_newCamera,
-			_moveCamera;
+			_zoomCamera,
+			_rotateCamera,
+			_panCamera;
 
 		/*
 		 * Publics -------------------------------------------------------------
@@ -146,10 +148,17 @@
 			//_scene.fog = new T.FogExp2(FOG.color, FOG.density);
 		};
 
-		_moveCamera = function _moveCamera(forward) {
+		_zoomCamera = function _zoomCamera(forward) {
 			//_view.fov += (forward ? _view.fov_step : -_view.fov_step);
 			_view.distance += (forward ? _view.distance_step : -_view.distance_step);
 			_newCamera();
+		};
+
+		_rotateCamera = function _rotateCamera(change) {
+
+		};
+
+		_panCamera = function _panCamera(change) {
 		};
 
 
@@ -171,7 +180,15 @@
 			_resize(size.width, size.height);
 		});
 		widget_view.signals.scrolled.add(function (down) {
-			_moveCamera(down);
+			_zoomCamera(down);
+		});
+		widget_view.signals.dragged.add(function (change, keys) {
+			if (keys.ctrl) {
+				_panCamera(change);
+			}
+			else {
+				_rotateCamera(change);
+			}
 		});
 	};
 
