@@ -8,7 +8,7 @@
 	
 	var Vizir = function Vizir() {
 		// consts
-		var BASE = 50, //base length
+		var BASE = 100, //base length
 			WEIGHT_FACTOR = 1.5,
 			MAX_X = 200,
 			MAX_Y = 100,
@@ -89,14 +89,23 @@
 		};
 
 		_recalculatePositions = function _recalculatePositions() {
-			//console.log(_graph, _root);
-			var d = +new Date();
+			var d = +new Date(),
+				i = 0;
 			
-			_recursiveVertexPos(_root, _nvec(0, 0, 0), _nvec(BASE, 0, 0));
+			_recursiveVertexPos(_order[i++], _nvec(BASE, 0, 0), _nvec(BASE, 0, 0), 1);
+
+			// jump to the next not yet done or to the end
+			while (_done[_order[i++]]){}
+			
+			if (i < _order.length) {	
+				// traverse to the end
+				_recursiveVertexPos(_order[i], _nvec(-BASE, 0, 0), _nvec(-BASE, 0, 0), 1e5);
+			}
+
 			_generateVertices();
 			_generateEdges();
 
-			console.log('recalculating: ', new Date() - d);
+			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
 
 			_dirty = false;
 		};
@@ -105,22 +114,29 @@
 		 * @param num {Integer} 
 		 * @param pos {Vector3} [x,y,z]
 		 * @param vector {Vector3} child_pos - parent_pos
+		 * @param depth {Integer} how deep go in this direction
+		 *
+		 * TODO
+		 * * something is wrong with inclining from tree direction
+		 * * depth gives poor results - traverse while vertex has big
+		 * number of undone children
 		 */
-		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector) {
+		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector, depth) {
 			var data = _graph[num],
 				cons = data.up.concat(data.down),
 				consl = cons.length,
 				current_pos,
 				new_pos,
 				new_num,
-				rot_angle = A360 / 36 * 1.5, //10deg
+				rot_angle = A360 / 36 * 1.5, //15deg
 				rotated = 0; // already rotated in current surface 
 
 			_done.push(num);
 			current_pos = pos.clone();
 			_vertices.push(current_pos);
 			data.pos = current_pos;
-	
+			
+			if (depth < 0) return;
 
 			// break if no children
 			if (consl === 0) return;
@@ -141,9 +157,12 @@
 				// traversing for the first time
 				if (_done.indexOf(new_num) === -1) {
 					new_pos = pos.clone().addSelf(vector);
-					_recursiveVertexPos(cons[i], new_pos, vector.clone().multiplyScalar(0.95));
-					_edges.push(current_pos, new_pos);
 
+					_recursiveVertexPos(cons[i], new_pos, vector.clone().multiplyScalar(0.9), depth - 1);
+
+					_edges.push(current_pos, new_pos);
+			
+					// calculate new position on sphere
 					m2.multiplyVector3(vector);
 					rotated += rot_angle;
 					if (rotated >= A360) {
@@ -151,7 +170,7 @@
 						rotated = 0;
 					}
 				}
-				// traversing again (push only edge)
+				// traversing this vertex again (push only edge)
 				else {
 					_edges.push(current_pos, _graph[new_num].pos);
 				}

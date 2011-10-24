@@ -19,15 +19,17 @@
 							map: sprite
 						});
 
-					return material
+					return material;
 				}())
 			},
 			LINE = {
 				material: new THREE.LineBasicMaterial({
 					color: 0xFFFFFF,
-					lineWidth: 1
+					lineWidth: 1,
+					opacity: 0.3
 				})
-			};
+			},
+			RERFRESING_TIME = 1000; // how long after any action performed should render
 
 		// properties
 		var	_renderer,
@@ -37,6 +39,7 @@
 			_geometries = [], //particle geometries
 			_vizir,
 			_started = false,
+			_last_action = 0, //last action timestamp
 			_view = {
 				fov: 45,
 				width: null,
@@ -64,8 +67,19 @@
 
 		this.start = function start() {
 			if (_started) {
-				throw new Error('Renderer is already started');
+				return;
 			}
+
+			var time = +new Date(),
+				that = this;
+
+			_last_action = time;
+			global.setTimeout(function () {
+				if (_last_action === time) {
+					global.DEBUG && console.log('Stop rendering');
+					that.stop();
+				}					
+			}, RERFRESING_TIME);
 
 			_started = true;
 			_refresh();
@@ -104,7 +118,7 @@
 				edges_geometry.vertices.push(edges[i]);
 			}
 
-			// needed when point texture has opacity
+			// needed when point's texture has opacity
 			// veeerryyy heavy
 			//psystem.sortParticles = true;
 			_scene.add(psystem);
@@ -142,11 +156,11 @@
 		};
 
 		_newCamera = function _newCamera() {
-			_camera = new T.PerspectiveCamera(_view.fov, _view.width / _view.height, 10, 10000);
+			_camera = new T.PerspectiveCamera(_view.fov, _view.width / _view.height, 100, 10000);
 			_camera.position = _view.camera_position;
 				
 			var distance = _view.camera_position.length();
-			_scene.fog = new T.Fog(FOG.color, ~~(distance / 3), distance * 2);
+			_scene.fog = new T.Fog(FOG.color, ~~(distance / 3), distance * 3);
 		};
 
 		_zoomCamera = function _zoomCamera(forward) {
@@ -183,6 +197,9 @@
 
 		widget_view.signals.resized.add(function (size) {
 			_resize(size.width, size.height);
+		});
+		widget_view.signals.action_performed.add(function () {
+			that.start();
 		});
 		/*widget_view.signals.scrolled.add(function (down) {
 			_zoomCamera(down);

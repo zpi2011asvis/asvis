@@ -19,7 +19,8 @@
 		signals: {
 			resized: null,
 			scrolled: null,
-			dragged: null
+			dragged: null,
+			action_performed: null
 		},
 		_renderer: null,
 
@@ -27,6 +28,7 @@
 			this.signals.resized = new Signal();
 			this.signals.scrolled = new Signal();
 			this.signals.dragged = new Signal();
+			this.signals.action_performed = new Signal();
 		},
 
 		render: function render() {
@@ -47,21 +49,29 @@
 
 			window.on('resize', function (event) {
 				that.signals.resized.dispatch(that._getSize());
+				that.signals.action_performed.dispatch();
 			});
 
 			that._el.onscroll(function (event, down) {
 				that.signals.scrolled.dispatch(down);
+				that.signals.action_performed.dispatch();
 			});
 
 			that._el.ondrag(function (event, change) {
 				event.preventDefault();
 				that.signals.dragged.dispatch(change, { ctrl: event.ctrlKey });
+				that.signals.action_performed.dispatch();
+			});
+
+			that._el.on('mousemove', function (event) {
+				that.signals.action_performed.dispatch();
 			});
 
 
-			renderer.start();
 			//renderer.setStructure(global.data[2], 578, true);
-			renderer.setStructure(global.data[0], 7345, true);
+			//renderer.setStructure(global.data[0], 7345, true);
+			renderer.setStructure(global.data[1], 7578, true);
+			renderer.start();
 
 			/**
 			var s = { 1: { up: [], down: [] } };
