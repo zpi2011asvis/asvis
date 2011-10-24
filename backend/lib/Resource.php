@@ -2,9 +2,11 @@
 
 namespace asvis\lib;
 require_once 'Engine.php';
+require_once 'MySQLEngine.php';
 require_once 'OrientEngine.php';
 use \Resource as TonicResource;
 use asvis\lib\Engine as Engine;
+use asvis\lib\MySQLEngine as MySQLEngine;
 use asvis\lib\OrientEngine as OrientEngine;
 
 class Resource extends TonicResource {
@@ -21,7 +23,7 @@ class Resource extends TonicResource {
 		$this->_get = $_GET;
 		$this->_post = $_POST;
 		
-		$this->_engine = new OrientEngine();
+		$this->_engine = new MySQLEngine();
 	}
 	
 	protected function getGet($paramName) {
