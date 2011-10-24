@@ -39,12 +39,12 @@
 			_started = false,
 			_view = {
 				fov: 45,
-				fov_step: 3,
 				width: null,
 				height: null,
-				distance: 500,
-				distance_step: 25
-			};
+				camera_position: new T.Vector3(0, 0, 500),
+				zooming_factor: 1.1
+			},
+			_controls;
 
 		// methods
 		var _refresh,
@@ -127,6 +127,7 @@
 
 		_refresh = function _refresh() {
 			if (_started) {
+				_controls.update();
 				_renderer.render(_scene, _camera);
 				requestAnimationFrame(_refresh, that.getEl());
 			}
@@ -142,15 +143,14 @@
 
 		_newCamera = function _newCamera() {
 			_camera = new T.PerspectiveCamera(_view.fov, _view.width / _view.height, 10, 10000);
-			_camera.position.z = _view.distance;
+			_camera.position = _view.camera_position;
 				
-			_scene.fog = new T.Fog(FOG.color, +(_view.distance / 3), _view.distance * 2);
-			//_scene.fog = new T.FogExp2(FOG.color, FOG.density);
+			var distance = _view.camera_position.length();
+			_scene.fog = new T.Fog(FOG.color, ~~(distance / 3), distance * 2);
 		};
 
 		_zoomCamera = function _zoomCamera(forward) {
-			//_view.fov += (forward ? _view.fov_step : -_view.fov_step);
-			_view.distance += (forward ? _view.distance_step : -_view.distance_step);
+			_view.camera_position.multiplyScalar(forward ? _view.zooming_factor : 1/_view.zooming_factor);
 			_newCamera();
 		};
 
@@ -175,11 +175,15 @@
 
 		_resize(opts.size.width, opts.size.height);
 
+		_controls = new THREE.TrackballControls(_camera, _renderer.domElement);
+		_controls.rotateSpeed = 0.5;
+		_controls.zoomSpeed = 0.8;
+
 
 		widget_view.signals.resized.add(function (size) {
 			_resize(size.width, size.height);
 		});
-		widget_view.signals.scrolled.add(function (down) {
+		/*widget_view.signals.scrolled.add(function (down) {
 			_zoomCamera(down);
 		});
 		widget_view.signals.dragged.add(function (change, keys) {
@@ -189,7 +193,7 @@
 			else {
 				_rotateCamera(change);
 			}
-		});
+		});*/
 	};
 
 
