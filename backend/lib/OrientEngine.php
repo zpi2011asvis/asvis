@@ -92,23 +92,28 @@ class OrientEngine implements Engine {
 			default : break;
 		}
 		
-		$json = $this->_orient->query('SELECT FROM ASNode WHERE num = '.$nodeNum, null, -1, '*:'.$depth);
+		$json = $this->_orient->query('SELECT FROM ASNode WHERE num = '.$nodeNum, null, -1, '*:'.$depth.'%20pools:0');
 		$result = json_decode($json->getBody());
 		$result = $result->result;
-// 		H::pre($result);
 		
 		$this->asNodes = array();
 		$this->asConns = array();
 		$this->structure = array();
 		
-		$this->mapObjects($result[0]);
+		if ( !isset($result[0]) ) {
+			return array();
+		}
+		$this->mapObject($result[0]);
+		
+		$this->debug_checkFixBrokenConns(false);
+// 		$this->debug_clearINOUT();
+			
 // 		H::pre($this->asNodes);
-// 		H::pre($this->asConns);
+// 		H::pre($this->asConns);		
+// 		die;
 		
 		$this->mapConnectionsGraph();
-		$this->countConnections();		
-		
-		uasort($this->structure, array('self', 'cmpNodes'));
+		$this->countConnections();
 		
 		return $this->structure;
 	}
@@ -117,100 +122,116 @@ class OrientEngine implements Engine {
 		
 	}
 	
-	private function mapObjects($asnode) {
-		$atRID = '@rid';
+	private function mapObject($object) {
+		if(!is_object($object)) {
+			return;
+		}
 		
-		if(is_object($asnode)) {
-			if(!isset($this->asNodes[$asnode->$atRID])) {
-				$this->asNodes[$asnode->$atRID] = $asnode;
-			}
-			
-			if(isset($asnode->out)) {
-				$connsOut = $asnode->out;
-				foreach($connsOut as $conn) {
-					if(is_object($conn)) {
-						if(!isset($this->asConns[$conn->$atRID])) {
-							$this->asConns[$conn->$atRID] = $conn;
-						}
-						
-						if(isset($conn->out)) {
-							$linkedNode = $conn->out;
-							if(is_object($linkedNode)) {
-								if(!isset($this->asNodes[$linkedNode->$atRID])) {
-									$this->asNodes[$linkedNode->$atRID] = $linkedNode;
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			
-			if(isset($asnode->in)) {
-				$connsIn = $asnode->in;
-				foreach($connsIn as $conn) {
-					if(is_object($conn)) {
-						if(!isset($this->asConns[$conn->$atRID])) {
-							$this->asConns[$conn->$atRID] = $conn;
-						}
-				
-						if(isset($conn->in)) {
-							$linkedNode = $conn->in;
-							if(is_object($linkedNode)) {
-								if(!isset($this->asNodes[$linkedNode->$atRID])) {
-									$this->asNodes[$linkedNode->$atRID] = $linkedNode;
-								}
-							}
-						}
-					}
-				}
-			}
+		$atClass = '@class';
+		
+		if($object->$atClass === 'ASNode') {
+			$this->mapNode($object);
+		}
+		
+		if($object->$atClass === 'ASConn') {
+			$this->mapConn($object);
 		}
 	}
 	
-	private function mapConnectionsGraph() {
-		foreach ($this->asConns as $asConn) {			
-			$nodeFrom = null;
-			$nodeTo = null;
-			
-			$dir = $asConn->up ? 'up' : 'down';
-			
-			if(!isset($asConn->in) || !isset($asConn->out)) {
-				continue;
-			}
-			
-			if( is_object($asConn->in) ) {
-				$nodeFrom = $asConn->in;
-			} else {
-				$nodeFrom = $this->asNodes[$asConn->in];
-			}
-			
-			if( is_object($asConn->out) ) {
-				$nodeTo = $asConn->out;
-			} else {				
-				$nodeTo = $this->asNodes[$asConn->out];
-			}
-			
-			if(!isset($this->structure[$nodeFrom->num])) {
-				$this->structure[$nodeFrom->num] = array(
-					'up'	=> array(),
-					'down'	=> array(),
-				);
-			}
-			
-			$this->structure[$nodeFrom->num][$dir][] = $nodeTo->num;
-			
+	private function mapNode($asnode) {
+		if(!is_object($asnode)) {
+			return;
 		}
 		
-		//fix missing 0 connections nodes
-		foreach($this->asNodes as $node) {
-			if(!isset($this->structure[$node->num])) {
-				$this->structure[$node->num] = array(
-								'up'	=> array(),
-								'down'	=> array(),
-				);
-			}
+		$atRID = '@rid';
+				
+		$this->asNodes[$asnode->$atRID] = $asnode;
+		
+		if(isset($asnode->in)) {	
+			$in = $asnode->in;
+			
+			foreach ($in as $object) {
+				$this->mapObject($object);
+			}				
 		}
+		
+		if(isset($asnode->out)) {	
+			$out = $asnode->out;
+			
+			foreach ($out as $object) {
+				$this->mapObject($object);
+			}				
+		}
+	}
+	
+	private function mapConn($asconn) {
+		if(!is_object($asconn)) {
+			return;
+		}
+		
+		$atRID = '@rid';
+		
+		$this->asConns[$asconn->$atRID] = $asconn;
+		
+		if(isset($asconn->in)) {
+			$this->mapObject($asconn->in);
+		}
+		
+		if(isset($asconn->out)) {
+			$this->mapObject($asconn->out);
+		}
+		
+	}
+	
+	private function mapConnectionsGraph() {
+		foreach ($this->asNodes as $node) {
+			$this->initStructureRecord($node->num);
+		}
+		
+		foreach ($this->asConns as $conn) {
+			$nodeFrom	= $this->getNodeFrom($conn);			
+			$nodeTo		= $this->getNodeTo($conn);
+			
+			$dir = $conn->up ? 'up' : 'down';
+			
+			$this->structure[$nodeFrom->num][$dir][] = $nodeTo->num;			
+		}		
+	}
+	
+	private function getNodeFrom($asconn) {
+		$nodeFrom = null;
+			
+		if(is_object($asconn->in)) {
+			$nodeFrom = $asconn->in;
+		}
+			
+		if(is_string($asconn->in)) {
+			$nodeFrom = $this->asNodes[$asconn->in];
+		}
+		
+		return $nodeFrom;
+	}
+	
+	private function getNodeTo($asconn) {
+		$nodeTo = null;
+				
+		if(is_object($asconn->out)) {
+			$nodeTo = $asconn->out;
+		}
+		
+		if(is_string($asconn->out)) {
+			$nodeTo = $this->asNodes[$asconn->out];
+		}
+	
+		return $nodeTo;
+	}
+	
+	private function initStructureRecord($nodeNum) {
+		$this->structure[$nodeNum] = array(
+			'up' => array(),
+			'down' => array(),
+			'count' => 0,
+		);
 	}
 	
 	private function countConnections() {
@@ -220,12 +241,42 @@ class OrientEngine implements Engine {
 		}
 	}
 	
-	private static function cmpNodes($a, $b) {
-		$field = 'count';
-	    if ($a[$field] == $b[$field]) {
-	        return 0;
-	    }
-	    return ($a[$field] > $b[$field]) ? -1 : 1;
+	/*
+	 * Niektóre fetchplany zwracją ASConny bez pól in/out (WTF?!)
+	 * to się chyba dzieje w sytuacji:
+	 * detpth-1    depth  
+	 * ASNode      ASConn <- depth ograniczył wczytanie ASNode'a więc ASConn ma pusty link.
+	 */
+	private function debug_checkFixBrokenConns($verbose = false) {
+		$atRID = '@rid';
+		$brokenConns = array();
+		
+		foreach ($this->asConns as $conn) {
+			if( !(isset($conn->in) && isset($conn->out)) ) {
+				$brokenConns[] = $conn;
+			}
+		}
+		
+		if($verbose) {
+			echo 'Found '.count($brokenConns).' broken connections (in '.count($this->asConns).' total)';
+		}
+		
+		foreach ($brokenConns as $conn) {
+			unset($this->asConns[$conn->$atRID]);
+		}
+		
+	}
+	
+	private function debug_clearINOUT() {
+		foreach ($this->asNodes as $node) {
+			unset($node->in);
+			unset($node->out);
+		}
+		
+// 		foreach ($this->asConns as $conn) {
+// 			unset($conn->in);
+// 			unset($conn->out);
+// 		}
 	}
 	
 }
