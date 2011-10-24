@@ -17,7 +17,7 @@ use asvis\lib\H as H;
 class MySQLEngine implements Engine {
 	
 	/**
- 	 * @return resource a MySQL link identifier
+ 	 * @var resource a MySQL link identifier
 	 */
 	private $_connection;
 	
@@ -41,22 +41,37 @@ class MySQLEngine implements Engine {
 			echo mysql_error($this->_connection);
 		}
 		
+		$ret = array();		
 		while ( ($as = mysql_fetch_assoc($result)) ) {
-			H::pre($as);
+			$ret[] = $as;
 		}
 		
-		
-		die;
+		return $ret;
 	}
 	
 	public function nodesMeta($nodes) {
+		$ret = array();
+		foreach ($nodes as $num) {
+			$query = 'SELECT ASNetwork as network, ASNetmask as netmask FROM aspool WHERE asnum = '.$num;
+			$result = mysql_query($query, $this->_connection);
+
+			$pools = array();
+			while ( ($pool = mysql_fetch_assoc($result)) ) {
+				$pools[] = $pool;
+			}
+			
+			$ret[$num]['pools'] = $pools;
+		}
 		
+		return $ret;
 	}
 	
 	public function structureGraph($nodeNum, $depth) {
 		$str = $this->mapNode($nodeNum, 1, $depth);
 		$str = $this->removeOverhead($str);
-		return $str;
+		return array(
+			'structure' => $str
+		);
 	}
 	
 	public function structureTree($nodeNum, $depth) {

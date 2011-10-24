@@ -19,14 +19,15 @@ class NodesFindResource extends Resource {
 }
 
 /**
- * @uri /nodes/meta
+ * @uri /nodes/meta/{numbers}
  */
 class NodesMetaResource extends Resource {
-	function post($request) {
+	function get($request, $numbers) {
 		$response = new Response($request);
 		
-		$numbers = $this->getPost('numbers');
-		$response->json(Engine::nodesMeta($numbers));
+		$numbers = explode(',', $numbers);
+		
+		$response->json($this->_engine->nodesMeta($numbers));
 		
 		return $response;
 	}
