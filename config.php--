@@ -18,6 +18,8 @@ class Config {
 		'orient_db_name'		=> 'asvis',
 		'orient_db_user'		=> 'admin',
 		'orient_db_pass'		=> 'admin',
+
+		'backend_db_engine'		=> 'asvis\lib\OrientEngine',
 	);
 
 	public static function get($name) {

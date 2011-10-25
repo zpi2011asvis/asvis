@@ -2,140 +2,47 @@
 
 namespace asvis\lib;
 
-class Engine {
+interface Engine {
+	
 	/**
-	 * @var DB
+	 * Returns array of node_num => "node_name" which numbers begin
+	 * like given param, i.e.:
+	 * 12 gives nodes with numbers:
+	 * 12, 120, ..., 1252352355234, ...
+	 * 
+	 * @param int $num
 	 */
-	protected static $_db = null;
-
-	public static function init($db) {
-		self::$_db = $db;
-	}
-
-	public static function nodesFind($number) {
-		$query = 'SELECT FROM ASNode WHERE num_as_string LIKE "'.$number.'%"';
-		$result = self::$_db->query($query);
-		
-		$nodes = array();
-		
-		if ($result) {
-			foreach ($result as $oDBRecord) {			
-//				$oDBRecord->parse();
-				$num  = $oDBRecord->data->num;
-				$name = $oDBRecord->data->name;
-				$nodes[$num] = array(
-					'name' => $name
-				);
-			}
-		}
-
-		return $nodes;			
-	}
+	public function nodesFind($num);
 	
-	public static function nodesMeta($numbers) {
-		$nodes = array();
-		
-		foreach ($numbers as $number) {
-			$result = self::$_db->loadGraph($number, 'pools:1');
-			
-			$origin = $result['origin'];
-			$connected = $result['connected'];
-			
-			$num = $origin->data->num;
-			$name = $origin->data->name;
-			
-			$pools = array();
-			
-			foreach ($connected as $object) {
-				$network = $object->data->network;
-				$netmask = $object->data->netmask;
-				
-				$pools[] = array('network'=>$network, 'netmask'=>$netmask);	
-			}
-			
-			$nodes[$num] = array('name'=>$name, "pools"=>$pools); 
-		}	
-		
-		return $nodes;
-	}
+	/**
+	 * Returns array of meta data for given nodes.
+	 * $nodes param should be formatted:
+	 * "[num1,num2,num3]"
+	 * i.e.:
+	 * "[1234,2345,52345,234523]"
+	 * 
+	 * @param string $nodes
+	 */
+	public function nodesMeta($nodes);
 	
-	public static function structureGraph($nodeNum, $depth) {
-		$result = self::$_db->loadGraph($nodeNum, '*:'.($depth*2));
-		
-		$origin = $result['origin'];
-		$connected = $result['connected'];
-		
-//		$t = microtime(true);
-/*
-		$origin->parse();
-		foreach ($connected as $object) {
-			$object->parse();
-		}
-*/
-//		echo (microtime(true) - $t) . PHP_EOL;
-
-		$nodes = array();
-		
-		$nodes[$origin->data->num] = self::parseASNode($origin, $connected);
-		
-		foreach ($connected as $object) {
-			if($object->className === 'ASNode') {
-				$nodes[$object->data->num] = self::parseASNode($object, $connected);
-			}
-		}
-		
-		$distance_order = array_keys($nodes);
-
-		uasort($nodes, array('asvis\lib\Engine','compareParsedNodes'));
-
-		return array('structure'=>$nodes, 'count_order'=>array_keys($nodes), 'distance_order'=>$distance_order);
-	}
+	/**
+	 * Returns array of nodes and their connections for given
+	 * origin node number and depth of recurson.
+	 * 
+	 * @param int $nodeNum
+	 * @param int $depth
+	 */
+	public function structureGraph($nodeNum, $depth);
 	
-	public function structureTree($nodeNum, $depth) {
-		
-	}
+	/**
+	 * Returns array of nodes and their connections for given
+	 * origin node number and depth of recurson. Returned data
+	 * represents a tree which begins in root node (nodeNum) and
+	 * includes only nodes with single incoming link.
+	 * 
+	 * @param int $nodeNum
+	 * @param int $depth
+	 */
+	public function structureTree($nodeNum, $depth);
 	
-	private static function parseASNode($asNode, $connected) {
-		$connections_up = array();
-		$connections_down = array();
-		
-		foreach ($asNode->data->out as $link) {
-			if (!isset($connected[$link->get()])) {
-				continue;
-			}
-			
-			$asConn = $connected[$link->get()];
-			$linkedNode = self::parseASConn($asConn, $connected);
-			
-			if($asConn->data->up === true) {
-// 				echo 'ASConn '.$asConn->recordID.' is UP'.PHP_EOL;
-				$connections_up[] = $linkedNode->data->num;
-			} else {
-// 				echo 'ASConn '.$asConn->recordID.' is DOWN'.PHP_EOL;
-				$connections_down[] = $linkedNode->data->num;
-			}
-			
-		}
-		
-		$connections_count = count($connections_up) + count($connections_down);
-		
-		return array(
-			'up' => $connections_up,
-			'down' => $connections_down,
-			'count' => $connections_count
-		);
-	}
-	
-	private static function parseASConn($asConn, $connected) {
-		$link = $asConn->data->out;
-		$linkedASnode = $connected[$link->get()];
-		
-		return $linkedASnode;
-	}
-	
-	
-	static function compareParsedNodes($a, $b) {
-		return $b['count'] - $a['count'];
-	}
 }
-

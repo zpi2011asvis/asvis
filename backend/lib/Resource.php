@@ -10,13 +10,20 @@ use asvis\lib\Engine as Engine;
 class Resource extends TonicResource {
 	protected $_get = null;
 	protected $_post = null;
+
+	/**
+	 * @var Engine
+	 */
+	protected $_engine;
 	
 	function __construct($parameters) {
 		parent::__construct($parameters);
 		$this->_get = $_GET;
 		$this->_post = $_POST;
 		
-		Engine::init(new DB());
+		$engineClass = Config::get('backend_db_engine');
+		
+		$this->_engine = new $engineClass();
 	}
 	
 	protected function getGet($paramName, $default = null) {
