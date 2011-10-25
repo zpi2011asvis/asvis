@@ -1,11 +1,11 @@
 <?php
 
 namespace asvis\lib;
-require_once 'DB.php';
 require_once 'Engine.php';
+require_once \asvis\Config::get('backend_db_engine') . '.php';
 use \Resource as TonicResource;
-use asvis\lib\DB as DB;
 use asvis\lib\Engine as Engine;
+use asvis\Config as Config;
 
 class Resource extends TonicResource {
 	protected $_get = null;
@@ -21,7 +21,7 @@ class Resource extends TonicResource {
 		$this->_get = $_GET;
 		$this->_post = $_POST;
 		
-		$engineClass = Config::get('backend_db_engine');
+		$engineClass = 'asvis\\lib\\' . Config::get('backend_db_engine');
 		
 		$this->_engine = new $engineClass();
 	}

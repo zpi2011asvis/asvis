@@ -35,7 +35,14 @@ class OrientEngine implements Engine {
 	
 	public function __construct() {
 		$this->_client   = new Curl();
-		$this->_orient   = new Binding($this->_client, '127.0.0.1', '2480', 'admin', 'admin', 'asvis');
+		$this->_orient   = new Binding(
+			$this->_client,
+			Config::get('orient_db_host'),
+			'2480',
+			Config::get('orient_db_user'),
+			Config::get('orient_db_pass'),
+			Config::get('orient_db_name')
+		);
 	}
 	
 	/**
