@@ -43,7 +43,7 @@ class OrientEngine implements Engine {
 	 * @see asvis\lib.Engine::nodesFind()
 	 */
 	public function nodesFind($num) {
-		$result = $this->_orient->query('SELECT FROM ASNode WHERE num.asString() LIKE "'.$num.'%"')->getBody();
+		$result = $this->_orient->query('SELECT FROM ASNode WHERE num_as_string LIKE "'.$num.'%"')->getBody();
 		$result = json_decode($result);
 		$result = $result->result;
 		
@@ -82,7 +82,7 @@ class OrientEngine implements Engine {
 			case 2: $depth = 6; break;
 			case 3: $depth = 8; break;
 			case 4: $depth = 10; break; // ?
-			default : break;
+			default: break;
 		}
 		
 		$json = $this->_orient->query('SELECT FROM ASNode WHERE num = '.$nodeNum, null, -1, '*:'.$depth.'%20pools:0');
