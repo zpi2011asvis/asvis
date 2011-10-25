@@ -89,6 +89,10 @@ class OrientEngine implements Engine {
 		$result = json_decode($json->getBody());
 		$result = $result->result;
 		
+		
+		H::pre($result);
+		die;
+		
 		$this->_asNodes = array();
 		$this->_asConns = array();
 		$this->structure = array();
