@@ -84,13 +84,15 @@ class OrientEngine implements Engine {
 		 * dla 2 jest 6 bo potrzebne sa jeszcze
 		 * ASConny wychodzące z ASNodów - liści
 		 */
-		switch ($depth) {
-			case 1: $depth = 2; break;
-			case 2: $depth = 6; break;
+
+		$depth = (($depth - 1) * 4) + 2;
+		/*switch ($depth) {
+			case 1: $depth = 0; break; //tylko root
+			case 2: $depth = 6; break; //tylko jego dzieci i połączenia pomiędzy dziećmi
 			case 3: $depth = 8; break;
 			case 4: $depth = 10; break; // ?
 			default: break;
-		}
+		}*/
 		
 		$json = $this->_orient->query('SELECT FROM ASNode WHERE num = '.$nodeNum, null, -1, '*:'.$depth.'%20pools:0');
 		$result = json_decode($json->getBody());

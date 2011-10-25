@@ -26,7 +26,7 @@ class NodesMetaResource extends Resource {
 		$response = new Response($request);
 		
 		$numbers = json_decode($this->getPost('numbers', '[]'));
-		$response->json(Engine::nodesMeta($numbers));
+		$response->json($this->_engine->nodesMeta($numbers));
 		
 		return $response;
 	}
