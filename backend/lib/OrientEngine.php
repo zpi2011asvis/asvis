@@ -79,44 +79,59 @@ class OrientEngine implements Engine {
 	 */
 	public function structureGraph($nodeNum, $depth) {	
 
-		/*
-		 * Wartości trzeba dopasować,
-		 * dla 2 jest 6 bo potrzebne sa jeszcze
-		 * ASConny wychodzące z ASNodów - liści
-		 */
-
-		$depth = (($depth - 1) * 4) + 2;
-		/*switch ($depth) {
-			case 1: $depth = 0; break; //tylko root
-			case 2: $depth = 6; break; //tylko jego dzieci i połączenia pomiędzy dziećmi
-			case 3: $depth = 8; break;
-			case 4: $depth = 10; break; // ?
-			default: break;
-		}*/
+		// this fetch plans will return too much asnodes
+		// so object mapper should also have in mind given depth
+		switch ($depth) {
+			// root only
+			case 1:
+				$fp = 1;
+				break;
+			// root, children and conns between them (also between children)
+			case 2:
+				$fp = 8;
+				break;
+			/*
+			// this results I got for test db (tests/reinmar/test_db.sql)
+			case 3:
+				$depth = 16;
+				break;
+			case 4:
+				$depth = 20;
+				break;
+			*/
+			default: 
+				$fp = ($depth + 1) * 4;
+				break;
+		}
 		
-		$json = $this->_orient->query('SELECT FROM ASNode WHERE num = '.$nodeNum, null, -1, '*:'.$depth.'%20pools:0');
-		$result = json_decode($json->getBody());
-		$result = $result->result;
+		$json = $this->_orient->query("SELECT FROM ASNode WHERE num = {$nodeNum}", null, -1, "*:{$fp} ASNode.pools:0 ASNode.in:0");
+		$result = json_decode($json->getBody())->result;
+		
+		//H::pre($result);
 		
 		$this->_asNodes = array();
 		$this->_asConns = array();
 		$this->structure = array();
 		
-		if ( !isset($result[0]) ) {
-			return array();
+		if (!count($result)) {
+			return null;
 		}
-		
-		$objectMapper = new OrientObjectMapper($result[0]);
+		$objectMapper = new OrientObjectMapper($result[0], $depth);
 		
 		$asNodes = $objectMapper->getNodes();
 		$asConns = $objectMapper->getConns();
+
+		//H::pre($asNodes);
+		//H::pre($asConns);
 		
 		$connectionsMapper = new OrientConnectionsMapper($asNodes, $asConns);
 		$structure = $connectionsMapper->getConnectionsMap();
+
+		H::pre($structure);
 		
-		return array(
-			'structure' => $structure,
-		);
+		//return array(
+		//	'structure' => $structure,
+		//);
 	}
 	
 	/**

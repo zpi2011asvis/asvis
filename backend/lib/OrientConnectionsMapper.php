@@ -37,15 +37,15 @@ class OrientConnectionsMapper {
 		}
 		
 		foreach ($this->_asNodes as $node) {
-			$this->initStructureRecord($node->num);
+			$this->initStructureRecord($node);
 		}
-		
-		$this->debug_checkFixBrokenConns();
+
+		//$this->debug_checkFixBrokenConns();
 		
 		foreach ($this->_asConns as $conn) {
 			$nodeFrom	= $this->getNodeFrom($conn);
 			$nodeTo		= $this->getNodeTo($conn);
-		
+
 			$dir = $conn->up ? 'up' : 'down';
 		
 			$this->_structure[$nodeFrom->num][$dir][] = $nodeTo->num;
@@ -80,16 +80,17 @@ class OrientConnectionsMapper {
 		return $nodeTo;
 	}
 	
-	private function initStructureRecord($nodeNum) {
-		$this->_structure[$nodeNum] = array(
+	private function initStructureRecord($node) {
+		$this->_structure[$node->num] = array(
 			'up' => array(),
 			'down' => array(),
 			'count' => 0,
+			'distance' => $node->distance
 		);
 	}
 	
 	private function countConnections() {
-		foreach ($this->structure as $num => $node) {
+		foreach ($this->_structure as $num => $node) {
 			$count = count($node['up']) + count($node['down']);
 			$this->structure[$num]['count'] = $count;
 		}

@@ -28,6 +28,7 @@ interface Engine {
 	/**
 	 * Returns array of nodes and their connections for given
 	 * origin node number and depth of recurson.
+	 * $depth <1,inf>
 	 * 
 	 * @param int $nodeNum
 	 * @param int $depth
