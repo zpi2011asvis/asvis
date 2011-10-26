@@ -20,14 +20,11 @@ class OrientObjectMapper {
 
 	private $_depth;
 
-	public $badNodes;
-	
 	public function __construct($origin = null, $depth) {
 		$this->_asConns = array();
 		$this->_asNodes = array();
 		$this->_depth = $depth;
-		$this->badNodes = array();
-		
+
 		if (is_null($origin)) {
 			$this->_isParsed = true;
 		} else {
@@ -93,9 +90,6 @@ class OrientObjectMapper {
 	
 		$atRID = '@rid';
 		
-		// initialize with big depth
-		// will be usefull while calculating proper distance
-		$asnode->distance = $this->_depth * 2;
 		$this->_asNodes[$asnode->$atRID] = $asnode;
 	
 		/*
