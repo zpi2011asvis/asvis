@@ -39,45 +39,56 @@ class OrientConnectionsMapper {
 		foreach ($this->_asNodes as $node) {
 			$this->initStructureRecord($node);
 		}
-
-		//$this->debug_checkFixBrokenConns();
 		
 		foreach ($this->_asConns as $conn) {
 			$nodeFrom	= $this->getNodeFrom($conn);
 			$nodeTo		= $this->getNodeTo($conn);
 
-			$dir = $conn->up ? 'up' : 'down';
-		
-			$this->_structure[$nodeFrom->num][$dir][] = $nodeTo->num;
+			if ($nodeFrom !== null and $nodeTo !== null) {
+				$dir = $conn->up ? 'up' : 'down';
+				$this->_structure[$nodeFrom->num][$dir][] = $nodeTo->num;
+			}
 		}
+
+		$this->countConnections();
 	}
 	
 	private function getNodeFrom($asconn) {
-		$nodeFrom = null;
-			
-		if (is_object($asconn->in)) {
-			$nodeFrom = $asconn->in;
+		$in = $asconn->in;
+
+		if (
+			is_object($in) and
+			array_key_exists($in->num, $this->_structure)
+		) {
+			return $in;
 		}
-			
-		if (is_string($asconn->in)) {
-			$nodeFrom = $this->_asNodes[$asconn->in];
+		elseif (
+			is_string($in) and
+			array_key_exists($in, $this->_asNodes)
+		) {
+			return $this->_asNodes[$in];
 		}
 		
-		return $nodeFrom;
+		return null;
 	}
 	
 	private function getNodeTo($asconn) {
-		$nodeTo = null;
-		
-		if (is_object($asconn->out)) {
-			$nodeTo = $asconn->out;
+		$out = $asconn->out;
+
+		if (
+			is_object($out) and
+			array_key_exists($out->num, $this->_structure)
+		) {
+			return $out;
+		}
+		elseif (
+			is_string($out) and
+			array_key_exists($out, $this->_asNodes)
+		) {
+			return $this->_asNodes[$out];
 		}
 		
-		if (is_string($asconn->out)) {
-			$nodeTo = $this->_asNodes[$asconn->out];
-		}
-		
-		return $nodeTo;
+		return null;
 	}
 	
 	private function initStructureRecord($node) {
@@ -92,33 +103,7 @@ class OrientConnectionsMapper {
 	private function countConnections() {
 		foreach ($this->_structure as $num => $node) {
 			$count = count($node['up']) + count($node['down']);
-			$this->structure[$num]['count'] = $count;
+			$this->_structure[$num]['count'] = $count;
 		}
-	}
-	
-	/*
-	 * Niektóre fetchplany zwracją ASConny bez pól in/out (WTF?!)
-	 * to się chyba dzieje w sytuacji:
-	 * detpth-1    depth  
-	 * ASNode      ASConn <- depth ograniczył wczytanie ASNode'a więc ASConn ma pusty link.
-	 */
-	private function debug_checkFixBrokenConns($verbose = false) {
-		$atRID = '@rid';
-		$brokenConns = array();
-		
-		foreach ($this->_asConns as $conn) {
-			if (!(isset($conn->in) && isset($conn->out))) {
-				$brokenConns[] = $conn;
-			}
-		}
-		
-		if ($verbose) {
-			echo 'Found '.count($brokenConns).' broken connections (in '.count($this->_asConns).' total)';
-		}
-		
-		foreach ($brokenConns as $conn) {
-			unset($this->_asConns[$conn->$atRID]);
-		}
-		
 	}
 }

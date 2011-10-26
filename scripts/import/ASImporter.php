@@ -200,7 +200,7 @@ class ASImporter {
 	protected function _insertASNode($num, $name) {
 		try {
 			$result = $this->_db->command(
-			OrientDB::COMMAND_QUERY,
+				OrientDB::COMMAND_QUERY,
 				"INSERT INTO ASNode (name, num, num_as_string) VALUES ('{$name}', {$num}, '{$num}')"
 			);
 		} catch (OrientDBException $e) {
@@ -214,8 +214,8 @@ class ASImporter {
 	protected function _insertASConn($from, $to, $isUp) {
 		try {
 			$result = $this->_db->command(
-			OrientDB::COMMAND_QUERY,
-				'INSERT INTO ASConn (in, out, up) VALUES ('.$from.','.$to.','.$isUp.')'
+				OrientDB::COMMAND_QUERY,
+				"INSERT INTO ASConn (in, out, up) VALUES ({$from},{$to},{$isUp})"
 			);
 		} catch (OrientDBException $e) {
 			echo $e->getMessage() . PHP_EOL;
@@ -244,8 +244,6 @@ class ASImporter {
 		$fromList = implode(',', $fromList);
 		$toList = implode(',', $toList);
 		$poolList = implode(',', $poolList);
-
-		//echo "UPDATE {$asNodeRID} SET in = [{$fromList}], out = [{$toList}]" . PHP_EOL;
 
 		try {
 			$result = $this->_db->command(

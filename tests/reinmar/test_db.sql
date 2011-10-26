@@ -1,3 +1,5 @@
+connect remote:localhost/asvis admin admin 
+
 INSERT INTO ASNode (num) VALUES (0);
 INSERT INTO ASNode (num) VALUES (1);
 INSERT INTO ASNode (num) VALUES (2);
@@ -17,5 +19,4 @@ UPDATE #5:1 SET in = [#6:0,#6:4,#6:6], out = [#6:2];
 UPDATE #5:2 SET in = [#6:1,#6:2], out = [#6:3];
 UPDATE #5:3 SET in = [#6:3], out = [#6:4,#6:5];
 UPDATE #5:4 SET in = [#6:5], out = [#6:6];
-
 
