@@ -19,11 +19,14 @@ class OrientObjectMapper {
 	private $_isParsed;
 
 	private $_depth;
+
+	public $badNodes;
 	
 	public function __construct($origin = null, $depth) {
 		$this->_asConns = array();
 		$this->_asNodes = array();
 		$this->_depth = $depth;
+		$this->badNodes = array();
 		
 		if (is_null($origin)) {
 			$this->_isParsed = true;
@@ -53,7 +56,10 @@ class OrientObjectMapper {
 			return;
 		}
 		
-		$this->mapObject($this->_origin, $this->_depth);
+		// don't know why it has to be +1... 
+		// but it has to be because for e.g. 3/3 and 3/5
+		// node 174 is on this level
+		$this->mapObject($this->_origin, $this->_depth + 1);
 		
 		$this->_isParsed = true;
 	}
@@ -87,10 +93,9 @@ class OrientObjectMapper {
 	
 		$atRID = '@rid';
 		
-		// TODO incorrect distance
-		// we have to change traversing method
-		// to DFS
-		$asnode->distance = $this->_depth - $depth;
+		// initialize with big depth
+		// will be usefull while calculating proper distance
+		$asnode->distance = $this->_depth * 2;
 		$this->_asNodes[$asnode->$atRID] = $asnode;
 	
 		/*
@@ -121,12 +126,11 @@ class OrientObjectMapper {
 	
 		$atRID = '@rid';
 	
-		// we push connection without checking if it goes to node which fits
-		// into given depth
-		// this can gives us to much connections, but we need them because
-		// we don't know if they link leafs or not
-		// TODO because of this method OrientConnectionsMapper should now
-		// throw some notices or errors - check that
+		// We push connection without checking if it goes to node which fits
+		// into given depth.
+		// This can gives us to much connections, but we need them because
+		// we don't know if they link leafs or not.
+		// OrientConnectionsMapper takes this into account.
 		$this->_asConns[$asconn->$atRID] = $asconn;
 	
 		/*

@@ -95,8 +95,7 @@ class OrientConnectionsMapper {
 		$this->_structure[$node->num] = array(
 			'up' => array(),
 			'down' => array(),
-			'count' => 0,
-			'distance' => $node->distance
+			'count' => 0
 		);
 	}
 	
@@ -105,5 +104,8 @@ class OrientConnectionsMapper {
 			$count = count($node['up']) + count($node['down']);
 			$this->_structure[$num]['count'] = $count;
 		}
+	}
+
+	public function calculateDistances($root_node, $max_distance) {
 	}
 }

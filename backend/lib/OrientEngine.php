@@ -111,7 +111,6 @@ class OrientEngine implements Engine {
 		
 		$this->_asNodes = array();
 		$this->_asConns = array();
-		$this->structure = array();
 		
 		if (!count($result)) {
 			return null;
@@ -121,10 +120,13 @@ class OrientEngine implements Engine {
 		$asNodes = $objectMapper->getNodes();
 		$asConns = $objectMapper->getConns();
 
+		//echo count($asNodes).PHP_EOL;
+		//echo count($asConns).PHP_EOL;
 		//H::pre($asNodes);
 		//H::pre($asConns);
 		
 		$connectionsMapper = new OrientConnectionsMapper($asNodes, $asConns);
+		$connectionsMapper->calculateDistances($nodeNum, $depth);
 		$structure = $connectionsMapper->getConnectionsMap();
 
 		//H::pre($structure);
