@@ -24,7 +24,7 @@ class NodesFindResource extends Resource {
 class NodesMetaResource extends Resource {
 	function post($request) {
 		$response = new Response($request);
-		
+
 		$numbers = json_decode($this->getParam('numbers', '[]'));
 		$response->json($this->_engine->nodesMeta($numbers));
 		

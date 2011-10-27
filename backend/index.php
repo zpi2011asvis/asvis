@@ -39,6 +39,6 @@ catch (Exception $e) {
 	# TODO lepsza obsługa exceptionów - zależna od środowiska
 	echo '<pre>';
 	echo $e->getMessage();
-	# var_dump($e);
+	echo (string) $e;
 	echo '</pre>';
 }
