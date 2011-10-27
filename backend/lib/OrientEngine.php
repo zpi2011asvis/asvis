@@ -88,7 +88,7 @@ class OrientEngine implements Engine {
 				break;
 			// root, children and conns between them (also between children)
 			case 2:
-				$fp = 8;
+				$fp = 6;
 				break;
 			/*
 			// this results I got for test db (tests/reinmar/test_db.sql)
@@ -104,7 +104,10 @@ class OrientEngine implements Engine {
 				break;
 		}
 		
-		$json = $this->_orient->query("SELECT FROM ASNode WHERE num = {$nodeNum}", null, 1, "*:{$fp} ASNode.in:0 ASNode.pools:0");
+		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
+		$fetchplan = "*:{$fp} ASNode.in:0 ASNode.pools:0";
+		
+		$json = $this->_orient->query($query, null, 1, $fetchplan);
 		$result = json_decode($json->getBody())->result;
 		
 		//H::pre($result);
