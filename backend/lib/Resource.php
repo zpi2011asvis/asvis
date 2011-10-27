@@ -18,25 +18,15 @@ class Resource extends TonicResource {
 	
 	function __construct($parameters) {
 		parent::__construct($parameters);
-		$this->_get = $_GET;
-		$this->_post = $_POST;
+		$this->_request = $_REQUEST;
 		
 		$engineClass = 'asvis\\lib\\' . Config::get('backend_db_engine');
 		
 		$this->_engine = new $engineClass();
 	}
 	
-	protected function getGet($paramName, $default = null) {
-		if (array_key_exists($paramName, $this->_post)) {
-			return $this->_get[$paramName];
-		}
-		else {
-			return $default;
-		}
-	}
-	
-	protected function getPost($paramName, $default = null) {
-		if (array_key_exists($paramName, $this->_post)) {
+	protected function getParam($paramName, $default = null) {
+		if (array_key_exists($paramName, $this->_request)) {
 			return $this->_post[$paramName];
 		}
 		else {
