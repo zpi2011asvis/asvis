@@ -24,12 +24,12 @@ use asvis\lib\H as H;
 class OrientEngine implements Engine {
 	
 	/**
-	* @var Binding
+	* @var Congow\Orient\Foundation\Binding
 	*/
 	private $_orient;
 
 	/**
-	 * @var Curl
+	 * @var Congow\Orient\Http\Client\Curl
 	 */
 	private $_client;
 	
@@ -88,7 +88,7 @@ class OrientEngine implements Engine {
 				break;
 			// root, children and conns between them (also between children)
 			case 2:
-				$fp = 6;
+				$fp = 8;
 				break;
 			/*
 			// this results I got for test db (tests/reinmar/test_db.sql)
@@ -105,12 +105,13 @@ class OrientEngine implements Engine {
 		}
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
-		$fetchplan = "*:{$fp} ASNode.in:0 ASNode.pools:0";
+		$fetchplan = "*:{$fp}"; // "*:{$fp} ASNode.in:0 ASNode.pools:0";
 		
 		$json = $this->_orient->query($query, null, 1, $fetchplan);
 		$result = json_decode($json->getBody())->result;
 		
-		//H::pre($result);
+// 		H::pre($result);
+// 		die;
 		
 		if (!count($result)) {
 			return null;
