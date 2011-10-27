@@ -104,13 +104,10 @@ class OrientEngine implements Engine {
 				break;
 		}
 		
-		$json = $this->_orient->query("SELECT FROM ASNode WHERE num = {$nodeNum}", null, 1, "*:{$fp} ASNode.pools:0 ASNode.in:0");
+		$json = $this->_orient->query("SELECT FROM ASNode WHERE num = {$nodeNum}", null, 1, "*:{$fp} ASNode.in:0 ASNode.pools:0");
 		$result = json_decode($json->getBody())->result;
 		
 		//H::pre($result);
-		
-		$this->_asNodes = array();
-		$this->_asConns = array();
 		
 		if (!count($result)) {
 			return null;
@@ -120,8 +117,8 @@ class OrientEngine implements Engine {
 		$asNodes = $objectMapper->getNodes();
 		$asConns = $objectMapper->getConns();
 
-		//echo count($asNodes).PHP_EOL;
-		//echo count($asConns).PHP_EOL;
+		echo count($asNodes).PHP_EOL;
+		echo count($asConns).PHP_EOL;
 		//H::pre($asNodes);
 		//H::pre($asConns);
 		

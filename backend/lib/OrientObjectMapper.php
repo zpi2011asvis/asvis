@@ -53,11 +53,7 @@ class OrientObjectMapper {
 			return;
 		}
 		
-		// don't know why it has to be +1... 
-		// but it has to be because for e.g. 3/3 and 3/5
-		// node 174 is on this level
-		$this->mapObject($this->_origin, $this->_depth + 1);
-		
+		$this->mapObject($this->_origin, $this->_depth);
 		$this->_isParsed = true;
 	}
 	
