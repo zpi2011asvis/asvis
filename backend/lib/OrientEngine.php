@@ -78,9 +78,15 @@ class OrientEngine implements Engine {
 	 * @see asvis\lib.Engine::structureGraph()
 	 */
 	public function structureGraph($nodeNum, $depth) {	
-
-		// this fetch plans will return too much asnodes
-		// so object mapper should also have in mind given depth
+		
+		/*
+		 * this fetch plans will return too much asnodes
+		 * so object mapper should also have in mind given depth
+		 * 
+		 * gloowa - nie wiem po co mapper ma brac depth pod uwagę?
+		 * gloowa - jego zadaniem jest tylko zamienić drzewo na
+		 * gloowa - listę objektów...
+		 */		 
 		switch ($depth) {
 			// root only
 			case 1:
