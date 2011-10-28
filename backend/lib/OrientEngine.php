@@ -82,10 +82,7 @@ class OrientEngine implements Engine {
 		/*
 		 * this fetch plans will return too much asnodes
 		 * so object mapper should also have in mind given depth
-		 * 
-		 * gloowa - nie wiem po co mapper ma brac depth pod uwagę?
-		 * gloowa - jego zadaniem jest tylko zamienić drzewo na
-		 * gloowa - listę objektów...
+		 * and remove redundant nodes
 		 */		 
 		switch ($depth) {
 			// root only
@@ -111,13 +108,12 @@ class OrientEngine implements Engine {
 		}
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
-		$fetchplan = "*:{$fp}"; // "*:{$fp} ASNode.in:0 ASNode.pools:0";
+		$fetchplan = "*:{$fp} ASNode.in:0 ASNode.pools:0";
 		
 		$json = $this->_orient->query($query, null, 1, $fetchplan);
 		$result = json_decode($json->getBody())->result;
 		
-// 		H::pre($result);
-// 		die;
+ 		//H::pre($result);
 		
 		if (!count($result)) {
 			return null;
