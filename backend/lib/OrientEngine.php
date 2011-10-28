@@ -123,8 +123,8 @@ class OrientEngine implements Engine {
 		$asNodes = $objectMapper->getNodes();
 		$asConns = $objectMapper->getConns();
 
-		echo count($asNodes).PHP_EOL;
-		echo count($asConns).PHP_EOL;
+		//echo count($asNodes).PHP_EOL;
+		//echo count($asConns).PHP_EOL;
 		//H::pre($asNodes);
 		//H::pre($asConns);
 		
