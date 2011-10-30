@@ -103,6 +103,7 @@ function includeTemplates() {
 		'lib/flash.js',
 		'lib/templates.js',
 		'lib/vizir.js',
+		'lib/camera_man.js',
 		'lib/renderer.js',
 		'lib/stores/store.js',
 		'lib/stores/remote_store.js',
@@ -115,7 +116,7 @@ function includeTemplates() {
 	)) ?>
 	<? includeTemplates() ?>
 	<script>
-		this.DEBUG = <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
+		this.DEBUG = false; // <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
 		app.start({
 			root: '<?= Config::get('frontend_base_uri') ?>/'
 		});

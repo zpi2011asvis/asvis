@@ -3,6 +3,7 @@
 
 	var T = global.THREE,
 		Vizir = lib.Vizir,
+		CameraMan = lib.CameraMan,
 		requestAnimationFrame = global.util.requestAnimationFrame;
 
 	var Renderer = function Renderer(widget_view, opts) {
@@ -29,33 +30,24 @@
 					opacity: 0.3
 				})
 			},
-			RERFRESING_TIME = 1000; // how long after any action performed should render
+			REFRESHING_STOP = {
+				DELAY: 2000, // how long after any action performed should rendering go on
+				CHECK_INTERVAL: 500 // how often check if any action was performed
+			}; 
 
 		// properties
 		var	_renderer,
-			_camera,
 			_scene,
-			_psystems = [], //particle systems
-			_geometries = [], //particle geometries
+			_psystems = [], // particle systems
+			_geometries = [], // particle geometries
 			_vizir,
 			_started = false,
-			_last_action = 0, //last action timestamp
-			_view = {
-				fov: 45,
-				width: null,
-				height: null,
-				camera_position: new T.Vector3(0, 0, 500),
-				zooming_factor: 1.1
-			},
-			_controls;
+			_last_action = 0, // last action timestamp
+			_refreshing_interval = null,
+			_camera_man = null;
 
 		// methods
-		var _refresh,
-			_resize,
-			_newCamera,
-			_zoomCamera,
-			_rotateCamera,
-			_panCamera;
+		var _refresh;
 
 		/*
 		 * Publics -------------------------------------------------------------
@@ -66,27 +58,31 @@
 		};
 
 		this.start = function start() {
+			that = this;
+			_last_action = +new Date();
+
+			if (!_refreshing_interval) {
+				_refreshing_interval = global.setInterval(function () {
+					if (_last_action + REFRESHING_STOP.DELAY < +new Date()) {
+						that.stop();
+					}					
+				}, REFRESHING_STOP.CHECK_INTERVAL);
+			}
+			
 			if (_started) {
 				return;
 			}
 
-			var time = +new Date(),
-				that = this;
-
-			_last_action = time;
-			global.setTimeout(function () {
-				if (_last_action === time) {
-					global.DEBUG && console.log('Stop rendering');
-					that.stop();
-				}					
-			}, RERFRESING_TIME);
-
+			global.DEBUG && console.log('Start rendering');
 			_started = true;
 			_refresh();
 		};
 
 		this.stop = function stop() {
+			global.DEBUG && console.log('Stop rendering');
 			_started = false;
+			global.clearInterval(_refreshing_interval);
+			_refreshing_interval = null;
 		};
 
 		/*
@@ -141,40 +137,10 @@
 
 		_refresh = function _refresh() {
 			if (_started) {
-				_controls.update();
-				_renderer.render(_scene, _camera);
+				_renderer.render(_scene, _camera_man.camera);
 				requestAnimationFrame(_refresh, that.getEl());
 			}
 		};
-
-		_resize = function _resize(width, height) {
-			_view.width = width;
-			_view.height = height;
-
-			_renderer.setSize(width, height);
-			_newCamera();
-		};
-
-		_newCamera = function _newCamera() {
-			_camera = new T.PerspectiveCamera(_view.fov, _view.width / _view.height, 100, 10000);
-			_camera.position = _view.camera_position;
-				
-			var distance = _view.camera_position.length();
-			_scene.fog = new T.Fog(FOG.color, ~~(distance / 3), distance * 3);
-		};
-
-		_zoomCamera = function _zoomCamera(forward) {
-			_view.camera_position.multiplyScalar(forward ? _view.zooming_factor : 1/_view.zooming_factor);
-			_newCamera();
-		};
-
-		_rotateCamera = function _rotateCamera(change) {
-
-		};
-
-		_panCamera = function _panCamera(change) {
-		};
-
 
 		/*
 		 * Init ----------------------------------------------------------------
@@ -186,32 +152,25 @@
 		});
 		_scene = new T.Scene();
 		_vizir = new Vizir();
-
-		_resize(opts.size.width, opts.size.height);
-
-		_controls = new THREE.TrackballControls(_camera, _renderer.domElement);
-		_controls.rotateSpeed = 0.5;
-		_controls.zoomSpeed = 0.8;
-		_controls.panSpeed = 0.2;
-
+		_camera_man = new CameraMan(_renderer, opts.size.width, opts.size.height);
 
 		widget_view.signals.resized.add(function (size) {
-			_resize(size.width, size.height);
+			_camera_man.resize(size.width, size.height);
 		});
 		widget_view.signals.action_performed.add(function () {
 			that.start();
 		});
-		/*widget_view.signals.scrolled.add(function (down) {
-			_zoomCamera(down);
+		widget_view.signals.scrolled.add(function (down) {
+			_camera_man.zoom(down);
 		});
 		widget_view.signals.dragged.add(function (change, keys) {
 			if (keys.ctrl) {
-				_panCamera(change);
+				_camera_man.pan(change);
 			}
 			else {
-				_rotateCamera(change);
+				_camera_man.rotate(change);
 			}
-		});*/
+		});
 	};
 
 
