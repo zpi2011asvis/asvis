@@ -160,8 +160,8 @@
 		widget_view.signals.action_performed.add(function () {
 			that.start();
 		});
-		widget_view.signals.scrolled.add(function (down) {
-			_camera_man.zoom(down);
+		widget_view.signals.scrolled.add(function (down, mouse_pos) {
+			_camera_man.zoom(!down, mouse_pos);
 		});
 		widget_view.signals.dragged.add(function (change, keys) {
 			if (keys.ctrl) {

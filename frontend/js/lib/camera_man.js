@@ -6,29 +6,41 @@
 	var CameraMan = function CameraMan(renderer, width, height) {
 		var that = this,
 			_renderer,
-			_width,
-			_height,
 			_camera,
-			_view = {
-				fov: 45,
-				width: null,
-				height: null,
-				camera_position: new T.Vector3(0, 0, 500),
-				zooming_factor: 1.1
-			};
+			_up = new T.Vector3(0, 1, 0),
+			_view_width,
+			_view_height,
+			_eye = new T.Vector3(0, 0, 500),
+			_target = new T.Vector3(0, 0, 0);
 	
 		// methods
-		var _newCamera;
+		var _newCamera,
+			_viewAbs2Rel,
+			_nvec;
 
 		/*
 		 * Publics -------------------------------------------------------------
 		 */
 
+		// settings
+		this.ZOOMING_FACTOR = 1.1;
+		this.ZOOMING_MOVE_FACTOR = 50;
+
 		// fast getter
 		this.camera = null;
 
-		this.zoom = function zoom(forward) {
-			_view.camera_position.multiplyScalar(forward ? _view.zooming_factor : 1/_view.zooming_factor);
+		this.zoom = function zoom(is_forward, pointed_at) {
+			var right = _nvec().cross(_up, _eye).normalize(),
+				rel_pos = _viewAbs2Rel(pointed_at),
+				move_vec = _nvec(
+					rel_pos.x * this.ZOOMING_MOVE_FACTOR,
+					rel_pos.y * this.ZOOMING_MOVE_FACTOR,
+					0
+				);
+			
+			_eye.addSelf(move_vec);
+			_target.addSelf(move_vec);
+			_eye.multiplyScalar(is_forward ? 1 / this.ZOOMING_FACTOR : this.ZOOMING_FACTOR);
 			_newCamera();
 		};
 
@@ -40,9 +52,9 @@
 		};
 
 		this.resize = function resize(width, height) {
-			_width = width;
-			_height = height;
-			_renderer.setSize(_width, _height);
+			_view_width = width;
+			_view_height = height;
+			_renderer.setSize(width, height);
 			_newCamera();
 		};
 
@@ -51,12 +63,29 @@
 		 */
 
 		_newCamera = function _newCamera() {
-			_camera = new T.PerspectiveCamera(_view.fov, _width / _height, 100, 10000);
-			_camera.position = _view.camera_position;
+			_camera = new T.PerspectiveCamera(45, _view_width / _view_height, 100, 10000);
+			_camera.position = _eye;
+			_camera.lookAt(_target);
 			that.camera = _camera;
 				
-			var distance = _view.camera_position.length();
+			// var distance = _view.camera_position.length();
 			//_scene.fog = new T.Fog(FOG.color, ~~(distance / 3), distance * 3);
+		};
+
+		_nvec = function _nvec(x, y, z) {
+			return new T.Vector3(x, y, z);
+		};
+
+		/* 
+		 * axis - (1, 1)  - (right, top); (0, 0) - (center, center)
+		 */
+		_viewAbs2Rel = function _viewAbs2Rel(pos_abs) {
+			var half_x = _view_width / 2,
+				half_y = _view_height / 2;
+			return {
+				x: (pos_abs.x / half_x -  1),
+				y: -(pos_abs.y / half_y -  1)
+			};
 		};
 
 
