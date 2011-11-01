@@ -44,28 +44,7 @@
 		this.camera = null;
 
 		this.zoom = function zoom(is_forward, pointed_at) {
-			/*
-			var right = _getEyeRight(),
-				rel_pos = _viewAbs2Rel(pointed_at),
-				move_vec = _nvec(
-					rel_pos.x * this.ZOOMING_MOVE_FACTOR,
-					rel_pos.y * this.ZOOMING_MOVE_FACTOR,
-					0
-				);
-
-			//if (!is_forward) {
-			//	move_vec.negate();
-			//}
-			
-			_eye.addSelf(move_vec);
-			// moving target is a little confusing
-			//_target.addSelf(move_vec);
-			*/
-
 			_eye.multiplyScalar(is_forward ? 1 / this.ZOOMING_FACTOR : this.ZOOMING_FACTOR);
-
-			// rotating while zooming also is a little bit confusing
-			//this.rotate({ x: -rel_pos.x * 5, y: rel_pos.y * 5 });
 		};
 
 		this.rotate = function rotate(change) {
@@ -82,6 +61,7 @@
 		};
 
 		this.move = function move(change) {
+			// TODO determine move_vec from current rotations
 			var right = _getEyeRight(),
 				move_vec = _nvec(
 					change.x * this.MOVING_FACTOR,
