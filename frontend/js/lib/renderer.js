@@ -165,7 +165,7 @@
 		});
 		widget_view.signals.dragged.add(function (change, keys) {
 			if (keys.ctrl) {
-				_camera_man.pan(change);
+				_camera_man.move(change);
 			}
 			else {
 				_camera_man.rotate(change);
