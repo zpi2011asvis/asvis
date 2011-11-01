@@ -47,7 +47,10 @@
 			_camera_man = null;
 
 		// methods
-		var _refresh;
+		var _refresh,
+			_addControlElements,
+			_nver,
+			_nvec;
 
 		/*
 		 * Publics -------------------------------------------------------------
@@ -142,6 +145,46 @@
 			}
 		};
 
+		_addControlElements = function _addControlElements() {
+			 var line_material = new THREE.LineBasicMaterial({
+					color: 0x4444AA,
+					lineWidth: 1,
+					opacity: 0.75
+				}),
+				line_geometry = new T.Geometry(),
+				circle_geometry = new T.Geometry(),
+				line = new T.Line(line_geometry, line_material),
+				circle = new T.Line(circle_geometry, line_material);
+	
+			// x, y, z axis
+			line_geometry.vertices.push(
+				_nver(-1000, 0, 0), _nver(1000, 0, 0),
+				_nver(0, -1000, 0), _nver(0, 1000, 0),
+				_nver(0, 0, -1000), _nver(0, 0, 1000)
+			);
+			line.type = T.Lines;
+	
+			// flat elipse
+			for (var i = 0, l = Math.PI * 2; i < l + 0.1; i += 0.1) {
+				circle_geometry.vertices.push(_nver(
+					Math.sin(i) * 400,
+					0,
+					Math.cos(i) * 200
+				));
+			}
+
+			_scene.add(line);
+			_scene.add(circle);
+		};
+
+		_nver = function _nver(x, y, z) {
+			return new T.Vertex(_nvec(x, y, z));
+		};
+
+		_nvec = function _nvec(x, y, z) {
+			return new T.Vector3(x, y, z);
+		};
+
 		/*
 		 * Init ----------------------------------------------------------------
 		 */
@@ -153,6 +196,8 @@
 		_scene = new T.Scene();
 		_vizir = new Vizir();
 		_camera_man = new CameraMan(_renderer, opts.size.width, opts.size.height);
+		
+		_addControlElements();
 
 		widget_view.signals.resized.add(function (size) {
 			_camera_man.resize(size.width, size.height);
