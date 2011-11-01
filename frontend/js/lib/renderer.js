@@ -15,8 +15,8 @@
 					var sprite = T.ImageUtils.loadTexture(app.opts.root + 'img/square_1.png'),
 						material = new T.ParticleBasicMaterial({
 							color: 0x77FF77,
-							size: 10,
-							sizeAttenuation: false, // true - enable perspective (far is smaller)
+							size: 8,
+							sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
 							map: sprite
 						});
 
@@ -27,7 +27,7 @@
 				material: new THREE.LineBasicMaterial({
 					color: 0xFFFFFF,
 					lineWidth: 1,
-					opacity: 0.3
+					opacity: 0.25
 				})
 			},
 			REFRESHING_STOP = {
@@ -38,9 +38,11 @@
 		// properties
 		var	_renderer,
 			_scene,
-			_psystems = [], // particle systems
-			_geometries = [], // particle geometries
+			_control_object,
+			_graph_object,
+			_graph_objects,
 			_vizir,
+			// state -----------------------------------------------------------
 			_started = false,
 			_last_action = 0, // last action timestamp
 			_refreshing_interval = null,
@@ -48,7 +50,8 @@
 
 		// methods
 		var _refresh,
-			_addControlElements,
+			_initControlObject,
+			_initGraphObject,
 			_nver,
 			_nvec;
 
@@ -103,7 +106,14 @@
 				vertices,
 				edges;
 
+			// stop rendering for the time needed to recalculate everything
 			this.stop();
+
+			// clear grap object3d
+			_graph_objects.forEach(function (obj) {
+				_graph_object.remove(obj);
+			});
+			_graph_objects = [];
 
 			_vizir.clear().setGraph(graph).setRoot(root);
 
@@ -120,13 +130,10 @@
 			// needed when point's texture has opacity
 			// veeerryyy heavy
 			//psystem.sortParticles = true;
-			_scene.add(psystem);
-			_psystems.push(psystem);
-			_geometries.push(verts_geometry);
 
 			line.type = T.Lines;
-			_scene.add(line);
-			_geometries.push(edges_geometry);
+			_graph_object.add(psystem);
+			_graph_object.add(line);
 
 			if (was_started) {
 				this.start();
@@ -138,6 +145,14 @@
 		 * Privates ------------------------------------------------------------
 		 */
 
+		_nver = function _nver(x, y, z) {
+			return new T.Vertex(_nvec(x, y, z));
+		};
+
+		_nvec = function _nvec(x, y, z) {
+			return new T.Vector3(x, y, z);
+		};
+
 		_refresh = function _refresh() {
 			if (_started) {
 				_renderer.render(_scene, _camera_man.camera);
@@ -145,7 +160,7 @@
 			}
 		};
 
-		_addControlElements = function _addControlElements() {
+		_initControlObject = function _initControlObject() {
 			 var line_material = new THREE.LineBasicMaterial({
 					color: 0x4444AA,
 					lineWidth: 1,
@@ -156,7 +171,7 @@
 				line = new T.Line(line_geometry, line_material),
 				circle = new T.Line(circle_geometry, line_material);
 	
-			// x, y, z axis
+			// x, y, z axes
 			line_geometry.vertices.push(
 				_nver(-1000, 0, 0), _nver(1000, 0, 0),
 				_nver(0, -1000, 0), _nver(0, 1000, 0),
@@ -172,17 +187,19 @@
 					Math.cos(i) * 200
 				));
 			}
-
-			_scene.add(line);
-			_scene.add(circle);
+			
+			var obj = new THREE.Object3D();
+			obj.add(line);
+			obj.add(circle);
+			_scene.add(obj);
+			
+			_control_object = obj;
 		};
 
-		_nver = function _nver(x, y, z) {
-			return new T.Vertex(_nvec(x, y, z));
-		};
-
-		_nvec = function _nvec(x, y, z) {
-			return new T.Vector3(x, y, z);
+		_initGraphObject = function _initGraphObject() {
+			_graph_object = new T.Object3D();
+			_graph_objects = [];
+			_scene.add(_graph_object);
 		};
 
 		/*
@@ -195,9 +212,12 @@
 		});
 		_scene = new T.Scene();
 		_vizir = new Vizir();
-		_camera_man = new CameraMan(_renderer, opts.size.width, opts.size.height);
+
+		_initGraphObject()
+		_initControlObject();
+
+		_camera_man = new CameraMan(_renderer, [ _graph_object ], opts.size.width, opts.size.height);
 		
-		_addControlElements();
 
 		widget_view.signals.resized.add(function (size) {
 			_camera_man.resize(size.width, size.height);
