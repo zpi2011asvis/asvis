@@ -6,16 +6,24 @@
 		rad2Deg = global.util.rad2Deg;
 
 	var CameraMan = function CameraMan(renderer, moving_objects, width, height) {
+		// consts
+		var	TARGET = new T.Vector3(0, 0, 0), // probably redundant
+			NORMAL = new T.Vector3(0, 0, 1),
+			UP = new T.Vector3(0, 1, 0),
+			RIGHT = new T.Vector3(1, 0, 0);
+
 		var that = this,
 			_renderer,
 			_camera,
 			_moving_objects,
-			_up = new T.Vector3(0, 1, 0),
 			// state -----------------------------------------------------------
 			_view_width,
 			_view_height,
-			_eye = new T.Vector3(0, 0, 500),
-			_target = new T.Vector3(0, 0, 0);
+			_lat = 0,			// (-MAX_LAT, MAX_LAT)
+			_lng = 0,
+			_distance = 500,	// distance from _target to _eye
+			// cache -----------------------------------------------------------
+			_eye;				// cached eye position on sphere
 
 		/*
 		 * TODO
@@ -25,55 +33,59 @@
 		 */
 	
 		// methods
-		var _newCamera,
+		var _nvec,
+			_newCamera,
 			_updateCamera,
+			_updateEye,
 			_viewAbs2Rel,
-			_nvec,
-			_getEyeTop,
-			_getEyeRight;
+			_viewCentered2Rel;
 
 		/*
 		 * Publics -------------------------------------------------------------
 		 */
 
 		// settings
-		this.ZOOMING_FACTOR = 1.1;
+		this.ZOOMING_STEP = 20;
+		this.ROTATING_FACTOR = deg2Rad(120); // rotation for half of a view size drag
 		this.MOVING_FACTOR = 1;
+		this.MAX_LAT = deg2Rad(60);
+		this.MIN_DISTANCE = 100;
 
 		// fast getter
 		this.camera = null;
 
 		this.zoom = function zoom(is_forward, pointed_at) {
-			_eye.multiplyScalar(is_forward ? 1 / this.ZOOMING_FACTOR : this.ZOOMING_FACTOR);
+			_distance += (is_forward ? -1 : 1) * this.ZOOMING_STEP;
+
+			if (_distance < this.MIN_DISTANCE) {
+				_distance = this.MIN_DISTANCE;
+			}
+
+			_updateEye();
 		};
 
 		this.rotate = function rotate(change) {
-			var top = _getEyeTop(),
-				right,
-				rot_m = new T.Matrix4().setRotationAxis(top, -deg2Rad(change.x));
-			_eye = rot_m.multiplyVector3(_eye);
+			change = _viewCentered2Rel(change);
+			_lng -= change.x * this.ROTATING_FACTOR;
+			_lat += change.y * this.ROTATING_FACTOR;
+			
+			if (_lat > this.MAX_LAT) {
+				_lat = this.MAX_LAT
+			}
+			else if (_lat < -this.MAX_LAT) {
+				_lat = -this.MAX_LAT;
+			}
 
-			right = _getEyeRight();
-			rot_m = new T.Matrix4().setRotationAxis(right, -deg2Rad(change.y));
-			_eye = rot_m.multiplyVector3(_eye);
-
-			_updateCamera();
+			_updateEye();
 		};
 
 		this.move = function move(change) {
-			// TODO determine move_vec from current rotations
-			var right = _getEyeRight(),
-				move_vec = _nvec(
-					change.x * this.MOVING_FACTOR,
-					-change.y * this.MOVING_FACTOR,
-					0
-				);
+			var mvec = _nvec(change.x, -change.y, 0);
+			//_rotateOnSphere(mvec);
 
 			_moving_objects.forEach(function (obj) {
-				obj.position.addSelf(move_vec);
+				obj.position.addSelf(mvec);
 			});
-
-			_updateCamera();
 		};
 
 		this.resize = function resize(width, height) {
@@ -87,17 +99,17 @@
 		 * Privates ------------------------------------------------------------
 		 */
 
+		_nvec = function _nvec(x, y, z) {
+			return new T.Vector3(x, y, z);
+		};
+
 		_newCamera = function _newCamera() {
 			_camera = new T.PerspectiveCamera(45, _view_width / _view_height, 100, 10000);
-			_updateCamera()
 			that.camera = _camera;
+			_updateEye();
 				
 			// var distance = _view.camera_position.length();
 			//_scene.fog = new T.Fog(FOG.color, ~~(distance / 3), distance * 3);
-		};
-
-		_nvec = function _nvec(x, y, z) {
-			return new T.Vector3(x, y, z);
 		};
 
 		/* 
@@ -107,24 +119,37 @@
 			var half_x = _view_width / 2,
 				half_y = _view_height / 2;
 			return {
-				x: (pos_abs.x / half_x -  1),
-				y: -(pos_abs.y / half_y -  1)
+				x: (pos_abs.x / half_x - 1),
+				y: -(pos_abs.y / half_y - 1)
+			};
+		};
+
+		_viewCentered2Rel = function _viewCentered2Rel(pos_centered) {
+			var half_x = _view_width / 2,
+				half_y = _view_height / 2;
+			return {
+				x: (pos_centered.x / half_x),
+				y: -(pos_centered.y / half_y)
 			};
 		};
 
 		_updateCamera = function _updateCamera() {
 			_camera.position = _eye;
-			_camera.lookAt(_target);
+			_camera.lookAt(TARGET);
 		};
 
-		_getEyeRight = function _getEyeRight() {
-			return _nvec().cross(_up, _eye).normalize();
-		};
+		_updateEye = function _updateEye() {
+			var rot_m = new T.Matrix4();
+				
+			if (!_eye) _eye = _nvec();
+			_eye.copy(NORMAL);
 
-		_getEyeTop = function _getEyeTop() {
-			return _nvec().cross(_eye, _getEyeRight()).normalize();
-		};
+			rot_m.setRotationAxis(UP, _lng).multiplyVector3(_eye);
+			rot_m.setRotationAxis(_nvec().cross(UP, _eye), _lat).multiplyVector3(_eye);
+			_eye.multiplyScalar(_distance);
 
+			_updateCamera();
+		};
 
 		/*
 		 * Init ----------------------------------------------------------------
