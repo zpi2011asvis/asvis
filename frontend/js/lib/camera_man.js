@@ -20,7 +20,7 @@
 			_view_width,
 			_view_height,
 			_lat = 0,			// (-MAX_LAT, MAX_LAT)
-			_lng = 0,
+			_lng = 0,			// (0, PI*2)
 			_distance = 500,	// distance from _target to _eye
 			// cache -----------------------------------------------------------
 			_eye;				// cached eye position on sphere
@@ -38,7 +38,8 @@
 			_updateCamera,
 			_updateEye,
 			_viewAbs2Rel,
-			_viewCentered2Rel;
+			_viewCentered2Rel,
+			_normalizeLatLng;
 
 		/*
 		 * Publics -------------------------------------------------------------
@@ -69,19 +70,24 @@
 			_lng -= change.x * this.ROTATING_FACTOR;
 			_lat += change.y * this.ROTATING_FACTOR;
 			
-			if (_lat > this.MAX_LAT) {
-				_lat = this.MAX_LAT
-			}
-			else if (_lat < -this.MAX_LAT) {
-				_lat = -this.MAX_LAT;
-			}
+			_normalizeLatLng();			
 
 			_updateEye();
 		};
 
 		this.move = function move(change) {
-			var mvec = _nvec(change.x, -change.y, 0);
-			//_rotateOnSphere(mvec);
+			var mvec,
+				top, // top in eye perspective
+				right, // right in eye perspective
+				rotm = new T.Matrix4();
+
+			right = _nvec(1, 0, 0);
+			rotm.setRotationAxis(UP, _lng).multiplyVector3(right);
+			top = _eye.clone().normalize().crossSelf(right);
+
+			top.multiplyScalar(-change.y);
+			right.multiplyScalar(change.x);
+			mvec = top.add(top, right);
 
 			_moving_objects.forEach(function (obj) {
 				obj.position.addSelf(mvec);
@@ -139,16 +145,33 @@
 		};
 
 		_updateEye = function _updateEye() {
-			var rot_m = new T.Matrix4();
+			var rotm = new T.Matrix4();
 				
 			if (!_eye) _eye = _nvec();
 			_eye.copy(NORMAL);
 
-			rot_m.setRotationAxis(UP, _lng).multiplyVector3(_eye);
-			rot_m.setRotationAxis(_nvec().cross(UP, _eye), _lat).multiplyVector3(_eye);
+			rotm.setRotationAxis(UP, _lng).multiplyVector3(_eye);
+			rotm.setRotationAxis(_nvec().cross(UP, _eye), _lat).multiplyVector3(_eye);
 			_eye.multiplyScalar(_distance);
 
 			_updateCamera();
+		};
+
+		_normalizeLatLng = function _normalizeLatLng() {
+			if (_lat > that.MAX_LAT) {
+				_lat = that.MAX_LAT
+			}
+			else if (_lat < -that.MAX_LAT) {
+				_lat = -that.MAX_LAT;
+			}
+
+			var a360 = deg2Rad(360);
+			while (_lng < 0) {
+				_lng += a360;
+			}
+			while (_lng > a360) {
+				_lng -= a360;
+			}
 		};
 
 		/*
