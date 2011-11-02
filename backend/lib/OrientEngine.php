@@ -101,13 +101,9 @@ class OrientEngine implements Engine {
 // 		H::pre($asNodes);
 // 		H::pre($asConns);
 		
-// 		die;
-		
 		$connectionsMapper = new OrientConnectionsMapper($asNodes, $asConns);
 		$structure = $connectionsMapper->getConnectionsMap();
 		$weightOrder = $connectionsMapper->getWeightOrder();
-		
-		//H::pre($structure);
 		
 		return array(
 			'structure' => $structure,
