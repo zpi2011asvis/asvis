@@ -28,7 +28,7 @@ class OrientObjectMapper {
 	}
 	
 	public function map() {
-		if(!$this->_isParsed) {
+		if (!$this->_isParsed) {
 			$this->mapObject($this->_origin, 0);
 			$this->_isParsed = true;
 		}
