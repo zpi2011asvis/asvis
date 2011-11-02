@@ -64,13 +64,16 @@ class OrientObjectMapper {
 		$atRID = '@rid';
 		$this->_asnodes[$node->$atRID] = $node;
 		
-		/*if (isset($node->in)) {
+		/*
+		 * Przywracam ponieważ bez tego 3/4 nodów brakuje w wynikach
+		 */
+		if (isset($node->in)) {
 			$in = $node->in;
 		
 			foreach ($in as $conn) {
 				$this->mapObject($conn, $depth+1);
 			}
-		}*/
+		}
 		
 		if (isset($node->out)) {
 			$out = $node->out;
@@ -112,23 +115,14 @@ class OrientObjectMapper {
 	 * W dodatku dlaczego w ogóle muszą coś przyjmować, a nie mogą działać na tym co mają w asNodes
 	 * Chyba, że potrzebują tego co jest w connection mapperze - wtedy powinny być w tamtej klasie
 	 */
-	public function getDepthOrder($nodes) {
-		uasort($nodes, array('asvis\lib\OrientObjectMapper', 'cmpByDepth'));
+	public function getDepthOrder() {
+		$this->map();
+		
+		uasort($this->_asnodes, array('asvis\lib\OrientObjectMapper', 'cmpByDepth'));
 
 		$result = array();
-		foreach ($nodes as $rid => $object) {
+		foreach ($this->_asnodes as $rid => $object) {
 			$result[] = $object->num;
-		}
-		
-		return $result;
-	}
-	
-	public function getWeightOrder($structure) {
-		uasort($structure, array('asvis\lib\OrientObjectMapper', 'cmpByWeight'));
-		
-		$result = array();
-		foreach ($structure as $num => $object) {
-			$result[] = $num;
 		}
 		
 		return $result;
@@ -136,10 +130,6 @@ class OrientObjectMapper {
 	
 	private function cmpByDepth($a, $b) {
 		return $a->depth - $b->depth;
-	}
-	
-	private function cmpByWeight($a, $b) {
-		return $b['count'] - $a['count'];
 	}
 	
 }

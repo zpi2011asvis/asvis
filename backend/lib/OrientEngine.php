@@ -91,11 +91,11 @@ class OrientEngine implements Engine {
 			return null;
 		}
 		
-		$objectMapper = new OrientObjectMapper($result[0], $depth);
-		
+		$objectMapper = new OrientObjectMapper($result[0], $depth);		
 		$asNodes = $objectMapper->getNodes();
 		$asConns = $objectMapper->getConns();
-
+		$depthOrder = $objectMapper->getDepthOrder();
+		
 // 		echo count($asNodes).PHP_EOL;
 // 		echo count($asConns).PHP_EOL;
 // 		H::pre($asNodes);
@@ -104,11 +104,8 @@ class OrientEngine implements Engine {
 // 		die;
 		
 		$connectionsMapper = new OrientConnectionsMapper($asNodes, $asConns);
-		$connectionsMapper->calculateDistances($nodeNum, $depth);
 		$structure = $connectionsMapper->getConnectionsMap();
-
-		$depthOrder = $objectMapper->getDepthOrder($asNodes);
-		$weightOrder = $objectMapper->getWeightOrder($structure);
+		$weightOrder = $connectionsMapper->getWeightOrder();
 		
 		//H::pre($structure);
 		

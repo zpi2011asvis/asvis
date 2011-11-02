@@ -110,7 +110,21 @@ class OrientConnectionsMapper {
 			$this->_structure[$num]['count'] = $count;
 		}
 	}
-
-	public function calculateDistances($root_node, $max_distance) {
+	
+	public function getWeightOrder() {
+		$this->mapConnections();
+		
+		uasort($this->_structure, array('asvis\lib\OrientConnectionsMapper', 'cmpByWeight'));
+		
+		$result = array();
+		foreach ($this->_structure as $num => $object) {
+			$result[] = $num;
+		}
+		
+		return $result;
+	}
+	
+	private function cmpByWeight($a, $b) {
+		return $b['count'] - $a['count'];
 	}
 }
