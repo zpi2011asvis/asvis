@@ -79,7 +79,7 @@ class OrientEngine implements Engine {
 	 */
 	public function structureGraph($nodeNum, $depth) {	
 		
-		$fp = $depth;
+		$fp = $depth * 2;
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
 		$fetchplan = "*:{$fp}";
@@ -96,10 +96,12 @@ class OrientEngine implements Engine {
 		$asNodes = $objectMapper->getNodes();
 		$asConns = $objectMapper->getConns();
 
-		echo count($asNodes).PHP_EOL;
-		echo count($asConns).PHP_EOL;
+// 		echo count($asNodes).PHP_EOL;
+// 		echo count($asConns).PHP_EOL;
 // 		H::pre($asNodes);
 // 		H::pre($asConns);
+		
+// 		die;
 		
 		$connectionsMapper = new OrientConnectionsMapper($asNodes, $asConns);
 		$connectionsMapper->calculateDistances($nodeNum, $depth);

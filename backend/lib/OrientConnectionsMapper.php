@@ -40,7 +40,7 @@ class OrientConnectionsMapper {
 			$this->initStructureRecord($node);
 		}
 		
-		foreach ($this->_asConns as $conn) {
+		foreach ($this->_asConns as $conn) {			
 			$nodeFrom	= $this->getNodeFrom($conn);
 			$nodeTo		= $this->getNodeTo($conn);
 
