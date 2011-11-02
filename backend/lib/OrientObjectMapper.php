@@ -29,33 +29,35 @@ class OrientObjectMapper {
 	
 	public function map() {
 		if(!$this->_isParsed) {
-			$this->mapObject($this->_origin);
+			$this->mapObject($this->_origin, 0);
 			$this->_isParsed = true;
 		}
 	}
 	
-	private function mapObject($object) {
+	private function mapObject($object, $depth) {
 		if(!is_object($object)) {
 			return;
 		}
 		
 		$atClass = '@class';
 		
+		$object->depth = $depth;
+		
 		if($object->$atClass === 'ASNode') {
-			$this->mapNode($object);
+			$this->mapNode($object, $depth);
 		}
 		
 		if($object->$atClass === 'ASConn') {
-			$this->mapConn($object);
+			$this->mapConn($object, $depth);
 		}
 		
 		if($object->$atClass === 'ASPool') {
-			$this->mapPool($object);
+			$this->mapPool($object, $depth);
 		}
 		
 	}
 	
-	private function mapNode($node) {
+	private function mapNode($node, $depth) {
 		if (!isset($node->name) ) {
 			return;
 		}
@@ -67,7 +69,7 @@ class OrientObjectMapper {
 			$in = $node->in;
 		
 			foreach ($in as $conn) {
-				$this->mapObject($conn);
+				$this->mapObject($conn, $depth+1);
 			}
 		}
 		
@@ -75,12 +77,12 @@ class OrientObjectMapper {
 			$out = $node->out;
 		
 			foreach ($out as $conn) {
-				$this->mapObject($conn);
+				$this->mapObject($conn, $depth+1);
 			}
 		}
 	}
 
-	private function mapConn($conn) {
+	private function mapConn($conn, $depth) {
 		if (!isset($conn->up) ) {
 			return;
 		}
@@ -91,18 +93,56 @@ class OrientObjectMapper {
 		if ( isset($conn->in) ) {
 			$in = $conn->in;
 			
-			$this->mapObject($in);
+			$this->mapObject($in, $depth+1);
 		}
 		
 		if ( isset($conn->out) ) {
 			$out = $conn->out;
 			
-			$this->mapObject($out);
+			$this->mapObject($out, $depth+1);
 		}
 	}
 
-	private function mapPool($pool) {
+	private function mapPool($pool, $depth) {
 	// TODO
+	}
+	
+	public function getDepthOrder($nodes) {
+		uasort($nodes, array('asvis\lib\OrientObjectMapper', 'cmpByDepth'));
+
+		$result = array();
+		foreach ($nodes as $rid => $object) {
+			$result[] = $object->num;
+		}
+		
+		return $result;
+	}
+	
+	public function getWeightOrder($structure) {
+		uasort($structure, array('asvis\lib\OrientObjectMapper', 'cmpByWeight'));
+		
+		$result = array();
+		foreach ($structure as $num => $object) {
+			$result[] = $num;
+		}
+		
+		return $result;
+	}
+	
+	private function cmpByDepth($a, $b) {
+		if ($a->depth == $b->depth) {
+			return 0;
+		}
+		 
+		return ($a->depth < $b->depth) ? -1 : 1;
+	}
+	
+	private function cmpByWeight($a, $b) {
+		if ( ((int)$a['count']) == ((int)$b['count']) ) {
+			return 0;
+		}
+			
+		return ( ((int)$a['count']) > ((int)$b['count']) ) ? -1 : 1;
 	}
 	
 }

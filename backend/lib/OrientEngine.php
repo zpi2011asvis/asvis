@@ -107,10 +107,15 @@ class OrientEngine implements Engine {
 		$connectionsMapper->calculateDistances($nodeNum, $depth);
 		$structure = $connectionsMapper->getConnectionsMap();
 
+		$depthOrder = $objectMapper->getDepthOrder($asNodes);
+		$weightOrder = $objectMapper->getWeightOrder($structure);
+		
 		//H::pre($structure);
 		
 		return array(
 			'structure' => $structure,
+			'by_distance' => $depthOrder,
+			'by_connections' => $weightOrder,
 		);
 	}
 	
