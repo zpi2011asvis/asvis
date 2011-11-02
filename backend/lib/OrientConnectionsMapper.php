@@ -36,8 +36,8 @@ class OrientConnectionsMapper {
 			return;
 		}
 		
-		echo 'Nodes: '.count($this->_asNodes).PHP_EOL;
-		echo 'Conns: '.count($this->_asConns).PHP_EOL.PHP_EOL;
+// 		echo 'Nodes: '.count($this->_asNodes).PHP_EOL;
+// 		echo 'Conns: '.count($this->_asConns).PHP_EOL.PHP_EOL;
 		
 		foreach ($this->_asNodes as $node) {
 			$this->initStructureRecord($node);
