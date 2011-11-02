@@ -87,9 +87,6 @@ class OrientEngine implements Engine {
 		$json = $this->_orient->query($query, null, 1, $fetchplan);
 		$result = json_decode($json->getBody())->result;
 		
-//  		H::pre($result);
-//  		die;
-		
 		if (!count($result)) {
 			return null;
 		}
@@ -101,8 +98,8 @@ class OrientEngine implements Engine {
 
 		echo count($asNodes).PHP_EOL;
 		echo count($asConns).PHP_EOL;
-		//H::pre($asNodes);
-		//H::pre($asConns);
+// 		H::pre($asNodes);
+// 		H::pre($asConns);
 		
 		$connectionsMapper = new OrientConnectionsMapper($asNodes, $asConns);
 		$connectionsMapper->calculateDistances($nodeNum, $depth);

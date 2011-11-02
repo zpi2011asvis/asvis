@@ -55,7 +55,7 @@ class OrientConnectionsMapper {
 	
 	private function getNodeFrom($asconn) {
 		$in = $asconn->in;
-
+		
 		if (
 			is_object($in) and
 			array_key_exists($in->num, $this->_structure)
