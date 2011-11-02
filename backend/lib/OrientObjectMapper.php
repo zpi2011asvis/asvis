@@ -53,14 +53,11 @@ class OrientObjectMapper {
 			return;
 		}
 		
-		$this->mapObject($this->_origin, $this->_depth);
+		$this->mapObject($this->_origin);
 		$this->_isParsed = true;
 	}
 	
-	private function mapObject($object, $depth) {
-		if ($depth < 0) {
-			return;
-		}
+	private function mapObject($object) {
 		if (!is_object($object)) {
 			return;
 		}
@@ -70,68 +67,64 @@ class OrientObjectMapper {
 		$objectClass = $object->$atClass;
 		
 		if ($objectClass === 'ASNode') {
-			$this->mapNode($object, $depth);
+			$this->mapNode($object);
 		}
 		
 		if ($objectClass === 'ASConn') {
-			$this->mapConn($object, $depth);
+			$this->mapConn($object);
 		}
 	}
 	
-	private function mapNode($asnode, $depth) {
+	private function mapNode($asnode) {
 		if (!is_object($asnode)) {
 			throw new \Exception('Thought it was redundant');
 			return;
 		}
-	
-		$atRID = '@rid';
 		
-		$this->_asNodes[$asnode->$atRID] = $asnode;
-	
-		/*
-		// I threw inconns out from fetch plan
-		// we hopefully don't need them
-		if (isset($asnode->in)) {
-			$in = $asnode->in;
-	
-			foreach ($in as $object) {
-				$this->mapObject($object, $depth);
+		if( (isset($asnode->in) || isset($asnode->out)) ) {
+			$atRID = '@rid';
+			$this->_asNodes[$asnode->$atRID] = $asnode;
+			
+			if (isset($asnode->in)) {
+				$in = $asnode->in;
+			
+				foreach ($in as $object) {
+					$this->mapObject($object);
+				}
 			}
-		}*/
-	
-		if (isset($asnode->out)) {
-			$out = $asnode->out;
-	
-			foreach ($out as $object) {
-				$this->mapObject($object, $depth);
+			
+			if (isset($asnode->out)) {
+				$out = $asnode->out;
+			
+				foreach ($out as $object) {
+					$this->mapObject($object);
+				}
 			}
+		} else {
+			// obiekt niewypełniony, nic do zrobienia
 		}
 	}
 	
-	private function mapConn($asconn, $depth) {
+	private function mapConn($asconn) {
 		if (!is_object($asconn)) {
 			throw new \Exception('Thought it was redundant');
 			return;
 		}
 	
-		$atRID = '@rid';
-	
-		// We push connection without checking if it goes to node which fits
-		// into given depth.
-		// This can gives us to much connections, but we need them because
-		// we don't know if they link leafs or not.
-		// OrientConnectionsMapper takes this into account.
-		$this->_asConns[$asconn->$atRID] = $asconn;
-	
-		/*
-		// probably don't need this - we traverse only by out fields
-		if (isset($asconn->in)) {
-			$this->mapObject($asconn->in, $depth);
-		}
-		*/
-	
-		if (isset($asconn->out)) {
-			$this->mapObject($asconn->out, $depth - 1);
+		
+		if( (isset($asnode->in) || isset($asnode->out)) ) {
+			$atRID = '@rid';
+			$this->_asConns[$asconn->$atRID] = $asconn;
+			
+			if (isset($asconn->in)) {
+				$this->mapObject($asconn->out);
+			}
+			
+			if (isset($asconn->out)) {
+				$this->mapObject($asconn->out);
+			}
+		} else {
+			// obiekt niewypełniony - nic do zrobienia
 		}
 	
 	}
