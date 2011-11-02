@@ -36,17 +36,22 @@ class OrientConnectionsMapper {
 			return;
 		}
 		
+		echo 'Nodes: '.count($this->_asNodes).PHP_EOL;
+		echo 'Conns: '.count($this->_asConns).PHP_EOL.PHP_EOL;
+		
 		foreach ($this->_asNodes as $node) {
 			$this->initStructureRecord($node);
 		}
 		
-		foreach ($this->_asConns as $conn) {			
-			$nodeFrom	= $this->getNodeFrom($conn);
-			$nodeTo		= $this->getNodeTo($conn);
-
-			if ($nodeFrom !== null and $nodeTo !== null) {
-				$dir = $conn->up ? 'up' : 'down';
-				$this->_structure[$nodeFrom->num][$dir][] = $nodeTo->num;
+		if(is_array($this->_asConns)) {
+			foreach ($this->_asConns as $conn) {			
+				$nodeFrom	= $this->getNodeFrom($conn);
+				$nodeTo		= $this->getNodeTo($conn);
+	
+				if ($nodeFrom !== null and $nodeTo !== null) {
+					$dir = $conn->up ? 'up' : 'down';
+					$this->_structure[$nodeFrom->num][$dir][] = $nodeTo->num;
+				}
 			}
 		}
 

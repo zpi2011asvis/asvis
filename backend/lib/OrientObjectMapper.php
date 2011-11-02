@@ -104,7 +104,7 @@ class OrientObjectMapper {
 	private function mapPool($pool) {
 	// TODO
 	}
-
+	
 }
 
 
