@@ -104,17 +104,7 @@ class OrientObjectMapper {
 			$this->mapObject($out, $depth+1);
 		}
 	}
-
-	private function mapPool($pool, $depth) {
-		// TODO
-		// po co to? na pewno to potrzebne? przecież mapujemy strukturę
-	}
 	
-	/*
-	 * Nie rozumiem dlaczego getDepthOrder przyjmuje nodes, a getWeightOrder structure
-	 * W dodatku dlaczego w ogóle muszą coś przyjmować, a nie mogą działać na tym co mają w asNodes
-	 * Chyba, że potrzebują tego co jest w connection mapperze - wtedy powinny być w tamtej klasie
-	 */
 	public function getDepthOrder() {
 		$this->map();
 		
