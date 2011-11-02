@@ -25,6 +25,9 @@ class OrientObjectMapper {
 		$this->_asNodes = array();
 		$this->_depth = $depth;
 
+// 		H::pre($origin);
+// 		echo PHP_EOL.PHP_EOL.PHP_EOL;
+		
 		if (is_null($origin)) {
 			$this->_isParsed = true;
 		} else {
@@ -61,7 +64,7 @@ class OrientObjectMapper {
 		if (!is_object($object)) {
 			return;
 		}
-
+		
 		$atClass	= '@class';
 		$atRID		= '@rid';
 		$objectClass = $object->$atClass;
@@ -80,13 +83,15 @@ class OrientObjectMapper {
 			throw new \Exception('Thought it was redundant');
 			return;
 		}
-		
-		if( (isset($asnode->in) || isset($asnode->out)) ) {
+
+		if( isset($asnode->name) ) {
 			$atRID = '@rid';
 			$this->_asNodes[$asnode->$atRID] = $asnode;
 			
 			if (isset($asnode->in)) {
 				$in = $asnode->in;
+				
+				echo 'W [in] jest '.count($in).' obiektów'.PHP_EOL;
 			
 				foreach ($in as $object) {
 					$this->mapObject($object);
@@ -95,12 +100,15 @@ class OrientObjectMapper {
 			
 			if (isset($asnode->out)) {
 				$out = $asnode->out;
+				
+				echo 'W [out] jest '.count($out).' obiektów'.PHP_EOL;
 			
 				foreach ($out as $object) {
 					$this->mapObject($object);
 				}
 			}
 		} else {
+			echo ' empty node ';
 			// obiekt niewypełniony, nic do zrobienia
 		}
 	}
@@ -112,7 +120,7 @@ class OrientObjectMapper {
 		}
 	
 		
-		if( (isset($asnode->in) || isset($asnode->out)) ) {
+		if( isset($asconn->up) ) {
 			$atRID = '@rid';
 			$this->_asConns[$asconn->$atRID] = $asconn;
 			
@@ -124,6 +132,7 @@ class OrientObjectMapper {
 				$this->mapObject($asconn->out);
 			}
 		} else {
+			echo ' empty connection '.PHP_EOL;
 			// obiekt niewypełniony - nic do zrobienia
 		}
 	
