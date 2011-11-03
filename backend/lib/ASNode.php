@@ -52,7 +52,7 @@ class ASNode {
 	 */
 	public function __construct() {
 		$this->rid	= '';
-		$this->num	= 0;
+		$this->num	= null;
 		$this->name	= '';
 		
 		$this->out	= array();
@@ -63,7 +63,22 @@ class ASNode {
 	}
 	
 	/**
-	 * Oblicza wagę węzła.
+	 * Konstruktor wypełniający pola klasy
+	 */
+	public function __construct($rid, $num, $name, $out, $in, $weight, $distance) {
+		$this->rid	= $rid;
+		$this->num	= $num;
+		$this->name	= $name;
+		
+		$this->out	= $out;
+		$this->in	= $in;
+		
+		$this->weight	= $weight;
+		$this->distance	= $distance;
+	}
+	
+	/**
+	 * Oblicza wagę węzła
 	 */
 	public function calculateWeight() {
 		$this->weight = count($this->out) + count($this->in);
