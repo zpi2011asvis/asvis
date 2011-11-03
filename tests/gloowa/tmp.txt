@@ -1,0 +1,14 @@
+{
+	"@type": "d", "@rid": "#5:0", "@version": 2, "@class": "ASNode", 
+	"num": 0, 
+	"name": "AS0", 
+	"up": [
+		{
+			"@type": "d", "@rid": "#5:1", "@version": 2, "@class": "ASNode", 
+			"num": 1, 
+			"name": "AS1", 
+			"up": [], 
+			"in": ["#5:0"]
+		}, "#5:2"], 
+	"in": ["#5:2"]
+}
