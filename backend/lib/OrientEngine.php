@@ -3,6 +3,7 @@
 namespace asvis\lib;
 
 require_once 'Engine.php';
+require_once 'GraphAlgorithms.php';
 require_once 'OrientObjectMapper.php';
 require_once 'OrientConnectionsMapper.php';
 require_once 'H.php';
@@ -19,6 +20,7 @@ use Congow\Orient\Query as Query;
 use asvis\lib\OrientConnectionsMapper as OrientConnectionsMapper;
 use asvis\lib\OrientObjectMapper as OrientObjectMapper;
 use asvis\lib\Engine as Engine;
+use asvis\lib\GraphAlgorithms as GraphAlgorithms;
 use asvis\lib\H as H;
 
 class OrientEngine implements Engine {
@@ -143,11 +145,112 @@ class OrientEngine implements Engine {
 	 * (non-PHPdoc)
 	 * @see asvis\lib.Engine::structureTree()
 	 */
-	public function structureTree($nodeNum, $depth) {
+	public function structureTree($nodeNum, $height) {
 		
+		//przykładowe dane do testów
+		$structure = array(
+			1 => array(
+				'up' => array(2, 3, 4, 5, 6),
+				'down' => array(2, 3, 5),
+				'distance' => 0,
+				'count' => 8
+			),
+			2 => array(
+				'up' => array(1, 7, 8),
+				'down' => array(),
+				'distance' => 1,
+				'count' => 3
+			),
+			3 => array(
+				'up' => array(9),
+				'down' => array(),
+				'distance' => 1,
+				'count' => 1
+			),
+			4 => array(
+				'up' => array(3, 10),
+				'down' => array(),
+				'distance' => 1,
+				'count' => 2
+			),
+			5 => array(
+				'up' => array(11, 12),
+				'down' => array(),
+				'distance' => 1,
+				'count' => 2
+			),
+			6 => array(
+				'up' => array(),
+				'down' => array(),
+				'distance' => 1,
+				'count' => 0
+			),
+			7 => array(
+				'up' => array(),
+				'down' => array(),
+				'distance' => 2,
+				'count' => 0
+			),
+			8 => array(
+				'up' => array(),
+				'down' => array(),
+				'distance' => 2,
+				'count' => 0
+			),
+			9 => array(
+				'up' => array(),
+				'down' => array(),
+				'distance' => 2,
+				'count' => 0
+			),
+			10 => array(
+				'up' => array(),
+				'down' => array(),
+				'distance' => 2,
+				'count' => 0
+			),
+			11 => array(
+				'up' => array(),
+				'down' => array(13),
+				'distance' => 2,
+				'count' => 1
+			),
+			12 => array(
+				'up' => array(14, 15),
+				'down' => array(),
+				'distance' => 2,
+				'count' => 2
+			),
+			13 => array(
+				'up' => array(),
+				'down' => array(),
+				'distance' => 3,
+				'count' => 0
+			),
+			14 => array(
+				'up' => array(),
+				'down' => array(15),
+				'distance' => 3,
+				'count' => 0
+			),
+			15 => array(
+				'up' => array(),
+				'down' => array(),
+				'distance' => 3,
+				'count' => 0
+			),
+		);
+		
+		$graphAlgorithms = new GraphAlgorithms($structure);
+		
+		return $graphAlgorithms->getTree($height, 'up');
 	}
 	
 }
+
+echo 'WYNIK: <pre>';
+$Engine = new OrientEngine();
+print_r($Engine->structureTree(0, 3));
 
 
 

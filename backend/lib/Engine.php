@@ -42,8 +42,8 @@ interface Engine {
 	 * includes only nodes with single incoming link.
 	 * 
 	 * @param int $nodeNum
-	 * @param int $depth
+	 * @param int $height
 	 */
-	public function structureTree($nodeNum, $depth);
+	public function structureTree($nodeNum, $height);
 	
 }
