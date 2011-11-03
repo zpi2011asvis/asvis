@@ -1,8 +1,8 @@
 <?php
 
-namespace asvis\lib;
+namespace asvis\lib\orient;
 
-class ASNode {
+class Node {
 	
 	/**
 	 * Resource IDentifier z Orienta
@@ -45,22 +45,6 @@ class ASNode {
 	 * @var unknown_type
 	 */
 	public $weight;
-	
-// 	/**
-// 	 * Konstruktor domyślny - wypełnia pola
-// 	 * klasy pustymi stringami, zerami itd.
-// 	 */
-// 	public function __construct() {
-// 		$this->rid	= '';
-// 		$this->num	= null;
-// 		$this->name	= '';
-		
-// 		$this->out	= array();
-// 		$this->in	= array();
-		
-// 		$this->weight	= 0;
-// 		$this->distance	= 0;
-// 	}
 	
 	/**
 	 * Konstruktor wypełniający pola klasy
