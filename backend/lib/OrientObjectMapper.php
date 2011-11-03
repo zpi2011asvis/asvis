@@ -6,9 +6,9 @@ class OrientObjectMapper {
 	
 	private $_origin;
 	
-	private $_asnodes;
+	private $_asNodes;
 	
-	private $_asconns;
+	private $_asConns;
 	
 	private $_isParsed;
 	
@@ -19,59 +19,50 @@ class OrientObjectMapper {
 	
 	public function getNodes() {
 		$this->map();
-		return $this->_asnodes;
+		return $this->_asNodes;
 	}
 	
 	public function getConns() {
 		$this->map();
-		return $this->_asconns;
+		return $this->_asConns;
 	}
 	
 	public function map() {
 		if (!$this->_isParsed) {
-			$this->mapObject($this->_origin, 0);
+			$this->mapObject($this->_origin);
 			$this->_isParsed = true;
 		}
 	}
 	
-	private function mapObject($object, $depth) {
+	private function mapObject($object) {
 		if (!is_object($object)) {
 			return;
 		}
 		
 		$atClass = '@class';
 		
-		$object->depth = $depth;
-		
 		if ($object->$atClass === 'ASNode') {
-			$this->mapNode($object, $depth);
+			$this->mapNode($object);
 		}
 		elseif ($object->$atClass === 'ASConn') {
-			$this->mapConn($object, $depth);
+			$this->mapConn($object);
 		}
-		/* po co to tu?
-		elseif ($object->$atClass === 'ASPool') {
-			$this->mapPool($object, $depth);
-		}*/
-		
 	}
 	
-	private function mapNode($node, $depth) {
-		if (!isset($node->name)) {
+	private function mapNode($node) {
+		// skip nodes that were somewere else in what orientdb returned
+		if (!isset($node->num)) {
 			return;
 		}
 		
 		$atRID = '@rid';
-		$this->_asnodes[$node->$atRID] = $node;
+		$this->_asNodes[$node->$atRID] = $node;
 		
-		/*
-		 * Przywracam ponieważ bez tego 3/4 nodów brakuje w wynikach
-		 */
 		if (isset($node->in)) {
 			$in = $node->in;
 		
 			foreach ($in as $conn) {
-				$this->mapObject($conn, $depth+1);
+				$this->mapObject($conn);
 			}
 		}
 		
@@ -79,47 +70,31 @@ class OrientObjectMapper {
 			$out = $node->out;
 		
 			foreach ($out as $conn) {
-				$this->mapObject($conn, $depth+1);
+				$this->mapObject($conn);
 			}
 		}
 	}
 
-	private function mapConn($conn, $depth) {
-		if (!isset($conn->up)) {
+	private function mapConn($conn) {
+		// skip conns that were somewere else in what orientdb returned
+		if (!isset($conn->out)) {
 			return;
 		}
 		
 		$atRID = '@rid';
-		$this->_asconns[$conn->$atRID] = $conn;
+		$this->_asConns[$conn->$atRID] = $conn;
 		
 		if (isset($conn->in)) {
 			$in = $conn->in;
 			
-			$this->mapObject($in, $depth+1);
+			$this->mapObject($in);
 		}
 		
 		if (isset($conn->out)) {
 			$out = $conn->out;
 			
-			$this->mapObject($out, $depth+1);
+			$this->mapObject($out);
 		}
-	}
-	
-	public function getDepthOrder() {
-		$this->map();
-		
-		uasort($this->_asnodes, array('asvis\lib\OrientObjectMapper', 'cmpByDepth'));
-
-		$result = array();
-		foreach ($this->_asnodes as $rid => $object) {
-			$result[] = $object->num;
-		}
-		
-		return $result;
-	}
-	
-	private function cmpByDepth($a, $b) {
-		return $a->depth - $b->depth;
 	}
 	
 }

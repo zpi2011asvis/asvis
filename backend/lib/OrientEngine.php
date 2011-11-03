@@ -79,7 +79,7 @@ class OrientEngine implements Engine {
 	 */
 	public function structureGraph($nodeNum, $depth) {	
 		
-		$fp = $depth * 2;
+		$fp = $depth * 2 + 1;
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
 		$fetchplan = "*:{$fp} ASNode.pools:0 ASNode.in:0";
@@ -90,25 +90,27 @@ class OrientEngine implements Engine {
 		if (!count($result)) {
 			return null;
 		}
+
+//		H::pre($result);
 		
-		$objectMapper = new OrientObjectMapper($result[0], $depth);		
-		$asNodes = $objectMapper->getNodes();
-		$asConns = $objectMapper->getConns();
-		$depthOrder = $objectMapper->getDepthOrder();
+		$objectMapper = new OrientObjectMapper($result[0]);		
 		
+//		$asNodes = $objectMapper->getNodes();
+//		$asConns = $objectMapper->getConns();
 // 		echo count($asNodes).PHP_EOL;
 // 		echo count($asConns).PHP_EOL;
 // 		H::pre($asNodes);
 // 		H::pre($asConns);
-		
-		$connectionsMapper = new OrientConnectionsMapper($asNodes, $asConns);
+	
+		$connectionsMapper = new OrientConnectionsMapper($objectMapper, $nodeNum);
 		$structure = $connectionsMapper->getConnectionsMap();
 		$weightOrder = $connectionsMapper->getWeightOrder();
-		
+		$distanceOrder = $connectionsMapper->getDistanceOrder();
+
 		return array(
 			'structure' => $structure,
-			'by_distance' => $depthOrder,
-			'by_connections' => $weightOrder,
+			'distance_order' => $distanceOrder,
+			'weight_order' => $weightOrder,
 		);
 	}
 	

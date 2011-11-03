@@ -1,10 +1,10 @@
 connect remote:localhost/asvis admin admin 
 
-INSERT INTO ASNode (num) VALUES (0);
-INSERT INTO ASNode (num) VALUES (1);
-INSERT INTO ASNode (num) VALUES (2);
-INSERT INTO ASNode (num) VALUES (3);
-INSERT INTO ASNode (num) VALUES (4);
+INSERT INTO ASNode (num, name) VALUES (0, 'AS0');
+INSERT INTO ASNode (num, name) VALUES (1, 'AS1');
+INSERT INTO ASNode (num, name) VALUES (2, 'AS2');
+INSERT INTO ASNode (num, name) VALUES (3, 'AS3');
+INSERT INTO ASNode (num, name) VALUES (4, 'AS4');
 
 INSERT INTO ASConn (in, out, up) VALUES (#5:0, #5:1, true);
 INSERT INTO ASConn (in, out, up) VALUES (#5:0, #5:2, true);
