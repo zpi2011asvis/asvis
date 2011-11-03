@@ -8,19 +8,19 @@ class ASNode {
 	 * Resource IDentifier z Orienta
 	 * @var string
 	 */
-	public $rid;
+	private $rid;
 	
 	/**
 	 * Numer Systemu Autonomicznego
 	 * @var int
 	 */
-	public $num;
+	private $num;
 	
 	/**
 	 * Nazwa Systemu Autonomicznego
 	 * @var string
 	 */
-	public $name;
+	private $name;
 	
 	/**
 	 * Połączenia wychodzące
@@ -46,26 +46,26 @@ class ASNode {
 	 */
 	public $weight;
 	
-	/**
-	 * Konstruktor domyślny - wypełnia pola
-	 * klasy pustymi stringami, zerami itd.
-	 */
-	public function __construct() {
-		$this->rid	= '';
-		$this->num	= null;
-		$this->name	= '';
+// 	/**
+// 	 * Konstruktor domyślny - wypełnia pola
+// 	 * klasy pustymi stringami, zerami itd.
+// 	 */
+// 	public function __construct() {
+// 		$this->rid	= '';
+// 		$this->num	= null;
+// 		$this->name	= '';
 		
-		$this->out	= array();
-		$this->in	= array();
+// 		$this->out	= array();
+// 		$this->in	= array();
 		
-		$this->weight	= 0;
-		$this->distance	= 0;
-	}
+// 		$this->weight	= 0;
+// 		$this->distance	= 0;
+// 	}
 	
 	/**
 	 * Konstruktor wypełniający pola klasy
 	 */
-	public function __construct($rid, $num, $name, $out, $in, $weight, $distance) {
+	public function __construct($rid = null, $num = null, $name = null, $out = null, $in = null, $weight = null, $distance = null) {
 		$this->rid	= $rid;
 		$this->num	= $num;
 		$this->name	= $name;
@@ -82,6 +82,20 @@ class ASNode {
 	 */
 	public function calculateWeight() {
 		$this->weight = count($this->out) + count($this->in);
+	}
+	
+	public function __get($name) {
+		if(isset($this->$name)) {
+			return $this->$name;
+		} else {
+			return null;
+		}
+	}
+	
+	public function __set($name, $value) {
+		if(isset($this->$name)) {
+			$this->$name = $value;
+		}
 	}
 	
 }
