@@ -23,14 +23,14 @@ Kolejność działań:
 
 ### \asvis\lib\orient\ObjectsMapper
 
-Zwraca AS\Graph
+Przyjmuje wynik działania `json_decode()` i zwraca Graph.
 
 Kolejność działań:
 
 1. przepisanie drzewiastej struktury na strukturę `array(rid{string} => Node)`
     * AS\Node jednak ma tablice in i out zawierające ridy
 2. przepisanie tablicy na porządaną wynikową (in, out zawierające inty (numy) i indeksowaną po numach)
-3. `return new AS\Graph($structure)`
+3. `return new Graph($structure)`
 
 ### \asvis\lib\orient\Structure
 
