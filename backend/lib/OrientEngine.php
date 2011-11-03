@@ -81,63 +81,38 @@ class OrientEngine implements Engine {
 	 */
 	public function structureGraph($nodeNum, $depth) {	
 		
-		/*
-		 * this fetch plans will return too much asnodes
-		 * so object mapper should also have in mind given depth
-		 * and remove redundant nodes
-		 */		 
-		switch ($depth) {
-			// root only
-			case 1:
-				$fp = 1;
-				break;
-			// root, children and conns between them (also between children)
-			case 2:
-				$fp = 8;
-				break;
-			/*
-			// this results I got for test db (tests/reinmar/test_db.sql)
-			case 3:
-				$depth = 16;
-				break;
-			case 4:
-				$depth = 20;
-				break;
-			*/
-			default: 
-				$fp = ($depth + 1) * 4;
-				break;
-		}
+		$fp = $depth * 2 + 1;
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
-		$fetchplan = "*:{$fp} ASNode.in:0 ASNode.pools:0";
+		$fetchplan = "*:{$fp} ASNode.pools:0 ASNode.in:0";
 		
 		$json = $this->_orient->query($query, null, 1, $fetchplan);
 		$result = json_decode($json->getBody())->result;
-		
- 		//H::pre($result);
-		
+
 		if (!count($result)) {
 			return null;
 		}
-		$objectMapper = new OrientObjectMapper($result[0], $depth);
-		
-		$asNodes = $objectMapper->getNodes();
-		$asConns = $objectMapper->getConns();
 
-		//echo count($asNodes).PHP_EOL;
-		//echo count($asConns).PHP_EOL;
-		//H::pre($asNodes);
-		//H::pre($asConns);
+//		H::pre($result);
 		
-		$connectionsMapper = new OrientConnectionsMapper($asNodes, $asConns);
-		$connectionsMapper->calculateDistances($nodeNum, $depth);
+		$objectMapper = new OrientObjectMapper($result[0]);		
+		
+//		$asNodes = $objectMapper->getNodes();
+//		$asConns = $objectMapper->getConns();
+// 		echo count($asNodes).PHP_EOL;
+// 		echo count($asConns).PHP_EOL;
+// 		H::pre($asNodes);
+// 		H::pre($asConns);
+	
+		$connectionsMapper = new OrientConnectionsMapper($objectMapper, $nodeNum);
 		$structure = $connectionsMapper->getConnectionsMap();
+		$weightOrder = $connectionsMapper->getWeightOrder();
+		$distanceOrder = $connectionsMapper->getDistanceOrder();
 
-		//H::pre($structure);
-		
 		return array(
 			'structure' => $structure,
+			'distance_order' => $distanceOrder,
+			'weight_order' => $weightOrder,
 		);
 	}
 	

@@ -23,12 +23,17 @@
 			action_performed: null
 		},
 		_renderer: null,
+		_mouse_pos: { x: 0, y: 0 }, //axis - x right, y down
 
 		_init: function _init() {
 			this.signals.resized = new Signal();
 			this.signals.scrolled = new Signal();
 			this.signals.dragged = new Signal();
 			this.signals.action_performed = new Signal();
+		},
+			
+		getMousePos: function () {
+			return this._mouse_pos;
 		},
 
 		render: function render() {
@@ -53,7 +58,7 @@
 			});
 
 			that._el.onscroll(function (event, down) {
-				that.signals.scrolled.dispatch(down);
+				that.signals.scrolled.dispatch(down, that._mouse_pos);
 				that.signals.action_performed.dispatch();
 			});
 
@@ -64,6 +69,7 @@
 			});
 
 			that._el.on('mousemove', function (event) {
+				that._mouse_pos = { x: event.layerX, y: event.layerY };
 				that.signals.action_performed.dispatch();
 			});
 

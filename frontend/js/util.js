@@ -4,7 +4,9 @@ this.util = {};
 	'use strict';
 
 	var requestAnimationFrame,
-		classy;
+		classy,
+		rad2Deg,
+		deg2Rad;
 
 	(function () {
 		var superMerge = function superMerge(parent, child) {
@@ -73,8 +75,22 @@ this.util = {};
 		}
 	}());
 
+	(function () {
+		var s = Math.PI * 2 / 360,
+			si = 1 / s;	
+
+		rad2Deg = function rad2Deg(rad) {
+			return rad * si;
+		};
+
+		deg2Rad = function deg2Rad(deg) {
+			return deg * s;
+		};
+	}());
 
 	exports.classy = classy;
 	exports.requestAnimationFrame = requestAnimationFrame;
+	exports.rad2Deg = rad2Deg;
+	exports.deg2Rad = deg2Rad;
 
 }.call({}, this.util, this));

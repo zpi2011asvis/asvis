@@ -13,14 +13,17 @@ class OrientConnectionsMapper {
 	 * @var array()
 	 */
 	private $_asNodes;
+
+	private $_rootNum;
 	
 	private $_isParsed;
 	
 	private $_structure;
 	
-	public function __construct($nodes, $conns) {
-		$this->_asNodes = $nodes;
-		$this->_asConns = $conns;
+	public function __construct($objectMapper, $rootNum) {
+		$this->_asNodes = $objectMapper->getNodes();
+		$this->_asConns = $objectMapper->getConns();
+		$this->_rootNum = $rootNum;
 		
 		$this->_isParsed = false;
 		$this->_structure = null;
@@ -40,72 +43,109 @@ class OrientConnectionsMapper {
 			$this->initStructureRecord($node);
 		}
 		
-		foreach ($this->_asConns as $conn) {
-			$nodeFrom	= $this->getNodeFrom($conn);
-			$nodeTo		= $this->getNodeTo($conn);
-
-			if ($nodeFrom !== null and $nodeTo !== null) {
-				$dir = $conn->up ? 'up' : 'down';
-				$this->_structure[$nodeFrom->num][$dir][] = $nodeTo->num;
+		if (is_array($this->_asConns)) {
+			foreach ($this->_asConns as $conn) {
+				$nodeFrom	= $this->getNodeFromConn($conn, 'in');
+				$nodeTo		= $this->getNodeFromConn($conn, 'out');
+	
+				if ($nodeFrom !== null and $nodeTo !== null) {
+					$dir = $conn->up ? 'up' : 'down';
+					array_push($this->_structure[$nodeFrom->num]->$dir, $nodeTo->num);
+				}
 			}
 		}
 
 		$this->countConnections();
-	}
-	
-	private function getNodeFrom($asconn) {
-		$in = $asconn->in;
+		$this->calculateDistances();
 
-		if (
-			is_object($in) and
-			array_key_exists($in->num, $this->_structure)
-		) {
-			return $in;
-		}
-		elseif (
-			is_string($in) and
-			array_key_exists($in, $this->_asNodes)
-		) {
-			return $this->_asNodes[$in];
-		}
-		
-		return null;
+		$this->_isParsed = true;
 	}
-	
-	private function getNodeTo($asconn) {
-		$out = $asconn->out;
 
-		if (
-			is_object($out) and
-			array_key_exists($out->num, $this->_structure)
-		) {
-			return $out;
+	/*
+	 * @param $dir ('in', 'out')
+	 */
+	private function getNodeFromConn($asconn, $dir) {
+		$node = $asconn->$dir;
+		$atRID = '@rid';
+		$rid = null;
+
+		if (is_object($node)) {
+			$rid = $node->$atRID;
 		}
-		elseif (
-			is_string($out) and
-			array_key_exists($out, $this->_asNodes)
-		) {
-			return $this->_asNodes[$out];
+		else {
+			$rid = $node;
+		}
+
+		if (array_key_exists($rid, $this->_asNodes)) {
+			return $this->_asNodes[$rid];
 		}
 		
 		return null;
 	}
 	
 	private function initStructureRecord($node) {
-		$this->_structure[$node->num] = array(
-			'up' => array(),
-			'down' => array(),
-			'count' => 0
-		);
+		$obj = new \StdClass;
+		$obj->up = array();
+		$obj->down = array();
+		$obj->weight = 0;
+		$obj->distance = null;
+
+		$this->_structure[$node->num] = $obj;
 	}
 	
 	private function countConnections() {
 		foreach ($this->_structure as $num => $node) {
-			$count = count($node['up']) + count($node['down']);
-			$this->_structure[$num]['count'] = $count;
+			$count = count($node->up) + count($node->down);
+			$this->_structure[$num]->weight = $count;
 		}
 	}
 
-	public function calculateDistances($root_node, $max_distance) {
+	private function calculateDistances() {
+		$heap = array();
+		
+		// begin from root node
+		$heap[] = array('node' => $this->_structure[$this->_rootNum], 'distance' => 0);
+
+		while (count($heap) > 0) {
+			$current = array_shift($heap);
+			$node = $current['node'];
+			$distance = $current['distance'];
+			
+			if (is_null($node->distance)) {
+				$node->distance = $distance;
+				$distance += 1;
+				foreach ($node->up as $num) {
+					$heap[] = array('node' => $this->_structure[$num], 'distance' => $distance);
+				}
+				foreach ($node->down as $num) {
+					$heap[] = array('node' => $this->_structure[$num], 'distance' => $distance);
+				}
+			}
+		}
 	}
+	
+	public function getWeightOrder() {
+		$this->mapConnections();
+		
+		uasort($this->_structure, array('asvis\lib\OrientConnectionsMapper', 'cmpByWeight'));
+		
+		return array_keys($this->_structure);
+	}
+
+	public function getDistanceOrder() {
+		$this->mapConnections();
+		
+		uasort($this->_structure, array('asvis\lib\OrientConnectionsMapper', 'cmpByDistance'));
+	
+		return array_keys($this->_structure);
+	}
+	
+	private function cmpByDistance($a, $b) {
+		return $a->distance - $b->distance;
+	}
+	
+	private function cmpByWeight($a, $b) {
+		return $b->weight - $a->weight;
+	}
+	
 }
