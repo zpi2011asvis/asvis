@@ -12,7 +12,6 @@ class NewImporter {
 	protected $_db = null;
 	protected $_asrids = null;
 
-	// -1 to disable limits
 	const LIMIT_CONNS = -1;
 
 	function __construct($doImport = false) {
@@ -31,15 +30,12 @@ class NewImporter {
 
 		$this->_insertASNodes();
 		
-		$this->_loadConns();
-		
-// 		var_dump($this->_asrids);
-// 		die;
-		
+		$this->_loadConns();		
 		$this->_insertASPools();
 		
-		
 		$this->_updateASNodes();
+		
+		// TODO insert ASConns
 	}
 
 	protected function _deleteAll() {
@@ -251,11 +247,11 @@ class NewImporter {
 		$inList		= implode(',', $connIn);
 		$poolList	= implode(',', $pools);
 		
+		$query = "UPDATE {$asNodeRID} SET in = [{$inList}], out = [{$outList}], pools = [{$poolList}]";
+		echo PHP_EOL.$query;
+		
 		try {
-			$result = $this->_db->command(
-				OrientDB::COMMAND_QUERY,
-				"UPDATE {$asNodeRID} SET in = [{$inList}], out = [{$outList}], pools = [{$poolList}]"
-			);
+			$result = $this->_db->command(OrientDB::COMMAND_QUERY, $query);
 		} catch (OrientDBException $e) {
 			echo $e->getMessage() . PHP_EOL;
 		}
