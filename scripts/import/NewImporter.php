@@ -11,6 +11,7 @@ class NewImporter {
 	protected $_poolClusterID = null;
 	protected $_db = null;
 	protected $_asrids = null;
+	protected $_asconns = null;
 
 	const LIMIT_CONNS = -1;
 
@@ -125,6 +126,16 @@ class NewImporter {
 		echo PHP_EOL . 'ASNode UPDATE(s) finished in '. ($timeEnd - $timeBegin) . 's.' . PHP_EOL;
 	}
 	
+	protected function _insertASConns() {
+		echo PHP_EOL . 'Beginning ASConn INSERT(s).' . PHP_EOL;
+		$timeBegin = microtime(true);
+		
+		// TODO this
+		
+		$timeEnd = microtime(true);
+		echo PHP_EOL . 'ASConn INSERT(s) finished in '. ($timeEnd - $timeBegin) . 's.' . PHP_EOL;
+	}
+	
 	protected function _connect2OrientDB() {
 		echo 'Connecting to server...' . PHP_EOL;
 		
@@ -205,6 +216,11 @@ class NewImporter {
 			
 			$this->_asrids[$asnum]['out'][] = $to;
 			$this->_asrids[$asnumdir]['in'][] = $from;
+			
+			$this->_asconns[$dir][] = array(
+				'from'	=> $from,
+				'to'	=> $to
+			);
 		}
 	}
 
