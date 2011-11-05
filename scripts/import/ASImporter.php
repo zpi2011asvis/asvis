@@ -38,9 +38,9 @@ class ASImporter {
 		echo PHP_EOL .'OrientDB now ready for import.'. PHP_EOL;
 		
 		$this->_insertASNodes();
+		$this->_updateASNodes();
 		$this->_insertASConns();
 		$this->_insertASPools();
-		$this->_updateASNodes();
 	}
 
 	protected function _connect2OrientDB() {
