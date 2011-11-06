@@ -12,7 +12,7 @@ class NewImporter {
 	protected $_db = null;
 	protected $_asrids = null;
 	protected $_asconns = null;
-	protected $_conns = null;
+	protected $_connStatuses = null;
 
 	const LIMIT_CONNS = -1;
 
@@ -37,7 +37,7 @@ class NewImporter {
 		
 		$this->_updateASNodes();
 		
-		// TODO insert ASConns
+		$this->_insertASConns();
 	}
 
 	protected function _deleteAll() {
@@ -131,7 +131,32 @@ class NewImporter {
 		echo PHP_EOL . 'Beginning ASConn INSERT(s).' . PHP_EOL;
 		$timeBegin = microtime(true);
 		
-		// TODO this
+		$this->_connStatuses = array();
+		
+		foreach ($this->_asconns['up'] as $conn) {
+			$this->_connStatuses[$conn['from']][$conn['to']]['up'] = true;
+			$this->_connStatuses[$conn['from']][$conn['to']]['down'] = false;
+		}
+		
+		foreach ($this->_asconns['down'] as $conn) {
+			$this->_connStatuses[$conn['from']][$conn['to']]['down'] = true;
+			if (!isset($this->_connStatuses[$conn['from']][$conn['to']]['up'])) {
+				$this->_connStatuses[$conn['from']][$conn['to']]['up'] = false;
+			}
+		}
+		
+		foreach ($this->_connStatuses as $from => $data) {
+			foreach ($data as $to => $status) {
+				$statusNum = 0;
+				if (($status['up'] === true) && ($status['down'] !== false)) {
+					$statusNum == 2;
+				} else {
+					$statusNum == 1;
+				}
+				
+				$this->_insertASConn($from, $to, $statusNum);
+			}
+		}
 		
 		$timeEnd = microtime(true);
 		echo PHP_EOL . 'ASConn INSERT(s) finished in '. ($timeEnd - $timeBegin) . 's.' . PHP_EOL;
@@ -276,6 +301,17 @@ class NewImporter {
 		
 		try {
 			$result = $this->_db->command(OrientDB::COMMAND_QUERY, $query);
+		} catch (OrientDBException $e) {
+			echo $e->getMessage() . PHP_EOL;
+		}
+	}
+	
+	protected function _insertASConn($from, $to, $status) {
+		try {
+			$result = $this->_db->command(
+				OrientDB::COMMAND_QUERY,
+				"INSERT INTO ASConn (from, to, status) VALUES ({$from}, {$to}, {$status})"
+			);
 		} catch (OrientDBException $e) {
 			echo $e->getMessage() . PHP_EOL;
 		}
