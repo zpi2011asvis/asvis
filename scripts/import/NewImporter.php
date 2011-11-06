@@ -120,7 +120,7 @@ class NewImporter {
 		$timeBegin = microtime(true);
 		
 		foreach ($this->_asrids as $asnum => $asdata) {
-			$this->_updateASNode($asdata['rid'], $asdata['conns'], $asdata['pools']);
+			$this->_updateASNode($asdata['rid'], $asdata['in'], $asdata['out'], $asdata['pools']);
 		}
 		
 		$timeEnd = microtime(true);
@@ -251,11 +251,11 @@ class NewImporter {
 		$to		= $this->_asrids[$toNum]['rid'];
 		
 		if (!in_array($to, $this->_asrids[$fromNum]['out']) ) {
-			$this->_asrids[$fromNum]['conns'][] = $to;
+			$this->_asrids[$fromNum]['out'][] = $to;
 		}
 		
 		if (!in_array($from, $this->_asrids[$toNum]['in']) ) {
-			$this->_asrids[$toNum]['conns'][] = $from;
+			$this->_asrids[$toNum]['in'][] = $from;
 		}
 	}
 	
@@ -292,11 +292,12 @@ class NewImporter {
 		return $recordPosition;
 	}
 		
-	protected function _updateASNode($asNodeRID, $conns, $pools) {
-		$connList	= implode(',', $conns);
+	protected function _updateASNode($asNodeRID, $in, $out, $pools) {
+		$inList		= implode(',', $in);
+		$outList	= implode(',', $out);
 		$poolList	= implode(',', $pools);
 		
-		$query = "UPDATE {$asNodeRID} SET conns = [{$connList}], pools = [{$poolList}]";
+		$query = "UPDATE {$asNodeRID} SET in = [{$inList}], out = [{$outList}] pools = [{$poolList}]";
 // 		echo PHP_EOL.$query;
 		
 		try {

@@ -5,7 +5,8 @@ CREATE CLASS ASNode;
 CREATE CLASS ASConn;
 CREATE CLASS ASPool;
 
-CREATE PROPERTY ASNode.conns linkset ASNode;
+CREATE PROPERTY ASNode.in linkset ASNode;
+CREATE PROPERTY ASNode.out linkset ASNode;
 CREATE PROPERTY ASNode.pools linkset ASPool;
 CREATE PROPERTY ASNode.name string;
 CREATE PROPERTY ASNode.num integer;
