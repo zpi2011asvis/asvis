@@ -12,6 +12,7 @@ class NewImporter {
 	protected $_db = null;
 	protected $_asrids = null;
 	protected $_asconns = null;
+	protected $_conns = null;
 
 	const LIMIT_CONNS = -1;
 
@@ -32,7 +33,7 @@ class NewImporter {
 		$this->_insertASNodes();
 		
 		$this->_loadConns();		
-		$this->_insertASPools();
+// 		$this->_insertASPools();
 		
 		$this->_updateASNodes();
 		
@@ -119,7 +120,7 @@ class NewImporter {
 		$timeBegin = microtime(true);
 		
 		foreach ($this->_asrids as $asnum => $asdata) {
-			$this->_updateASNode($asdata['rid'], $asdata['in'], $asdata['out'], $asdata['pools']);
+			$this->_updateASNode($asdata['rid'], $asdata['conns'], $asdata['pools']);
 		}
 		
 		$timeEnd = microtime(true);
@@ -211,19 +212,27 @@ class NewImporter {
 				continue;
 			}
 	
-			$from = $this->_asrids[$asnum]['rid'];
-			$to = $this->_asrids[$asnumdir]['rid'];		
-			
-			$this->_asrids[$asnum]['out'][] = $to;
-			$this->_asrids[$asnumdir]['in'][] = $from;
+			$this->_addConnection($asnum, $asnumdir);
 			
 			$this->_asconns[$dir][] = array(
-				'from'	=> $from,
-				'to'	=> $to
+				'from'	=> $this->_asrids[$asnum]['rid'],
+				'to'	=> $this->_asrids[$asnumdir]['rid']
 			);
 		}
 	}
 
+	protected function _addConnection($fromNum, $toNum) {
+		$from	= $this->_asrids[$fromNum]['rid'];
+		$to		= $this->_asrids[$toNum]['rid'];
+		
+		if (!in_array($to, $this->_asrids[$fromNum]['out']) ) {
+			$this->_asrids[$fromNum]['conns'][] = $to;
+		}
+		
+		if (!in_array($from, $this->_asrids[$toNum]['in']) ) {
+			$this->_asrids[$toNum]['conns'][] = $from;
+		}
+	}
 	
 	protected function _insertASNode($num, $name) {
 		try {
@@ -258,13 +267,12 @@ class NewImporter {
 		return $recordPosition;
 	}
 		
-	protected function _updateASNode($asNodeRID, $connOut, $connIn, $pools) {
-		$outList	= implode(',', $connOut);
-		$inList		= implode(',', $connIn);
+	protected function _updateASNode($asNodeRID, $conns, $pools) {
+		$connList	= implode(',', $conns);
 		$poolList	= implode(',', $pools);
 		
-		$query = "UPDATE {$asNodeRID} SET in = [{$inList}], out = [{$outList}], pools = [{$poolList}]";
-		echo PHP_EOL.$query;
+		$query = "UPDATE {$asNodeRID} SET conns = [{$connList}], pools = [{$poolList}]";
+// 		echo PHP_EOL.$query;
 		
 		try {
 			$result = $this->_db->command(OrientDB::COMMAND_QUERY, $query);
