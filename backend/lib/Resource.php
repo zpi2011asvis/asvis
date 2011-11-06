@@ -1,11 +1,9 @@
 <?php
 
 namespace asvis\lib;
-require_once 'Engine.php';
-require_once \asvis\Config::get('backend_db_engine') . '.php';
+require_once __DIR__.'/orient/OrientEngine.php';
 use \Resource as TonicResource;
-use asvis\lib\Engine as Engine;
-use asvis\Config as Config;
+use asvis\lib\orient\OrientEngine as Engine;
 
 class Resource extends TonicResource {
 	protected $_get = null;
@@ -20,9 +18,7 @@ class Resource extends TonicResource {
 		parent::__construct($parameters);
 		$this->_request = $_REQUEST;
 		
-		$engineClass = 'asvis\\lib\\' . Config::get('backend_db_engine');
-		
-		$this->_engine = new $engineClass();
+		$this->_engine = new Engine();
 	}
 	
 	protected function getParam($paramName, $default = null) {
