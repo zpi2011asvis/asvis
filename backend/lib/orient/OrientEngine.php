@@ -81,7 +81,7 @@ class OrientEngine implements Engine {
 	 */
 	public function structureGraph($nodeNum, $depth) {	
 		
-		$fp = $depth * 2 + 1;
+		$fp = $depth;
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
 		$fetchplan = "*:{$fp} ASNode.pools:0 ASNode.in:0";
