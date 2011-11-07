@@ -2,6 +2,10 @@
 
 namespace asvis\lib\orient;
 
+require_once 'Graph.php';
+
+use asvis\lib\orient\Graph as Graph;
+
 class ObjectsMapper {
 	
 	private $_json;
@@ -22,7 +26,7 @@ class ObjectsMapper {
 		$this->_parseNode($this->_json);
 		$this->_resolveNodes();		
 		
-		return $this->_structure;
+		return new Graph( $this->_structure );
 	}
 	
 	

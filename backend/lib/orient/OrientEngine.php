@@ -92,30 +92,13 @@ class OrientEngine implements Engine {
 		if (!count($result)) {
 			return null;
 		}
-
-//		H::pre($result);
 		
 		$objectMapper = new ObjectsMapper($result[0]);		
-		$objectMapper->parse();
-		die;
-		
-//		$asNodes = $objectMapper->getNodes();
-//		$asConns = $objectMapper->getConns();
-// 		echo count($asNodes).PHP_EOL;
-// 		echo count($asConns).PHP_EOL;
-// 		H::pre($asNodes);
-// 		H::pre($asConns);
-	
-		$connectionsMapper = new OrientConnectionsMapper($objectMapper, $nodeNum);
-		$structure = $connectionsMapper->getConnectionsMap();
-		$weightOrder = $connectionsMapper->getWeightOrder();
-		$distanceOrder = $connectionsMapper->getDistanceOrder();
+		$graph = $objectMapper->parse();
 
-		return array(
-			'structure' => $structure,
-			'distance_order' => $distanceOrder,
-			'weight_order' => $weightOrder,
-		);
+// 		echo $graph->toJSON();
+		
+		return $graph->toJSON();
 	}
 	
 	/**
