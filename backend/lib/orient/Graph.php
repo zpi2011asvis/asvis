@@ -12,9 +12,9 @@ class Graph extends Structure {
 		$toEncode = array();
 		
 		foreach ($this->_structure as $num => $node) {
-			$toEncode['strucrue'][$num]['connections'] = $node->__get('out');
-			$toEncode['strucrue'][$num]['weight'] = $node->__get('weight');
-			$toEncode['strucrue'][$num]['distance'] = $node->__get('distance');
+			$toEncode['strucrue'][$num]['connections'] = $node->out;
+			$toEncode['strucrue'][$num]['weight'] = $node->weight;
+			$toEncode['strucrue'][$num]['distance'] = $node->distance;
 		}
 		
 		$toEncode['weight_order']	= $this->_getWeightOrder();
@@ -52,11 +52,11 @@ class Graph extends Structure {
 	}
 	
 	private function compareWeight($a, $b) {
-		return $b->__get('weight') - $a->__get('weight');
+		return $b->weight - $a->weight;
 	}
 	
 	private function compareDistance($a, $b) {
-		return -($b->__get('distance') - $a->__get('distance'));
+		return -($b->distance - $a->distance);
 	}
 	
 }
