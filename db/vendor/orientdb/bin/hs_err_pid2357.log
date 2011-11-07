@@ -1,0 +1,643 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0xb4acb6d7, pid=2357, tid=2306866032
+#
+# JRE version: 6.0_22-b22
+# Java VM: OpenJDK Server VM (20.0-b11 mixed mode linux-x86 )
+# Derivative: IcedTea6 1.10.2
+# Distribution: Ubuntu 11.04, package 6b22-1.10.2-0ubuntu1~11.04.1
+# Problematic frame:
+# J  com.orientechnologies.orient.core.tx.OTransactionNoTx.loadRecord(Lcom/orientechnologies/orient/core/id/ORID;Lcom/orientechnologies/orient/core/record/ORecordInternal;Ljava/lang/String;)Lcom/orientechnologies/orient/core/record/ORecordInternal;
+#
+# If you would like to submit a bug report, please include
+# instructions how to reproduce the bug and visit:
+#   https://bugs.launchpad.net/ubuntu/+source/openjdk-6/
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x09ad8c00):  JavaThread "Distributed-DB" daemon [_thread_in_Java, id=2508, stack(0x897af000,0x89800000)]
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=128 (), si_addr=0x00000000
+
+Registers:
+EAX=0x00010000, EBX=0x00000001, ECX=0xb1c902f0, EDX=0xb1c903a0
+ESP=0x897feb00, EBP=0xb1c907f0, ESI=0xb1c900a8, EDI=0x00000000
+EIP=0xb4acb6d7, EFLAGS=0x00010246, CR2=0x00000004
+
+Top of Stack: (sp=0x897feb00)
+0x897feb00:   b1c907f0 00000001 00000006 0002df8c
+0x897feb10:   b1e8d858 09ad8c00 b1c902f0 b1c901a0
+0x897feb20:   b1e8d858 b1c903a0 b1c907f0 b22d5db8
+0x897feb30:   b1ff8b78 b1c900a8 b22d5db8 00000000
+0x897feb40:   00000000 00000000 00000011 00000000
+0x897feb50:   00000000 00000000 00000000 b4aebf64
+0x897feb60:   00000000 00000000 b1c90400 b1c907f0
+0x897feb70:   b1c901a0 00000000 00000000 ffffffff 
+
+Instructions: (pc=0xb4acb6d7)
+0xb4acb6b7:   0f 85 71 28 00 00 8b 4c 24 18 8b 54 24 24 8b 6c
+0xb4acb6c7:   24 28 89 2c 24 bb 01 00 00 00 89 5c 24 04 66 90
+0xb4acb6d7:   e8 b0 84 04 00 89 44 24 10 0f be 48 0c 89 4c 24
+0xb4acb6e7:   18 8b 4c 24 60 85 c9 0f 85 7a 29 00 00 bb b0 01 
+
+Register to memory mapping:
+
+EAX=0x00010000 is an unknown value
+EBX=0x00000001 is an unknown value
+ECX=0xb1c902f0 is an oop
+com.orientechnologies.orient.core.storage.impl.local.OStorageLocal 
+ - klass: 'com/orientechnologies/orient/core/storage/impl/local/OStorageLocal'
+EDX=0xb1c903a0 is an oop
+com.orientechnologies.orient.core.storage.impl.local.OClusterLocal 
+ - klass: 'com/orientechnologies/orient/core/storage/impl/local/OClusterLocal'
+ESP=0x897feb00 is pointing into the stack for thread: 0x09ad8c00
+EBP=0xb1c907f0 is an oop
+com.orientechnologies.orient.core.id.ORecordId 
+ - klass: 'com/orientechnologies/orient/core/id/ORecordId'
+ESI=0xb1c900a8 is an oop
+com.orientechnologies.orient.server.network.protocol.distributed.ONetworkProtocolDistributed 
+ - klass: 'com/orientechnologies/orient/server/network/protocol/distributed/ONetworkProtocolDistributed'
+EDI=0x00000000 is an unknown value
+
+
+Stack: [0x897af000,0x89800000],  sp=0x897feb00,  free space=318k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+J  com.orientechnologies.orient.core.tx.OTransactionNoTx.loadRecord(Lcom/orientechnologies/orient/core/id/ORID;Lcom/orientechnologies/orient/core/record/ORecordInternal;Ljava/lang/String;)Lcom/orientechnologies/orient/core/record/ORecordInternal;
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+=>0x09ad8c00 JavaThread "Distributed-DB" daemon [_thread_in_Java, id=2508, stack(0x897af000,0x89800000)]
+  0x09b5dc00 JavaThread "IO-Cluster-DiscoveryListener" daemon [_thread_in_native, id=2373, stack(0x8b80d000,0x8b85e000)]
+  0x8b066800 JavaThread "DestroyJavaVM" [_thread_blocked, id=2358, stack(0xb77f3000,0xb7844000)]
+  0x8b9f8c00 JavaThread "IO-Cluster-DiscoverySignaler" daemon [_thread_blocked, id=2372, stack(0x8b85e000,0x8b8af000)]
+  0x8b97b400 JavaThread "Thread-5" [_thread_in_native, id=2371, stack(0x8b8af000,0x8b900000)]
+  0x8b991800 JavaThread "Thread-4" [_thread_in_native, id=2370, stack(0x8bc05000,0x8bc56000)]
+  0x8b9f3400 JavaThread "Timer-0" daemon [_thread_blocked, id=2369, stack(0x8bc56000,0x8bca7000)]
+  0x095c0c00 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=2367, stack(0x8bd78000,0x8bdc9000)]
+  0x095be800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=2366, stack(0x8bdc9000,0x8be4a000)]
+  0x095bc800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=2365, stack(0x8be4a000,0x8becb000)]
+  0x095bb000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=2364, stack(0x8becb000,0x8bf1c000)]
+  0x095a8400 JavaThread "Finalizer" daemon [_thread_blocked, id=2363, stack(0x8c11c000,0x8c16d000)]
+  0x095a6c00 JavaThread "Reference Handler" daemon [_thread_blocked, id=2362, stack(0x8c16d000,0x8c1be000)]
+
+Other Threads:
+  0x095a2c00 VMThread [stack: 0x8c1be000,0x8c23f000] [id=2361]
+  0x095c3000 WatcherThread [stack: 0x8bcf7000,0x8bd78000] [id=2368]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 152896K, used 51945K [0xa9c90000, 0xb4730000, 0xb4730000)
+  eden space 131072K, 31% used [0xa9c90000,0xac4753d0,0xb1c90000)
+  from space 21824K, 50% used [0xb1c90000,0xb27653a8,0xb31e0000)
+  to   space 21824K, 0% used [0xb31e0000,0xb31e0000,0xb4730000)
+ PSOldGen        total 349568K, used 0K [0x94730000, 0xa9c90000, 0xa9c90000)
+  object space 349568K, 0% used [0x94730000,0x94730000,0xa9c90000)
+ PSPermGen       total 16384K, used 10908K [0x8c730000, 0x8d730000, 0x94730000)
+  object space 16384K, 66% used [0x8c730000,0x8d1d7388,0x8d730000)
+
+Code Cache  [0xb47f3000, 0xb4b33000, 0xb77f3000)
+ total_blobs=1246 nmethods=1111 adapters=89 free_code_cache=47012160 largest_free_block=37568
+
+Dynamic libraries:
+00110000-00117000 r-xp 00000000 08:03 1442694    /lib/i386-linux-gnu/librt-2.13.so
+00117000-00118000 r--p 00006000 08:03 1442694    /lib/i386-linux-gnu/librt-2.13.so
+00118000-00119000 rw-p 00007000 08:03 1442694    /lib/i386-linux-gnu/librt-2.13.so
+00119000-00123000 r-xp 00000000 08:03 1442671    /lib/i386-linux-gnu/libnss_files-2.13.so
+00123000-00124000 r--p 00009000 08:03 1442671    /lib/i386-linux-gnu/libnss_files-2.13.so
+00124000-00125000 rw-p 0000a000 08:03 1442671    /lib/i386-linux-gnu/libnss_files-2.13.so
+00129000-00145000 r-xp 00000000 08:03 1442612    /lib/i386-linux-gnu/ld-2.13.so
+00145000-00146000 r--p 0001b000 08:03 1442612    /lib/i386-linux-gnu/ld-2.13.so
+00146000-00147000 rw-p 0001c000 08:03 1442612    /lib/i386-linux-gnu/ld-2.13.so
+00147000-00226000 r-xp 00000000 08:03 530793     /usr/lib/i386-linux-gnu/libstdc++.so.6.0.14
+00226000-0022a000 r--p 000de000 08:03 530793     /usr/lib/i386-linux-gnu/libstdc++.so.6.0.14
+0022a000-0022b000 rw-p 000e2000 08:03 530793     /usr/lib/i386-linux-gnu/libstdc++.so.6.0.14
+0022b000-00232000 rw-p 00000000 00:00 0 
+00232000-00256000 r-xp 00000000 08:03 1442662    /lib/i386-linux-gnu/libm-2.13.so
+00256000-00257000 r--p 00023000 08:03 1442662    /lib/i386-linux-gnu/libm-2.13.so
+00257000-00258000 rw-p 00024000 08:03 1442662    /lib/i386-linux-gnu/libm-2.13.so
+002e3000-0043d000 r-xp 00000000 08:03 1442625    /lib/i386-linux-gnu/libc-2.13.so
+0043d000-0043e000 ---p 0015a000 08:03 1442625    /lib/i386-linux-gnu/libc-2.13.so
+0043e000-00440000 r--p 0015a000 08:03 1442625    /lib/i386-linux-gnu/libc-2.13.so
+00440000-00441000 rw-p 0015c000 08:03 1442625    /lib/i386-linux-gnu/libc-2.13.so
+00441000-00444000 rw-p 00000000 00:00 0 
+005be000-005d8000 r-xp 00000000 08:03 1442653    /lib/i386-linux-gnu/libgcc_s.so.1
+005d8000-005d9000 r--p 00019000 08:03 1442653    /lib/i386-linux-gnu/libgcc_s.so.1
+005d9000-005da000 rw-p 0001a000 08:03 1442653    /lib/i386-linux-gnu/libgcc_s.so.1
+00686000-00699000 r-xp 00000000 08:03 1442665    /lib/i386-linux-gnu/libnsl-2.13.so
+00699000-0069a000 r--p 00012000 08:03 1442665    /lib/i386-linux-gnu/libnsl-2.13.so
+0069a000-0069b000 rw-p 00013000 08:03 1442665    /lib/i386-linux-gnu/libnsl-2.13.so
+0069b000-0069d000 rw-p 00000000 00:00 0 
+0072a000-0074d000 r-xp 00000000 08:03 1327084    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libjava.so
+0074d000-0074e000 r--p 00022000 08:03 1327084    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libjava.so
+0074e000-00750000 rw-p 00023000 08:03 1327084    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libjava.so
+00859000-00864000 r-xp 00000000 08:03 1327196    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libverify.so
+00864000-00865000 ---p 0000b000 08:03 1327196    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libverify.so
+00865000-00866000 r--p 0000b000 08:03 1327196    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libverify.so
+00866000-00867000 rw-p 0000c000 08:03 1327196    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libverify.so
+008fd000-00903000 r-xp 00000000 08:03 1327104    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libzip.so
+00903000-00904000 r--p 00005000 08:03 1327104    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libzip.so
+00904000-00905000 rw-p 00006000 08:03 1327104    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libzip.so
+0091e000-00921000 r-xp 00000000 08:03 1327120    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/jli/libjli.so
+00921000-00922000 r--p 00002000 08:03 1327120    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/jli/libjli.so
+00922000-00923000 rw-p 00003000 08:03 1327120    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/jli/libjli.so
+009e0000-009f3000 r-xp 00000000 08:03 1327228    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libnet.so
+009f3000-009f4000 r--p 00013000 08:03 1327228    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libnet.so
+009f4000-009f5000 rw-p 00014000 08:03 1327228    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libnet.so
+00a7a000-00a8d000 r-xp 00000000 08:03 1442708    /lib/i386-linux-gnu/libz.so.1.2.3.4
+00a8d000-00a8e000 r--p 00012000 08:03 1442708    /lib/i386-linux-gnu/libz.so.1.2.3.4
+00a8e000-00a8f000 rw-p 00013000 08:03 1442708    /lib/i386-linux-gnu/libz.so.1.2.3.4
+00a96000-00a9c000 r-xp 00000000 08:03 1442667    /lib/i386-linux-gnu/libnss_compat-2.13.so
+00a9c000-00a9d000 r--p 00005000 08:03 1442667    /lib/i386-linux-gnu/libnss_compat-2.13.so
+00a9d000-00a9e000 rw-p 00006000 08:03 1442667    /lib/i386-linux-gnu/libnss_compat-2.13.so
+00b11000-00b26000 r-xp 00000000 08:03 1442690    /lib/i386-linux-gnu/libpthread-2.13.so
+00b26000-00b27000 r--p 00015000 08:03 1442690    /lib/i386-linux-gnu/libpthread-2.13.so
+00b27000-00b28000 rw-p 00016000 08:03 1442690    /lib/i386-linux-gnu/libpthread-2.13.so
+00b28000-00b2a000 rw-p 00000000 00:00 0 
+00be3000-00be5000 r-xp 00000000 08:03 1442635    /lib/i386-linux-gnu/libdl-2.13.so
+00be5000-00be6000 r--p 00001000 08:03 1442635    /lib/i386-linux-gnu/libdl-2.13.so
+00be6000-00be7000 rw-p 00002000 08:03 1442635    /lib/i386-linux-gnu/libdl-2.13.so
+00c37000-00c3e000 r-xp 00000000 08:03 1327100    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libnio.so
+00c3e000-00c3f000 r--p 00006000 08:03 1327100    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libnio.so
+00c3f000-00c40000 rw-p 00007000 08:03 1327100    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libnio.so
+00d7b000-00d81000 r-xp 00000000 08:03 1327208    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libmanagement.so
+00d81000-00d82000 r--p 00005000 08:03 1327208    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libmanagement.so
+00d82000-00d83000 rw-p 00006000 08:03 1327208    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/libmanagement.so
+00e83000-00e8c000 r-xp 00000000 08:03 1442675    /lib/i386-linux-gnu/libnss_nis-2.13.so
+00e8c000-00e8d000 r--p 00008000 08:03 1442675    /lib/i386-linux-gnu/libnss_nis-2.13.so
+00e8d000-00e8e000 rw-p 00009000 08:03 1442675    /lib/i386-linux-gnu/libnss_nis-2.13.so
+00f0a000-00f0b000 r-xp 00000000 00:00 0          [vdso]
+00f0b000-015d1000 r-xp 00000000 08:03 1327160    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/server/libjvm.so
+015d1000-015d2000 ---p 006c6000 08:03 1327160    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/server/libjvm.so
+015d2000-01617000 r--p 006c6000 08:03 1327160    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/server/libjvm.so
+01617000-01626000 rw-p 0070b000 08:03 1327160    /usr/lib/jvm/java-6-openjdk/jre/lib/i386/server/libjvm.so
+01626000-01a40000 rw-p 00000000 00:00 0 
+08048000-08051000 r-xp 00000000 08:03 527454     /usr/lib/jvm/java-6-openjdk/jre/bin/java
+08051000-08052000 r--p 00008000 08:03 527454     /usr/lib/jvm/java-6-openjdk/jre/bin/java
+08052000-08053000 rw-p 00009000 08:03 527454     /usr/lib/jvm/java-6-openjdk/jre/bin/java
+09516000-148e6000 rw-p 00000000 00:00 0          [heap]
+80800000-8086d000 rw-p 00000000 00:00 0 
+8086d000-80900000 ---p 00000000 00:00 0 
+80a00000-80af7000 rw-p 00000000 00:00 0 
+80af7000-80b00000 ---p 00000000 00:00 0 
+80b00000-80c00000 rw-p 00000000 00:00 0 
+80c00000-80ce7000 rw-p 00000000 00:00 0 
+80ce7000-80d00000 ---p 00000000 00:00 0 
+80d00000-80df8000 rw-p 00000000 00:00 0 
+80df8000-80e00000 ---p 00000000 00:00 0 
+80e00000-80ef9000 rw-p 00000000 00:00 0 
+80ef9000-80f00000 ---p 00000000 00:00 0 
+80f00000-80ff9000 rw-p 00000000 00:00 0 
+80ff9000-81000000 ---p 00000000 00:00 0 
+81000000-810f9000 rw-p 00000000 00:00 0 
+810f9000-81100000 ---p 00000000 00:00 0 
+81100000-811f9000 rw-p 00000000 00:00 0 
+811f9000-81200000 ---p 00000000 00:00 0 
+81200000-812f9000 rw-p 00000000 00:00 0 
+812f9000-81300000 ---p 00000000 00:00 0 
+81300000-813f9000 rw-p 00000000 00:00 0 
+813f9000-81400000 ---p 00000000 00:00 0 
+81400000-814f9000 rw-p 00000000 00:00 0 
+814f9000-81500000 ---p 00000000 00:00 0 
+81500000-815f9000 rw-p 00000000 00:00 0 
+815f9000-81600000 ---p 00000000 00:00 0 
+81600000-816f9000 rw-p 00000000 00:00 0 
+816f9000-81700000 ---p 00000000 00:00 0 
+81700000-817f9000 rw-p 00000000 00:00 0 
+817f9000-81800000 ---p 00000000 00:00 0 
+81800000-818f9000 rw-p 00000000 00:00 0 
+818f9000-81900000 ---p 00000000 00:00 0 
+81900000-819f9000 rw-p 00000000 00:00 0 
+819f9000-81a00000 ---p 00000000 00:00 0 
+81a00000-81af9000 rw-p 00000000 00:00 0 
+81af9000-81b00000 ---p 00000000 00:00 0 
+81b00000-81bf9000 rw-p 00000000 00:00 0 
+81bf9000-81c00000 ---p 00000000 00:00 0 
+81c00000-81cf9000 rw-p 00000000 00:00 0 
+81cf9000-81d00000 ---p 00000000 00:00 0 
+81d00000-81df9000 rw-p 00000000 00:00 0 
+81df9000-81e00000 ---p 00000000 00:00 0 
+81e00000-81ef9000 rw-p 00000000 00:00 0 
+81ef9000-81f00000 ---p 00000000 00:00 0 
+81f00000-81ff9000 rw-p 00000000 00:00 0 
+81ff9000-82000000 ---p 00000000 00:00 0 
+82000000-820f9000 rw-p 00000000 00:00 0 
+820f9000-82100000 ---p 00000000 00:00 0 
+82100000-821f9000 rw-p 00000000 00:00 0 
+821f9000-82200000 ---p 00000000 00:00 0 
+82200000-822f9000 rw-p 00000000 00:00 0 
+822f9000-82300000 ---p 00000000 00:00 0 
+82300000-823f9000 rw-p 00000000 00:00 0 
+823f9000-82400000 ---p 00000000 00:00 0 
+82500000-825f9000 rw-p 00000000 00:00 0 
+825f9000-82600000 ---p 00000000 00:00 0 
+82600000-826f9000 rw-p 00000000 00:00 0 
+826f9000-82700000 ---p 00000000 00:00 0 
+82700000-827f9000 rw-p 00000000 00:00 0 
+827f9000-82800000 ---p 00000000 00:00 0 
+82800000-828f9000 rw-p 00000000 00:00 0 
+828f9000-82900000 ---p 00000000 00:00 0 
+82900000-829f9000 rw-p 00000000 00:00 0 
+829f9000-82a00000 ---p 00000000 00:00 0 
+82a00000-82af9000 rw-p 00000000 00:00 0 
+82af9000-82b00000 ---p 00000000 00:00 0 
+82b00000-82bf9000 rw-p 00000000 00:00 0 
+82bf9000-82c00000 ---p 00000000 00:00 0 
+82c00000-82cf9000 rw-p 00000000 00:00 0 
+82cf9000-82d00000 ---p 00000000 00:00 0 
+82d00000-82df9000 rw-p 00000000 00:00 0 
+82df9000-82e00000 ---p 00000000 00:00 0 
+82e00000-82ef9000 rw-p 00000000 00:00 0 
+82ef9000-82f00000 ---p 00000000 00:00 0 
+82f00000-82ff9000 rw-p 00000000 00:00 0 
+82ff9000-83000000 ---p 00000000 00:00 0 
+83000000-830f9000 rw-p 00000000 00:00 0 
+830f9000-83100000 ---p 00000000 00:00 0 
+83100000-831f9000 rw-p 00000000 00:00 0 
+831f9000-83200000 ---p 00000000 00:00 0 
+83200000-832f9000 rw-p 00000000 00:00 0 
+832f9000-83300000 ---p 00000000 00:00 0 
+83300000-833f9000 rw-p 00000000 00:00 0 
+833f9000-83400000 ---p 00000000 00:00 0 
+83400000-834f9000 rw-p 00000000 00:00 0 
+834f9000-83500000 ---p 00000000 00:00 0 
+83500000-835f9000 rw-p 00000000 00:00 0 
+835f9000-83600000 ---p 00000000 00:00 0 
+83600000-836f9000 rw-p 00000000 00:00 0 
+836f9000-83700000 ---p 00000000 00:00 0 
+83700000-837f9000 rw-p 00000000 00:00 0 
+837f9000-83800000 ---p 00000000 00:00 0 
+83800000-838f9000 rw-p 00000000 00:00 0 
+838f9000-83900000 ---p 00000000 00:00 0 
+83900000-839f9000 rw-p 00000000 00:00 0 
+839f9000-83a00000 ---p 00000000 00:00 0 
+83a00000-83af9000 rw-p 00000000 00:00 0 
+83af9000-83b00000 ---p 00000000 00:00 0 
+83b00000-83bf9000 rw-p 00000000 00:00 0 
+83bf9000-83c00000 ---p 00000000 00:00 0 
+83c00000-83cf9000 rw-p 00000000 00:00 0 
+83cf9000-83d00000 ---p 00000000 00:00 0 
+83d00000-83df9000 rw-p 00000000 00:00 0 
+83df9000-83e00000 ---p 00000000 00:00 0 
+83e00000-83ef9000 rw-p 00000000 00:00 0 
+83ef9000-83f00000 ---p 00000000 00:00 0 
+83f00000-83ff9000 rw-p 00000000 00:00 0 
+83ff9000-84000000 ---p 00000000 00:00 0 
+84000000-840f9000 rw-p 00000000 00:00 0 
+840f9000-84100000 ---p 00000000 00:00 0 
+84100000-841f9000 rw-p 00000000 00:00 0 
+841f9000-84200000 ---p 00000000 00:00 0 
+84200000-842f9000 rw-p 00000000 00:00 0 
+842f9000-84300000 ---p 00000000 00:00 0 
+84300000-843f9000 rw-p 00000000 00:00 0 
+843f9000-84400000 ---p 00000000 00:00 0 
+84400000-844f9000 rw-p 00000000 00:00 0 
+844f9000-84500000 ---p 00000000 00:00 0 
+84500000-845f9000 rw-p 00000000 00:00 0 
+845f9000-84600000 ---p 00000000 00:00 0 
+84600000-846f9000 rw-p 00000000 00:00 0 
+846f9000-84700000 ---p 00000000 00:00 0 
+84700000-847f9000 rw-p 00000000 00:00 0 
+847f9000-84800000 ---p 00000000 00:00 0 
+84800000-848f9000 rw-p 00000000 00:00 0 
+848f9000-84900000 ---p 00000000 00:00 0 
+84900000-849f9000 rw-p 00000000 00:00 0 
+849f9000-84a00000 ---p 00000000 00:00 0 
+84a00000-84af9000 rw-p 00000000 00:00 0 
+84af9000-84b00000 ---p 00000000 00:00 0 
+84b00000-84bf9000 rw-p 00000000 00:00 0 
+84bf9000-84c00000 ---p 00000000 00:00 0 
+84c00000-84cf9000 rw-p 00000000 00:00 0 
+84cf9000-84d00000 ---p 00000000 00:00 0 
+84d00000-84df9000 rw-p 00000000 00:00 0 
+84df9000-84e00000 ---p 00000000 00:00 0 
+84e00000-84ef9000 rw-p 00000000 00:00 0 
+84ef9000-84f00000 ---p 00000000 00:00 0 
+84f00000-84ff9000 rw-p 00000000 00:00 0 
+84ff9000-85000000 ---p 00000000 00:00 0 
+85000000-850f9000 rw-p 00000000 00:00 0 
+850f9000-85100000 ---p 00000000 00:00 0 
+85100000-851f9000 rw-p 00000000 00:00 0 
+851f9000-85200000 ---p 00000000 00:00 0 
+85200000-852f9000 rw-p 00000000 00:00 0 
+852f9000-85300000 ---p 00000000 00:00 0 
+85300000-853f9000 rw-p 00000000 00:00 0 
+853f9000-85400000 ---p 00000000 00:00 0 
+85400000-854f9000 rw-p 00000000 00:00 0 
+854f9000-85500000 ---p 00000000 00:00 0 
+85500000-855f9000 rw-p 00000000 00:00 0 
+855f9000-85600000 ---p 00000000 00:00 0 
+85600000-856f9000 rw-p 00000000 00:00 0 
+856f9000-85700000 ---p 00000000 00:00 0 
+85700000-857f9000 rw-p 00000000 00:00 0 
+857f9000-85800000 ---p 00000000 00:00 0 
+85800000-858f9000 rw-p 00000000 00:00 0 
+858f9000-85900000 ---p 00000000 00:00 0 
+85900000-859f9000 rw-p 00000000 00:00 0 
+859f9000-85a00000 ---p 00000000 00:00 0 
+85a00000-85af9000 rw-p 00000000 00:00 0 
+85af9000-85b00000 ---p 00000000 00:00 0 
+85b00000-85bf9000 rw-p 00000000 00:00 0 
+85bf9000-85c00000 ---p 00000000 00:00 0 
+85c00000-85cf9000 rw-p 00000000 00:00 0 
+85cf9000-85d00000 ---p 00000000 00:00 0 
+85d00000-85df9000 rw-p 00000000 00:00 0 
+85df9000-85e00000 ---p 00000000 00:00 0 
+85e00000-85ef9000 rw-p 00000000 00:00 0 
+85ef9000-85f00000 ---p 00000000 00:00 0 
+85f00000-85ff9000 rw-p 00000000 00:00 0 
+85ff9000-86000000 ---p 00000000 00:00 0 
+86000000-860f9000 rw-p 00000000 00:00 0 
+860f9000-86100000 ---p 00000000 00:00 0 
+86100000-861f9000 rw-p 00000000 00:00 0 
+861f9000-86200000 ---p 00000000 00:00 0 
+86200000-862f9000 rw-p 00000000 00:00 0 
+862f9000-86300000 ---p 00000000 00:00 0 
+86300000-863f9000 rw-p 00000000 00:00 0 
+863f9000-86400000 ---p 00000000 00:00 0 
+86400000-864f9000 rw-p 00000000 00:00 0 
+864f9000-86500000 ---p 00000000 00:00 0 
+86500000-865f9000 rw-p 00000000 00:00 0 
+865f9000-86600000 ---p 00000000 00:00 0 
+86600000-866f9000 rw-p 00000000 00:00 0 
+866f9000-86700000 ---p 00000000 00:00 0 
+86700000-867f9000 rw-p 00000000 00:00 0 
+867f9000-86800000 ---p 00000000 00:00 0 
+86800000-868f8000 rw-p 00000000 00:00 0 
+868f8000-86900000 ---p 00000000 00:00 0 
+86900000-869f9000 rw-p 00000000 00:00 0 
+869f9000-86a00000 ---p 00000000 00:00 0 
+86a00000-86af9000 rw-p 00000000 00:00 0 
+86af9000-86b00000 ---p 00000000 00:00 0 
+86b00000-86bf9000 rw-p 00000000 00:00 0 
+86bf9000-86c00000 ---p 00000000 00:00 0 
+86c00000-86cf9000 rw-p 00000000 00:00 0 
+86cf9000-86d00000 ---p 00000000 00:00 0 
+86d00000-86df9000 rw-p 00000000 00:00 0 
+86df9000-86e00000 ---p 00000000 00:00 0 
+86e00000-86ef9000 rw-p 00000000 00:00 0 
+86ef9000-86f00000 ---p 00000000 00:00 0 
+86f00000-86ff9000 rw-p 00000000 00:00 0 
+86ff9000-87000000 ---p 00000000 00:00 0 
+87000000-870f9000 rw-p 00000000 00:00 0 
+870f9000-87100000 ---p 00000000 00:00 0 
+87100000-871f9000 rw-p 00000000 00:00 0 
+871f9000-87200000 ---p 00000000 00:00 0 
+87200000-872f9000 rw-p 00000000 00:00 0 
+872f9000-87300000 ---p 00000000 00:00 0 
+87300000-873f9000 rw-p 00000000 00:00 0 
+873f9000-87400000 ---p 00000000 00:00 0 
+87400000-874f9000 rw-p 00000000 00:00 0 
+874f9000-87500000 ---p 00000000 00:00 0 
+87500000-875f9000 rw-p 00000000 00:00 0 
+875f9000-87600000 ---p 00000000 00:00 0 
+87600000-876f9000 rw-p 00000000 00:00 0 
+876f9000-87700000 ---p 00000000 00:00 0 
+87700000-878f8000 rw-p 00000000 00:00 0 
+878f8000-87900000 ---p 00000000 00:00 0 
+87900000-87a00000 rw-p 00000000 00:00 0 
+87a19000-87b0e000 rw-s 00000000 08:03 544203     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/asnode.0.ocl
+87b0e000-87c0f000 rw-s 00000000 08:03 544205     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/asconn.0.ocl
+87c0f000-87d10000 rw-s 00000000 08:03 544166     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.oda
+87d10000-87e05000 rw-s 00000000 08:03 544199     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/orole.0.ocl
+87e05000-87f06000 rw-s 00000000 08:03 544166     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.oda
+87f06000-87ffb000 rw-s 00000000 08:03 544201     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/ouser.0.ocl
+87ffb000-880fc000 rw-s 00000000 08:03 544166     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.oda
+880fc000-881fd000 rw-s 00000000 08:03 544168     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/internal.0.ocl
+881fd000-882fe000 rw-s 00221000 08:03 544166     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.oda
+882fe000-883ff000 rw-s 00000000 08:03 544170     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/index.0.ocl
+883ff000-88e13000 rw-s 002e3000 08:03 544166     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.oda
+88e13000-88f14000 rw-s 00000000 08:03 544170     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/index.0.ocl
+88f14000-89015000 rw-s 00cf6000 08:03 544166     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.oda
+89015000-8910a000 rw-s 00000000 08:03 544170     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/index.0.ocl
+8910a000-8920b000 rw-s 00000000 08:03 544166     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.oda
+8920b000-89300000 rw-s 00000000 08:03 544168     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/internal.0.ocl
+89300000-893fb000 rw-p 00000000 00:00 0 
+893fb000-89400000 ---p 00000000 00:00 0 
+89400000-89500000 rw-p 00000000 00:00 0 
+89500000-895fb000 rw-p 00000000 00:00 0 
+895fb000-89600000 ---p 00000000 00:00 0 
+89600000-896f7000 rw-p 00000000 00:00 0 
+896f7000-89700000 ---p 00000000 00:00 0 
+8972d000-8976e000 rw-s 00000000 08:03 544167     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.odh
+897af000-897b2000 ---p 00000000 00:00 0 
+897b2000-89800000 rw-p 00000000 00:00 0 
+89800000-898ef000 rw-p 00000000 00:00 0 
+898ef000-89900000 ---p 00000000 00:00 0 
+89900000-899e7000 rw-p 00000000 00:00 0 
+899e7000-89a00000 ---p 00000000 00:00 0 
+89a00000-89af6000 rw-p 00000000 00:00 0 
+89af6000-89b00000 ---p 00000000 00:00 0 
+89b00000-89bf4000 rw-p 00000000 00:00 0 
+89bf4000-89c00000 ---p 00000000 00:00 0 
+89c00000-89cdf000 rw-p 00000000 00:00 0 
+89cdf000-89d00000 ---p 00000000 00:00 0 
+89d00000-89dff000 rw-p 00000000 00:00 0 
+89dff000-89e00000 ---p 00000000 00:00 0 
+89e00000-8a000000 rw-p 00000000 00:00 0 
+8a000000-8a200000 rw-p 00000000 00:00 0 
+8a200000-8a400000 rw-p 00000000 00:00 0 
+8a400000-8a600000 rw-p 00000000 00:00 0 
+8a600000-8a800000 rw-p 00000000 00:00 0 
+8a800000-8aa00000 rw-p 00000000 00:00 0 
+8aa00000-8ac00000 rw-p 00000000 00:00 0 
+8ac00000-8ae00000 rw-p 00000000 00:00 0 
+8ae00000-8b000000 rw-p 00000000 00:00 0 
+8b000000-8b0c5000 rw-p 00000000 00:00 0 
+8b0c5000-8b100000 ---p 00000000 00:00 0 
+8b100000-8b300000 rw-p 00000000 00:00 0 
+8b300000-8b3f9000 rw-p 00000000 00:00 0 
+8b3f9000-8b400000 ---p 00000000 00:00 0 
+8b400000-8b500000 rw-p 00000000 00:00 0 
+8b500000-8b700000 rw-p 00000000 00:00 0 
+8b700000-8b7ff000 rw-p 00000000 00:00 0 
+8b7ff000-8b800000 ---p 00000000 00:00 0 
+8b80d000-8b810000 ---p 00000000 00:00 0 
+8b810000-8b85e000 rw-p 00000000 00:00 0 
+8b85e000-8b861000 ---p 00000000 00:00 0 
+8b861000-8b8af000 rw-p 00000000 00:00 0 
+8b8af000-8b8b2000 ---p 00000000 00:00 0 
+8b8b2000-8b900000 rw-p 00000000 00:00 0 
+8b900000-8b9fc000 rw-p 00000000 00:00 0 
+8b9fc000-8ba00000 ---p 00000000 00:00 0 
+8ba00000-8bafd000 rw-p 00000000 00:00 0 
+8bafd000-8bb00000 ---p 00000000 00:00 0 
+8bb00000-8bbfe000 rw-p 00000000 00:00 0 
+8bbfe000-8bc00000 ---p 00000000 00:00 0 
+8bc01000-8bc02000 rw-s 00000000 08:03 544198     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/txlog.otx
+8bc02000-8bc03000 rw-s 00000000 08:03 544208     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/aspool.och
+8bc03000-8bc04000 rw-s 00000000 08:03 544207     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/aspool.0.ocl
+8bc04000-8bc05000 rw-s 00000000 08:03 544206     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/asconn.och
+8bc05000-8bc08000 ---p 00000000 00:00 0 
+8bc08000-8bc56000 rw-p 00000000 00:00 0 
+8bc56000-8bc59000 ---p 00000000 00:00 0 
+8bc59000-8bca7000 rw-p 00000000 00:00 0 
+8bca7000-8bcac000 r--s 00037000 08:03 400928     /www/zpi/asvis/db/vendor/orientdb/lib/orientdb-server-1.0rc7-SNAPSHOT.jar
+8bcac000-8bcb0000 r--s 0001f000 08:03 400909     /www/zpi/asvis/db/vendor/orientdb/lib/orient-commons-1.0rc7-SNAPSHOT.jar
+8bcb0000-8bcb1000 rw-s 00000000 08:03 544205     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/asconn.0.ocl
+8bcb1000-8bcb2000 rw-s 00000000 08:03 544204     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/asnode.och
+8bcb2000-8bcb3000 rw-s 00000000 08:03 544203     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/asnode.0.ocl
+8bcb3000-8bcb4000 rw-s 00000000 08:03 544202     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/ouser.och
+8bcb4000-8bcb5000 rw-s 00000000 08:03 544201     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/ouser.0.ocl
+8bcb5000-8bcb6000 rw-s 00000000 08:03 544200     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/orole.och
+8bcb6000-8bcb7000 rw-s 00000000 08:03 544199     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/orole.0.ocl
+8bcb7000-8bcb8000 rw-s 00000000 08:03 544196     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.och
+8bcb8000-8bcb9000 rw-s 00000000 08:03 544172     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.ocl
+8bcb9000-8bcba000 rw-s 00000000 08:03 544171     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/index.och
+8bcba000-8bcbb000 rw-s 00000000 08:03 544170     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/index.0.ocl
+8bcbb000-8bcbc000 rw-s 00000000 08:03 544169     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/internal.och
+8bcbc000-8bcbd000 rw-s 00000000 08:03 544168     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/internal.0.ocl
+8bcbd000-8bcbe000 rw-s 00000000 08:03 544167     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.odh
+8bcbe000-8bcbf000 rw-s 00000000 08:03 544166     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/default.0.oda
+8bcc3000-8bcc6000 rw-s 00000000 08:03 544197     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/database.ocf
+8bcc6000-8bcc7000 rw-s 00000000 08:03 544197     /www/zpi/asvis/db/vendor/orientdb/databases/asvis/database.ocf
+8bccb000-8bcce000 r--s 00031000 08:03 668313     /usr/lib/jvm/java-6-openjdk/jre/lib/ext/sunjce_provider.jar
+8bcce000-8bcd0000 r--s 00013000 08:03 668288     /usr/lib/jvm/java-6-openjdk/jre/lib/jce.jar
+8bcd0000-8bcd7000 r--s 000fb000 08:03 668324     /usr/lib/jvm/java-6-openjdk/jre/lib/resources.jar
+8bcd7000-8bcdb000 r--s 0007c000 08:03 668287     /usr/lib/jvm/java-6-openjdk/jre/lib/jsse.jar
+8bcdb000-8bced000 r--s 000e6000 08:03 400926     /www/zpi/asvis/db/vendor/orientdb/lib/orientdb-core-1.0rc7-SNAPSHOT.jar
+8bced000-8bcef000 r--s 00008000 08:03 400920     /www/zpi/asvis/db/vendor/orientdb/lib/orientdb-client-1.0rc7-SNAPSHOT.jar
+8bcef000-8bcf7000 r--s 00066000 08:03 922725     /usr/share/java/gnome-java-bridge.jar
+8bcf7000-8bcf8000 ---p 00000000 00:00 0 
+8bcf8000-8bd78000 rw-p 00000000 00:00 0 
+8bd78000-8bd7b000 ---p 00000000 00:00 0 
+8bd7b000-8bdc9000 rw-p 00000000 00:00 0 
+8bdc9000-8bdcc000 ---p 00000000 00:00 0 
+8bdcc000-8be4a000 rw-p 00000000 00:00 0 
+8be4a000-8be4d000 ---p 00000000 00:00 0 
+8be4d000-8becb000 rw-p 00000000 00:00 0 
+8becb000-8bece000 ---p 00000000 00:00 0 
+8bece000-8bf1c000 rw-p 00000000 00:00 0 
+8bf1c000-8c11c000 r--p 00000000 08:03 532725     /usr/lib/locale/locale-archive
+8c11c000-8c11f000 ---p 00000000 00:00 0 
+8c11f000-8c16d000 rw-p 00000000 00:00 0 
+8c16d000-8c170000 ---p 00000000 00:00 0 
+8c170000-8c1be000 rw-p 00000000 00:00 0 
+8c1be000-8c1bf000 ---p 00000000 00:00 0 
+8c1bf000-8c272000 rw-p 00000000 00:00 0 
+8c272000-8c402000 r--s 037af000 08:03 668392     /usr/lib/jvm/java-6-openjdk/jre/lib/rt.jar
+8c402000-8c403000 ---p 00000000 00:00 0 
+8c403000-8c483000 rw-p 00000000 00:00 0 
+8c483000-8c484000 ---p 00000000 00:00 0 
+8c484000-8c50c000 rw-p 00000000 00:00 0 
+8c50c000-8c544000 rw-p 00000000 00:00 0 
+8c544000-8c5f7000 rw-p 00000000 00:00 0 
+8c5f7000-8c62f000 rw-p 00000000 00:00 0 
+8c62f000-8d730000 rw-p 00000000 00:00 0 
+8d730000-94730000 rw-p 00000000 00:00 0 
+94730000-b4730000 rw-p 00000000 00:00 0 
+b4730000-b4731000 r--s 00006000 08:03 400929     /www/zpi/asvis/db/vendor/orientdb/lib/orientdb-tools-1.0rc7-SNAPSHOT.jar
+b4731000-b4733000 r--s 00005000 08:03 400927     /www/zpi/asvis/db/vendor/orientdb/lib/orientdb-enterprise-1.0rc7-SNAPSHOT.jar
+b4733000-b4740000 rw-p 00000000 00:00 0 
+b4740000-b47f3000 rw-p 00000000 00:00 0 
+b47f3000-b4b33000 rwxp 00000000 00:00 0 
+b4b33000-b77f3000 rw-p 00000000 00:00 0 
+b77f3000-b77f6000 ---p 00000000 00:00 0 
+b77f6000-b7847000 rw-p 00000000 00:00 0 
+b7847000-b784a000 r--s 0000a000 08:03 400945     /www/zpi/asvis/db/vendor/orientdb/lib/persistence-api-1.0.jar
+b784a000-b784d000 r--s 0000f000 08:03 668316     /usr/lib/jvm/java-6-openjdk/jre/lib/ext/pulse-java.jar
+b784d000-b784e000 r--p 002a1000 08:03 532725     /usr/lib/locale/locale-archive
+b784e000-b7856000 rw-s 00000000 08:03 1314038    /tmp/hsperfdata_piotrus/2357
+b7856000-b7857000 rw-p 00000000 00:00 0 
+b7857000-b7858000 r--p 00000000 00:00 0 
+b7858000-b785a000 rw-p 00000000 00:00 0 
+bfa73000-bfa94000 rw-p 00000000 00:00 0          [stack]
+
+VM Arguments:
+jvm_args: -Xms512m -Xmx512m -XX:+UseParallelGC -XX:+AggressiveOpts -XX:CompileThreshold=200 -Djava.util.logging.config.file=/www/zpi/asvis/db/vendor/orientdb/config/orientdb-server-log.properties -Dorientdb.config.file=/www/zpi/asvis/db/vendor/orientdb/config/orientdb-server-config.xml -Dorientdb.www.path=/www/zpi/asvis/db/vendor/orientdb/www -Dlog.console.level=info -Dlog.file.level=fine -Dorientdb.build.number=@BUILD@ 
+java_command: com.orientechnologies.orient.server.OServerMain
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+USERNAME=piotrus
+LD_LIBRARY_PATH=/usr/lib/jvm/java-6-openjdk/jre/lib/i386/server:/usr/lib/jvm/java-6-openjdk/jre/lib/i386:/usr/lib/jvm/java-6-openjdk/jre/../lib/i386
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x656ef0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x656ef0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x51d410], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x51d410], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGXFSZ: [libjvm.so+0x51d410], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x51d410], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x51d280], sa_mask[0]=0x00000000, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x520070], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x520070], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x520070], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x520070], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:Ubuntu 11.04 (natty)
+uname:Linux 2.6.38-11-generic #50-Ubuntu SMP Mon Sep 12 21:18:14 UTC 2011 i686
+libc:glibc 2.13 NPTL 2.13 
+rlimit: STACK 8192k, CORE 0k, NPROC infinity, NOFILE 4096, AS infinity
+load average:1.95 1.46 0.86
+
+/proc/meminfo:
+MemTotal:        1154300 kB
+MemFree:           20064 kB
+Buffers:          107012 kB
+Cached:           260936 kB
+SwapCached:        37396 kB
+Active:           678764 kB
+Inactive:         358812 kB
+Active(anon):     523848 kB
+Inactive(anon):   146648 kB
+Active(file):     154916 kB
+Inactive(file):   212164 kB
+Unevictable:          16 kB
+Mlocked:              16 kB
+HighTotal:        270024 kB
+HighFree:            652 kB
+LowTotal:         884276 kB
+LowFree:           19412 kB
+SwapTotal:       1951860 kB
+SwapFree:        1757920 kB
+Dirty:              1852 kB
+Writeback:             0 kB
+AnonPages:        640836 kB
+Mapped:            56560 kB
+Shmem:               808 kB
+Slab:              54196 kB
+SReclaimable:      41692 kB
+SUnreclaim:        12504 kB
+KernelStack:        3296 kB
+PageTables:         9920 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     2529008 kB
+Committed_AS:    3420024 kB
+VmallocTotal:     122880 kB
+VmallocUsed:       27016 kB
+VmallocChunk:      90716 kB
+HardwareCorrupted:     0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       4096 kB
+DirectMap4k:       16376 kB
+DirectMap4M:      892928 kB
+
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 15 model 72 stepping 2, cmov, cx8, fxsr, mmx, sse, sse2, sse3, mmxext, 3dnow, 3dnowext
+
+Memory: 4k page, physical 1154300k(20064k free), swap 1951860k(1757920k free)
+
+vm_info: OpenJDK Server VM (20.0-b11) for linux-x86 JRE (1.6.0_22-b22), built on Jun 11 2011 05:56:20 by "buildd" with gcc 4.5.2
+
+time: Mon Nov  7 14:33:41 2011
+elapsed time: 111 seconds
+

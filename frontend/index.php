@@ -63,25 +63,56 @@ function includeTemplates() {
 <head>
 	<meta charset="utf-8">
 	<title>ASvis</title>
-	<link rel="stylesheet" href="<?= Config::get('frontend_base_uri') ?>/css/styles.css">
+	<link rel="stylesheet" href="<?= Config::get('frontend_base_uri') ?>/css/init.css">
+	<link rel="stylesheet" href="<?= Config::get('frontend_base_uri') ?>/css/components.css">
+	<link rel="stylesheet" href="<?= Config::get('frontend_base_uri') ?>/css/layout.css">
 </head>
 <body id="container">
 	<header id="top">
-		<h1><a href="/">Asvis</a></h1>
+		<h1><a href="/"><strong>AS</strong>vis</a></h1>
 	</header>
 	<p id="flash"><span class="message"></span></p>
 	<div id="graph">
 		<div id="graph_renderer"></div>
 	</div>
 	<aside id="sidebar">
-		<a href="/">/</a><br>
-		<a href="/abc">/abc</a><br>
-		<a href="/kopytko">/kopytko</a><br>
-		<a href="/kopytko/134">/kopytko/134</a><br>
-		<form action="/dupa" method="post">
-			<input type="text" name="a" value="v">
-			<button type="submit">send</button>
-		</form>
+		<section id="node_data" class="section l1">
+			<h1>Node <span class="as_num">#455</span></h1>
+			<div class="content">
+				<p class="name">Nazwa: <span class="as_name">AS455</span></p>
+		
+				<section id="node_data_conns" class="section l2">
+					<h1>Połączenia (<span class="count">235 &ndash; U:123, D:145</span>)</h1>
+					<div class="content">
+						<table class="std">
+							<thead>
+								<tr>
+									<th>U/D</th>
+									<th>Do</th>
+									<th>Stan</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="as_dir_up">UP</td>
+									<th><span class="as_num">#348543</span></th>
+									<th class="ok">OK</th>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+
+				<section id="node_data_pools" class="section l2">
+					<h1>Pule adresów (<span class="count">23</span>)</h1>
+					<div class="content">
+						<ul>
+							<li><span class="aspool_ip">134.35.53.34</span>/<span class="aspool_mask">4</span></li>
+						</ul>
+					</div>
+				</section>
+			</div>
+		</section>
 	</aside>
 	
 	<? includeJS(array(
