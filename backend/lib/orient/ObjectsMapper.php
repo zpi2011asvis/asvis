@@ -20,7 +20,7 @@ class ObjectsMapper {
 	
 	public function parse() {
 		if ($this->_isParsed) {
-			return;
+			return new Graph( $this->_structure );
 		}
 		
 		$this->_parseNode($this->_json);
@@ -28,6 +28,7 @@ class ObjectsMapper {
 		
 		$this->_countConnections();
 		
+		$this->_isParsed = true;
 		return new Graph( $this->_structure );
 	}
 	

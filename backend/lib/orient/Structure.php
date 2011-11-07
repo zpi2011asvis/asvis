@@ -2,6 +2,10 @@
 
 namespace asvis\lib\orient;
 
+require_once 'Node.php';
+
+use asvis\lib\orient\Node as Node;
+
 class Structure {
 	protected $_structure;
 	
@@ -9,39 +13,36 @@ class Structure {
 		if ($structure == null) {
 			$this->_structure = array();
 		} else {
-			$this->_structure = $structure;
+			foreach ($structure as $num => $node) {
+				$out = array();				
+				foreach ($node->out as $linkedNum) {
+					$out[] = $linkedNum;
+				}
+				
+				$in  = array();
+				foreach ($node->in as $linkedNum) {
+					$in[] = $linkedNum;
+				}
+							
+				$this->_structure[$num] =
+					new Node(
+						$node->{'@rid'},
+						$node->num,
+						$node->name,
+						$out,
+						$in,
+						$node->count_out,
+						$node->depth
+					);
+			}
 		}
 	}
 	
-	public function add($node) {
-		$this->_structure[$node->num] = $node;
+	public function get($num) {
+		return $this->_structure[$num];
 	}
 	
-	public function remove($nodeNum) {
-		unset($this->_structure[$nodeNum]);
-	}
-	
-	/**
-	 * Returns structure which can be properly encoded to json.
-	 * @return string
-	 */
 	public function toJSON() {
-		
-		$toEncode = array();
-		
-		foreach ($this->_structure as $num => $node) {
-			$toEncode[$num]['in'] = array();
-			$toEncode[$num]['out'] = array();
-			
-			foreach ($node->in as $linkedNum) {				
-				$toEncode[$num]['in'][] = $linkedNum;
-			}
-			
-			foreach ($node->out as $linkedNum) {				
-				$toEncode[$num]['out'][] = $linkedNum;
-			}
-		}
-		
-		return $toEncode;
+		return json_encode($this->_structure);
 	}
 }

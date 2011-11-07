@@ -5,7 +5,6 @@ namespace asvis\lib\orient;
 require_once __DIR__.'/../Engine.php';
 require_once __DIR__.'/../GraphAlgorithms.php';
 require_once __DIR__.'/ObjectsMapper.php';
-require_once __DIR__.'/ConnectionsMapper.php';
 require_once __DIR__.'/../H.php';
 require_once __DIR__.'/../../../config.php';
 require_once __DIR__.'/../../vendor/SplClassLoader.php';
@@ -17,7 +16,6 @@ use asvis\Config as Config;
 use Congow\Orient\Foundation\Binding as Binding;
 use Congow\Orient\Http\Client\Curl as Curl;
 use Congow\Orient\Query as Query;
-use asvis\lib\orient\ConnectionsMapper as ConnectionsMapper;
 use asvis\lib\orient\ObjectsMapper as ObjectsMapper;
 use asvis\lib\Engine as Engine;
 use asvis\lib\GraphAlgorithms as GraphAlgorithms;
@@ -95,8 +93,6 @@ class OrientEngine implements Engine {
 		
 		$objectMapper = new ObjectsMapper($result[0]);		
 		$graph = $objectMapper->parse();
-
-// 		echo $graph->toJSON();
 		
 		return $graph->toJSON();
 	}

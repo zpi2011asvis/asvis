@@ -8,50 +8,55 @@ use asvis\lib\orient\Structure as Structure;
 
 class Graph extends Structure {
 	
-	/**
-	 * Returns structure which can be properly encoded to json.
-	 * @return string
-	 */
 	public function toJSON() {
 		$toEncode = array();
 		
 		foreach ($this->_structure as $num => $node) {
-			$toEncode['structure'][$num] = array();
-			
-			foreach ($node->out as $linkedNum) {				
-				$toEncode['structure'][$num][] = $linkedNum;
-			}
+			$toEncode['strucrue'][$num]['connections'] = $node->__get('out');
+			$toEncode['strucrue'][$num]['weight'] = $node->__get('weight');
+			$toEncode['strucrue'][$num]['distance'] = $node->__get('distance');
 		}
 		
-		$strCopy = $this->_structure;
+		$toEncode['weight_order']	= $this->_getWeightOrder();
+		$toEncode['distance_order']	= $this->_getDistanceOrder();
 		
-		uasort($strCopy, array('asvis\lib\orient\Graph', 'compareCountOut'));
+		return json_encode($toEncode);
+	}
+	
+	private function _getWeightOrder() {
+		$struct = $this->_structure;
 		
-		foreach($strCopy as $num => $node) {
-			$toEncode['weight_order'][] = $num;
+		uasort($struct, array('asvis\lib\orient\Graph', 'compareWeight'));
+		
+		$result = array();
+
+		foreach ($struct as $num => $node) {
+			$result[] = $num;
 		}
 		
-		$strCopy = $this->_structure;
-		
-		uasort($strCopy, array('asvis\lib\orient\Graph', 'compareDepth'));
-		
-		foreach($strCopy as $num => $node) {
-			$toEncode['depth_order'][] = $num;
+		return $result;
+	}
+	
+	private function _getDistanceOrder() {
+		$struct = $this->_structure;
+	
+		uasort($struct, array('asvis\lib\orient\Graph', 'compareDistance'));
+	
+		$result = array();
+	
+		foreach ($struct as $num => $node) {
+			$result[] = $num;
 		}
-		
-		return $toEncode;
+	
+		return $result;
 	}
 	
-	private function compareCountOut($a, $b) {
-		return $b->count_out - $a->count_out;
+	private function compareWeight($a, $b) {
+		return $b->__get('weight') - $a->__get('weight');
 	}
 	
-	private function compareCountIn($a, $b) {
-		return $b->count_in - $a->count_in;
-	}
-	
-	private function compareDepth($a, $b) {
-		return -($b->depth - $a->depth);
+	private function compareDistance($a, $b) {
+		return -($b->__get('distance') - $a->__get('distance'));
 	}
 	
 }
