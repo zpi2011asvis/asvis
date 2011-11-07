@@ -74,9 +74,9 @@
 			});
 
 
-			//renderer.setStructure(global.data[2], 578, true);
+			renderer.setStructure(global.data[2], 578, true);
 			//renderer.setStructure(global.data[0], 7345, true);
-			renderer.setStructure(global.data[1], 7578, true);
+			//renderer.setStructure(global.data[1], 7578, true);
 			renderer.start();
 
 			/**
