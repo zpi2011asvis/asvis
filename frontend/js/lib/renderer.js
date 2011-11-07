@@ -206,10 +206,19 @@
 		 * Init ----------------------------------------------------------------
 		 */
 
-		_renderer = new T.WebGLRenderer({
-			antialias: true,
-			clearAlpha: 0,
-		});
+		try {
+			_renderer = new T.WebGLRenderer({
+				antialias: true,
+				clearAlpha: 0,
+			});
+		}
+		catch (e) {
+			_renderer = new T.CanvasRenderer({
+				antialias: false,
+				clearAlpha: 0
+			});
+			alert('Your browser doesn\'t have support for WebGL. Visualization\s going to burn Your CPU!');
+		}
 		_scene = new T.Scene();
 		_vizir = new Vizir();
 
