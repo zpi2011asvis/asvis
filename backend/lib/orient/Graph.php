@@ -16,19 +16,55 @@ class Graph extends Structure {
 		$toEncode = array();
 		
 		foreach ($this->_structure as $num => $node) {
-			$toEncode['structure'][$num]['in'] = array();
-			$toEncode['structure'][$num]['out'] = array();
-			
-			foreach ($node->in as $linkedNum) {				
-				$toEncode['structure'][$num]['in'][] = $linkedNum;
-			}
+			$toEncode['structure'][$num] = array();
 			
 			foreach ($node->out as $linkedNum) {				
-				$toEncode['structure'][$num]['out'][] = $linkedNum;
+				$toEncode['structure'][$num][] = $linkedNum;
 			}
+		}
+		
+		$strCopy = $this->_structure;
+		
+		uasort($strCopy, array('asvis\lib\orient\Graph', 'compareCountOut'));
+		
+		foreach($strCopy as $num => $node) {
+			$toEncode['weight_order'][] = $num;
+		}
+		
+		$strCopy = $this->_structure;
+		
+		uasort($strCopy, array('asvis\lib\orient\Graph', 'compareDepth'));
+		
+		foreach($strCopy as $num => $node) {
+			$toEncode['depth_order'][] = $num;
 		}
 		
 		return $toEncode;
 	}
 	
+	private function compareCountOut($a, $b) {
+		return $b->count_out - $a->count_out;
+	}
+	
+	private function compareCountIn($a, $b) {
+		return $b->count_in - $a->count_in;
+	}
+	
+	private function compareDepth($a, $b) {
+		return -($b->depth - $a->depth);
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

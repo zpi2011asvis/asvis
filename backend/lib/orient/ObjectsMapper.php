@@ -26,28 +26,31 @@ class ObjectsMapper {
 		$this->_parseNode($this->_json);
 		$this->_resolveNodes();		
 		
+		$this->_countConnections();
+		
 		return new Graph( $this->_structure );
 	}
 	
 	
-	private function _parseNode($node) {
+	private function _parseNode($node, $depth = 0) {
 		if (!is_object($node)) {
 			return;
 		}
 		
-		if (isset($node->num)) {			
+		if (isset($node->num)) {
+			$node->depth = $depth;
 			$this->_structure[$node->{'@rid'}] = $node;
 		}
 		
 		if(isset($node->in)) {
 			foreach ($node->in as $object) {
-				$this->_parseNode($object);
+				$this->_parseNode($object, $depth+1);
 			}
 		}
 		
 		if(isset($node->out)) {
 			foreach ($node->out as $object) {
-				$this->_parseNode($object);
+				$this->_parseNode($object, $depth+1);
 			}
 		}
 	}
@@ -136,6 +139,13 @@ class ObjectsMapper {
 				}
 			}
 			
+		}
+	}
+	
+	private function _countConnections() {
+		foreach ($this->_structure as $node) {
+			$this->_structure[$node->num]->count_out = count($node->out);
+			$this->_structure[$node->num]->count_in = count($node->in);
 		}
 	}
 	
