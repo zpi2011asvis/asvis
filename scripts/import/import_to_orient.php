@@ -1,9 +1,8 @@
 <?php
 
-// require_once 'ASImporter.php';
-require_once 'EvenNewerImporter.php';
+require_once 'ASImporter.php';
 
-$importer = new EvenNewerImporter();
+$importer = new ASImporter();
 $importer->import();
 
 // OR
