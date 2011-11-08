@@ -2,7 +2,7 @@
 
 ## Struktura
 
-![Nodes connections](asvis_nodes.png)
+![Nodes connections](https://github.com/zpi2011asvis/asvis/raw/master/docs/asvis_nodes.png)
 
 ### ASNode
 
