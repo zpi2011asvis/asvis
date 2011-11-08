@@ -42,7 +42,7 @@
 			_dirty = true;
 			_graph = graph.structure;
 			_distance_order = graph.distance_order;
-			_order = graph.count_order;
+			_order = graph.weight_order;
 			return this;
 		};
 
@@ -123,7 +123,7 @@
 		 */
 		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector, depth) {
 			var data = _graph[num],
-				cons = data.up.concat(data.down),
+				cons = data.out, // TODO add downstream connections .concat(data.in),
 				consl = cons.length,
 				current_pos,
 				new_pos,
