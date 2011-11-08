@@ -45,13 +45,9 @@
 	box-shadow: 0 0 3px #000;
 	border: solid 1px #FFF;
 	border-width: 1px 0;
-	margin-bottom: 5px;
 }
 .section:first-child > h1 {
 	border-top: none;
-}
-.section > .content > .section {
-	margin: 5px -10px;
 }
 .section.l1 > h1 {
 	padding: 5px 10px;
@@ -72,6 +68,35 @@
 	background-image: -webkit-linear-gradient(bottom, #E0E0E0 0%, #F5F5F5 100%);
 	background-image: -moz-linear-gradient(bottom, #E0E0E0 0%, #F5F5F5 100%);
 }
-.section > .content {
-	padding: 0 10px;
+.section .padded_content {
+	padding: 5px 10px;
+}
+.section .scroll {
+	max-height: 200px;
+	overflow: auto;
+}
+
+/*
+ * STD table -------------------------------------------------------------------
+ */
+
+table.std {
+	width: 100%;
+}
+table.std th,
+table.std td {
+	padding: 2px 3px;
+	border: solid 1px #FFF;
+	border-width: 0 1px 1px 0;
+}
+table.std th {
+	font-weight: bold;
+	text-align: left;
+	background-color: rgba(0, 0, 0, 0.25);
+}
+table.std tr:nth-child(odd) td {
+	background-color: rgba(0, 0, 0, 0.025);
+}
+table.std tr:nth-child(even) td {
+	background-color: rgba(0, 0, 0, 0.05);
 }
