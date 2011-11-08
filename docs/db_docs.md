@@ -2,6 +2,8 @@
 
 ## Struktura
 
+![Nodes connections](https://github.com/zpi2011asvis/asvis/raw/master/docs/asvis_nodes.png)
+
 ### ASNode
 
 Ważnym założeniem jest, że baza jest spójna na poziomie połączeń out/in. To znaczy jeśli z jednego ASNode'a jest połączenie out do drugiego, to w nim musi być in i na odwrót.
