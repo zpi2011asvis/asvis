@@ -80,13 +80,21 @@
 			});
 		
 			dispatcher.get('/node/{number}/{depth}', function routerNode(request) {
-				var num = request.get.number,
+				var number = request.get.number,
 					depth = request.get.depth;
 
-				var w = widgets.GraphWidget.new(that._container_el.find('#graph_renderer'));
+				that.db.get('structure/graph', {
+					number: number,
+					depth: depth
+				})
+				(function (data) {
+					var w = widgets.GraphWidget.new(that._container_el.find('#graph_renderer'));
+					w.set('graph', data);
+					w.set('root', number);
 
-				that.widgets.add(w);
-				that.render();
+					that.widgets.add(w);
+					that.render();
+				}).end(that.err);
 			});
 		},
 
@@ -104,6 +112,11 @@
 
 		render: function render() {
 			this.widgets.renderAll();
+		},
+
+		err: function err(error) {
+			console.log(error);
+			console.log(error.stack);
 		}
 	};
 

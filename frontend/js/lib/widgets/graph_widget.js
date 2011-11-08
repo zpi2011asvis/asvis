@@ -9,6 +9,7 @@
 	var GraphWidget = Widget.create(function GraphWidget() {}, {
 		_init: function _init() {
 			var that = this;
+			global.graph_widget = this;
 		}
 	},
 	{
@@ -36,7 +37,7 @@
 			return this._mouse_pos;
 		},
 
-		render: function render() {
+		render: function render(data) {
 			if (this._el) return;
 
 			var that = this,
@@ -73,8 +74,8 @@
 				that.signals.action_performed.dispatch();
 			});
 
-
-			renderer.setStructure(global.data[2], 578, true);
+			renderer.setStructure(data['graph'], data['root'], true);
+			//renderer.setStructure(global.data[2], 578, true);
 			//renderer.setStructure(global.data[0], 7345, true);
 			//renderer.setStructure(global.data[1], 7578, true);
 			renderer.start();

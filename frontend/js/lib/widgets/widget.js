@@ -37,14 +37,14 @@ this.app.lib.widgets = {};
 		},
 
 		set: function set(key, data) {
-			this._data[key, data];
+			this._data[key] = data;
 			this._dirty = true;
 			this._dirty_keys.push(key);
 		},
 
 		render: function render() {
 			if (!this._dirty) return;
-			
+
 			this._view.render(this._data, this._dirty_keys);
 			this._dirty = false;
 			this._dirty_keys = [];
