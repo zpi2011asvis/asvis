@@ -42,7 +42,7 @@ class Structure {
 		return $this->_structure[$num];
 	}
 	
-	public function toJSON() {
-		return json_encode($this->_structure);
+	public function forJSON() {
+		return $this->_structure;
 	}
 }

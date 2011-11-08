@@ -94,7 +94,7 @@ class OrientEngine implements Engine {
 		$objectMapper = new ObjectsMapper($result[0]);		
 		$graph = $objectMapper->parse();
 		
-		return $graph->toJSON();
+		return $graph->forJSON();
 	}
 	
 	/**

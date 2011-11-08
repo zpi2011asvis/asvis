@@ -8,19 +8,22 @@ use asvis\lib\orient\Structure as Structure;
 
 class Graph extends Structure {
 	
-	public function toJSON() {
+	public function forJSON() {
 		$toEncode = array();
 		
-		foreach ($this->_structure as $num => $node) {
-			$toEncode['strucrue'][$num]['connections'] = $node->out;
-			$toEncode['strucrue'][$num]['weight'] = $node->weight;
-			$toEncode['strucrue'][$num]['distance'] = $node->distance;
-		}
+		$toEncode['structure'] = parent::forJSON();
+		
+// 		foreach ($this->_structure as $num => $node) {
+// 			$toEncode['strucrue'][$num]['out'] = $node->out;
+// 			$toEncode['strucrue'][$num]['in'] = $node->in;
+// 			$toEncode['strucrue'][$num]['weight'] = $node->weight;
+// 			$toEncode['strucrue'][$num]['distance'] = $node->distance;
+// 		}
 		
 		$toEncode['weight_order']	= $this->_getWeightOrder();
 		$toEncode['distance_order']	= $this->_getDistanceOrder();
 		
-		return json_encode($toEncode);
+		return $toEncode;
 	}
 	
 	private function _getWeightOrder() {
