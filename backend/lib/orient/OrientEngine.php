@@ -82,7 +82,7 @@ class OrientEngine implements Engine {
 		$fp = $depth;
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
-		$fetchplan = "*:{$fp} ASNode.pools:0 ASNode.in:0";
+		$fetchplan = "*:{$fp} ASNode.pools:0";
 		
 		$json = $this->_orient->query($query, null, 1, $fetchplan);
 		$result = json_decode($json->getBody())->result;
