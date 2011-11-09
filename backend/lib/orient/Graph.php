@@ -12,14 +12,6 @@ class Graph extends Structure {
 		$toEncode = array();
 		
 		$toEncode['structure'] = parent::forJSON();
-		
-// 		foreach ($this->_structure as $num => $node) {
-// 			$toEncode['strucrue'][$num]['out'] = $node->out;
-// 			$toEncode['strucrue'][$num]['in'] = $node->in;
-// 			$toEncode['strucrue'][$num]['weight'] = $node->weight;
-// 			$toEncode['strucrue'][$num]['distance'] = $node->distance;
-// 		}
-		
 		$toEncode['weight_order']	= $this->_getWeightOrder();
 		$toEncode['distance_order']	= $this->_getDistanceOrder();
 		
@@ -31,13 +23,7 @@ class Graph extends Structure {
 		
 		uasort($struct, array('asvis\lib\orient\Graph', 'compareWeight'));
 		
-		$result = array();
-
-		foreach ($struct as $num => $node) {
-			$result[] = $num;
-		}
-		
-		return $result;
+		return array_keys($struct);
 	}
 	
 	private function _getDistanceOrder() {
@@ -45,13 +31,7 @@ class Graph extends Structure {
 	
 		uasort($struct, array('asvis\lib\orient\Graph', 'compareDistance'));
 	
-		$result = array();
-	
-		foreach ($struct as $num => $node) {
-			$result[] = $num;
-		}
-	
-		return $result;
+		return array_keys($struct);
 	}
 	
 	private function compareWeight($a, $b) {
@@ -59,7 +39,7 @@ class Graph extends Structure {
 	}
 	
 	private function compareDistance($a, $b) {
-		return -($b->distance - $a->distance);
+		return $a->distance - $b->distance;
 	}
 	
 }

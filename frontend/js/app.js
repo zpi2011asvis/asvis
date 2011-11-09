@@ -88,7 +88,9 @@
 					depth: depth
 				})
 				(function (data) {
-					var w = widgets.GraphWidget.new(that._container_el.find('#graph_renderer'));
+					var w = widgets.GraphWidget.new(
+						that._container_el.find('#graph_renderer')
+					);
 					w.set('graph', data);
 					w.set('root', number);
 
@@ -115,8 +117,8 @@
 		},
 
 		err: function err(error) {
-			console.log(error);
 			console.log(error.stack);
+			alert('Błąd: ' + error.message);
 		}
 	};
 

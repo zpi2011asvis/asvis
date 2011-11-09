@@ -20,16 +20,14 @@ class ObjectsMapper {
 	
 	public function parse() {
 		if ($this->_isParsed) {
-			return new Graph( $this->_structure );
+			return new Graph($this->_structure);
 		}
 		
 		$this->_parseNode($this->_json);
 		$this->_resolveNodes();		
 		
-		$this->_countConnections();
-		
 		$this->_isParsed = true;
-		return new Graph( $this->_structure );
+		return new Graph($this->_structure);
 	}
 	
 	
@@ -45,13 +43,13 @@ class ObjectsMapper {
 		
 		if(isset($node->in)) {
 			foreach ($node->in as $object) {
-				$this->_parseNode($object, $depth+1);
+				$this->_parseNode($object, $depth + 1);
 			}
 		}
 		
 		if(isset($node->out)) {
 			foreach ($node->out as $object) {
-				$this->_parseNode($object, $depth+1);
+				$this->_parseNode($object, $depth + 1);
 			}
 		}
 	}
@@ -86,7 +84,7 @@ class ObjectsMapper {
 		
 		$count = count($this->_structure[$nodeRID]->in);
 		
-		for ($i=0; $i<$count; $i++) {
+		for ($i = 0; $i < $count; $i++) {
 			
 			$linked = $this->_structure[$nodeRID]->in[$i];
 			
@@ -121,7 +119,7 @@ class ObjectsMapper {
 		
 		$count = count($this->_structure[$nodeRID]->out);
 		
-		for ($i=0; $i<$count; $i++) {
+		for ($i = 0; $i < $count; $i++) {
 			
 			$linked = $this->_structure[$nodeRID]->out[$i];
 			
@@ -140,13 +138,6 @@ class ObjectsMapper {
 				}
 			}
 			
-		}
-	}
-	
-	private function _countConnections() {
-		foreach ($this->_structure as $node) {
-			$this->_structure[$node->num]->count_out = count($node->out);
-			$this->_structure[$node->num]->count_in = count($node->in);
 		}
 	}
 	

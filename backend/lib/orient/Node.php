@@ -49,7 +49,7 @@ class Node {
 	/**
 	 * Konstruktor wypełniający pola klasy
 	 */
-	public function __construct($rid = null, $num = null, $name = null, $out = null, $in = null, $weight = null, $distance = null) {
+	public function __construct($rid = null, $num = null, $name = null, $out = null, $in = null, $distance = null) {
 		$this->rid	= $rid;
 		$this->num	= $num;
 		$this->name	= $name;
@@ -57,8 +57,8 @@ class Node {
 		$this->out	= $out;
 		$this->in	= $in;
 		
-		$this->weight	= $weight;
 		$this->distance	= $distance;
+		$this->calculateWeight();
 	}
 	
 	/**

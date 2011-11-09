@@ -31,7 +31,6 @@ class Structure {
 						$node->name,
 						$out,
 						$in,
-						$node->count_out,
 						$node->depth
 					);
 			}

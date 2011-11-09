@@ -79,7 +79,8 @@ class OrientEngine implements Engine {
 	 */
 	public function structureGraph($nodeNum, $depth) {	
 		
-		$fp = $depth;
+		// +1 because we want maximum distance to be equal with $depth
+		$fp = $depth + 1;
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
 		$fetchplan = "*:{$fp} ASNode.pools:0";
