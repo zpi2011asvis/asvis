@@ -6,7 +6,8 @@ this.util = {};
 	var requestAnimationFrame,
 		classy,
 		rad2Deg,
-		deg2Rad;
+		deg2Rad,
+		arrayUniq;
 
 	(function () {
 		var superMerge = function superMerge(parent, child) {
@@ -88,9 +89,23 @@ this.util = {};
 		};
 	}());
 
+	arrayUniq = function arrayUniq(arr) {
+		var a = [],
+			al = 0,
+			value;
+		for (var i = 0, il = arr.length; i < il; ++i) {
+			value = arr[i];
+			if (a.indexOf(value) === -1) {
+				a[al++] = value;
+			}
+		}
+		return a;
+	}
+
 	exports.classy = classy;
 	exports.requestAnimationFrame = requestAnimationFrame;
 	exports.rad2Deg = rad2Deg;
 	exports.deg2Rad = deg2Rad;
+	exports.arrayUniq = arrayUniq;
 
 }.call({}, this.util, this));

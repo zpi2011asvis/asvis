@@ -87,13 +87,13 @@ body {
  */
 
 .as_dir_up {
-	color: #22F;
+	color: #11C;
 }
 .as_dir_down {
-	color: #2F2;
+	color: #1C1;
 }
 .as_conn_bad {
-	color: #F22;
+	color: #C11;
 }
 .as_num {
 	border: solid 1px rgba(0, 0, 0, 0.25);

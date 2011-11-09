@@ -5,7 +5,7 @@
 		T_Vertex = T.Vertex,
 		T_Vector3 = T.Vector3,
 		T_Matrix4 = T.Matrix4,
-		uniq = global.es5ext.Array.uniq.call;
+		uniq = global.util.arrayUniq;
 	
 	var Vizir = function Vizir() {
 		// consts
@@ -22,8 +22,9 @@
 			_graph,
 			_distance_order,
 			_order,
-			_done = [],			//indexes of recalculated vertices
-			_vertices = [],		//ordered as in _order
+			_nodes_done = [],	// indexes of recalculated vertices
+			_edges_done = [],	// strings 'num1_num2' for recalculated edges
+			_vertices = [],		// ordered as in _order
 			_edges = [],
 			_dirty = false;
 
@@ -31,9 +32,11 @@
 		var _nver,
 			_nvec,
 			_recalculatePositions,
-			_generateVertices,
-			_generateEdges,
-			_recursiveVertexPos;
+			_pushEdge,
+			_hasEdge,
+			_generateVEObjects,
+			_recursiveVertexPos,
+			_runRecursiveVertexPos;
 	
 		/*
 		 * Publics -------------------------------------------------------------
@@ -72,7 +75,8 @@
 			_distance_order = null;
 			_vertices = [];
 			_edges = [];
-			_done = [];
+			_nodes_done = [];
+			_edges_done = [];
 			_dirty = false;
 			return this;
 		};
@@ -92,23 +96,35 @@
 		_recalculatePositions = function _recalculatePositions() {
 			var d = +new Date(),
 				i = 0;
-			
-			_recursiveVertexPos(_order[i++], _nvec(BASE, 0, 0), _nvec(BASE, 0, 0), 1);
 
-			// jump to the next not yet done or to the end
-			while (_done[_order[i++]]){}
+			_runRecursiveVertexPos([
+				[_order[i++], _nvec(BASE, 0, 0), _nvec(BASE, 0, 0), 1]
+			]);
+			
+			// jump to the next not yet nodes_done or to the end
+			while (_nodes_done[_order[i++]]){}
 			
 			if (i < _order.length) {	
 				// traverse to the end
-				_recursiveVertexPos(_order[i], _nvec(-BASE, 0, 0), _nvec(-BASE, 0, 0), 1e5);
+				_runRecursiveVertexPos([
+					[_order[i], _nvec(-BASE, 0, 0), _nvec(-BASE, 0, 0), 1e5]
+				]);
 			}
 
-			_generateVertices();
-			_generateEdges();
+			_generateVEObjects();
 
 			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
 
 			_dirty = false;
+		};
+
+		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {
+			while (queue.length > 0) {
+				var args = queue.shift(),
+					todo = _recursiveVertexPos(args[0], args[1], args[2], args[3]);
+
+				todo && (queue = queue.concat(todo));
+			}
 		};
 
 		/*
@@ -120,20 +136,24 @@
 		 * TODO
 		 * * something is wrong with inclining from tree direction
 		 * * depth gives poor results - traverse while vertex has big
-		 * number of undone children
+		 * number of unnodes_done children
 		 */
 		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector, depth) {
 			var data = _graph[num],
-				cons = uniq(data.out.concat(data.in)),
+				cons = data.out.concat(data.in),
 				consl = cons.length,
 				current_pos,
 				new_pos,
 				new_num,
 				rot_angle = A360 / 36 * 1, //10deg
-				rotated = 0; // already rotated in current surface 
+				rotated = 0, // already rotated in current surface 
+				todo = []; //queue for _runRecursiveVertexPos
 
+			if (_nodes_done.indexOf(num) > -1) {
+				return;
+			}
 
-			_done.push(num);
+			_nodes_done.push(num);
 			current_pos = pos.clone();
 			_vertices.push(current_pos);
 			data.pos = current_pos;
@@ -142,6 +162,12 @@
 
 			// break if no children
 			if (consl === 0) return;
+
+			// remove duplicated connections
+			// here (not before) because of performance
+			// -- do this after upper returns
+			cons = uniq(cons);
+			consl = cons.length;
 		
 			//generating vector inclined from tree generation direction
 			var m = new T_Matrix4(),
@@ -152,35 +178,66 @@
 			// generating matrix for "circular" rotations
 			var m2 = new T_Matrix4();
 			m2.setRotationAxis(_nvec(1, 0, 0), rot_angle);
-
+			
+			//console.log(num, cons);
 			for (var i = 0; i < consl; ++i) {
 				new_num = cons[i];
-			
-				// traversing for the first time
-				if (_done.indexOf(new_num) === -1) {
-					new_pos = pos.clone().addSelf(vector);
 
-					_recursiveVertexPos(cons[i], new_pos, vector.clone().multiplyScalar(0.9), depth - 1);
+				if (!_hasEdge(num, new_num)) {
+					// traversing for the first time
+					if (_nodes_done.indexOf(new_num) === -1) {
+						new_pos = pos.clone().addSelf(vector);
+						
+						// add child to queue
+						todo.push([cons[i], new_pos, vector.clone().multiplyScalar(0.9), depth - 1]);
 
-					_edges.push(current_pos, new_pos);
-			
-					// calculate new position on sphere
-					m2.multiplyVector3(vector);
-					rotated += rot_angle;
-					if (rotated >= A360) {
-						m.multiplyVector3(vector);
-						rotated = 0;
+						//console.log('A', num, new_num);
+						_pushEdge(num, new_num);
+				
+						// calculate new position on sphere
+						m2.multiplyVector3(vector);
+						rotated += rot_angle;
+						if (rotated >= A360) {
+							m.multiplyVector3(vector);
+							rotated = 0;
+						}
+					}
+					// traversing this vertex again (push only edge)
+					else {
+						//console.log('B', num, new_num);
+						_pushEdge(num, new_num);
 					}
 				}
-				// traversing this vertex again (push only edge)
-				else {
-					_edges.push(current_pos, _graph[new_num].pos);
-				}
-
 			}
+
+			return todo;
 		};
 
-		_generateVertices = function _generateVertices() {
+		_pushEdge = function _pushEdge(num1, num2) {
+			// add in both directions - simpler to search them
+			_edges_done.push(
+				num1 + '_' + num2,
+				num2 + '_' + num1
+			);
+			_edges.push(num1, num2);
+		};
+
+		_hasEdge = function _hasEdge(num1, num2) {
+			// more than 10x faster than searching _edges_done
+			return (
+				_nodes_done.indexOf(num1) > -1 &&
+				_nodes_done.indexOf(num2) > -1
+			);
+		};
+
+		_generateVEObjects = function _generateVEObjects() {
+			var edges = [];
+			for (var i = 0, il = _edges.length; i < il; ++i) {
+				edges[i] = new T_Vertex(_graph[_edges[i]].pos);
+			}
+
+			_edges = edges; //fast swap
+
 			var vertices = [];
 			for (var i = 0, il = _vertices.length; i < il; ++i) {
 				vertices[i] = new T_Vertex(_vertices[i]);
@@ -188,16 +245,6 @@
 
 			_vertices = vertices; //fast swap
 		};
-		
-		_generateEdges = function _generateEdges() {
-			var edges = [];
-			for (var i = 0, il = _edges.length; i < il; ++i) {
-				edges[i] = new T_Vertex(_edges[i]);
-			}
-
-			_edges = edges; //fast swap
-		};
-
 	};
 
 	exports.Vizir = Vizir;

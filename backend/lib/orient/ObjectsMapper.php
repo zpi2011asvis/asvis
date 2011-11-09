@@ -41,13 +41,13 @@ class ObjectsMapper {
 			$this->_structure[$node->{'@rid'}] = $node;
 		}
 		
-		if(isset($node->in)) {
+		if (isset($node->in)) {
 			foreach ($node->in as $object) {
 				$this->_parseNode($object, $depth + 1);
 			}
 		}
 		
-		if(isset($node->out)) {
+		if (isset($node->out)) {
 			foreach ($node->out as $object) {
 				$this->_parseNode($object, $depth + 1);
 			}
