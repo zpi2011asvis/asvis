@@ -10,7 +10,7 @@
                 <parameter name="network.multicast.heartbeat" value="10"/>
                 <parameter name="server.update.delay" value="5000"/>
                 <parameter name="server.electedForLeadership" value="true"/>
-                <parameter name="security.key" value="yfDCkpiKtjzt6wLK"/>
+                <parameter name="security.key" value="5Wd/kOcRKATIWzuv"/>
             </parameters>
         </handler>
         <handler class="com.orientechnologies.orient.server.handler.OAutomaticBackup">
@@ -31,8 +31,8 @@
             <protocol name="distributed" implementation="com.orientechnologies.orient.server.network.protocol.distributed.ONetworkProtocolDistributed"/>
         </protocols>
         <listeners>
-            <listener ip-address="127.0.0.1" port-range="2424-2430" protocol="distributed"/>
-            <listener ip-address="127.0.0.1" port-range="2480-2490" protocol="http">
+            <listener ip-address="0.0.0.0" port-range="2424-2430" protocol="distributed"/>
+            <listener ip-address="0.0.0.0" port-range="2480-2490" protocol="http">
                 <commands>
                     <command pattern="GET|www GET|studio/ GET| GET|*.htm GET|*.html GET|*.xml GET|*.jpeg GET|*.jpg GET|*.png GET|*.gif GET|*.js GET|*.css GET|*.swf GET|*.ico GET|*.txt" implementation="com.orientechnologies.orient.server.network.protocol.http.command.get.OServerCommandGetStaticContent">
                         <parameters>
@@ -41,7 +41,9 @@
                         </parameters>
                     </command>
                 </commands>
-                <parameters/>
+                <parameters>
+                    <parameter name="network.http.charset" value="utf-8"/>
+                </parameters>
             </listener>
         </listeners>
     </network>
@@ -51,6 +53,7 @@
     <users>
         <user name="root" password="root" resources="*"/>
         <user name="guest" password="guest" resources="connect,server.listDatabases"/>
+        <user name="replicator" password="0B3C59E1E9243A10A2A0CCC65B75E514FBE4119640D7153A9CBBB28BEB049309" resources="database.passthrough"/>
     </users>
     <properties>
         <entry name="server.cache.file.static" value="false"/>

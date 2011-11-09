@@ -278,7 +278,7 @@
 						promise: createPromise(unresolved, {
 							_pending: [],
 							_promises: [],
-							_timeout: setTimeout(noop, Infinity),
+							_timeout: setTimeout(noop, 1e13),
 							_monitor: createDeferred.MONITOR && createDeferred.MONITOR()
 						})
 					});
@@ -839,6 +839,7 @@
 
 					module.exports = f(function () {
 						this.reduce(rcb.bind(this), []).forEach(fcb, this);
+						return this;
 					});
 				}
 			},
@@ -1635,6 +1636,7 @@
 						not:           require('./not'),
 						once:          require('./once'),
 						pluck:         require('./pluck'),
+						remove:         require('./remove'),
 						rcurry:        require('./rcurry'),
 						rncurry:       require('./rncurry'),
 						s:             require('./s'),
@@ -1663,14 +1665,20 @@
 
 					'use strict';
 
-					var slice = require('../List/slice/call');
+					var slice      = require('../List/slice/call')
+					  , isFunction = require('./is-function')
+					  , memoize    = require('./memoize');
 
-					module.exports = function (name) {
-						var args = slice(arguments, 1);
+					module.exports = memoize(function (name) {
+						var args = slice(arguments, 1)
+							, isFn = isFunction(name);
+
 						return function (obj) {
-							return obj[name].apply(obj, args.concat(slice(arguments, 1)));
+							var fn;
+							return (isFn ? name : obj[name]).apply(obj,
+								args.concat(slice(arguments, 1)));
 						};
-					};
+					}, false);
 				},
 				"is-arguments.js": function (exports, module, require) {
 					'use strict';
@@ -1763,8 +1771,9 @@
 
 					'use strict';
 
-					var isArray = Array.isArray
-					  , slice   = require('../List/slice/call')
+					var isArray  = Array.isArray
+					  , slice    = require('../List/slice/call')
+					  , isNumber = require('../Number/is-number')
 
 					  , resolve;
 
@@ -1780,7 +1789,7 @@
 						if (isArray(length)) {
 							resolvers = length;
 							length = fn.length;
-						} else if (length == null) {
+						} else if ((length != false) && !isNumber(Number(length)))  {
 							length = fn.length;
 						}
 
@@ -1791,7 +1800,7 @@
 
 							args = resolver ? resolver(arguments) : arguments;
 							i = 0;
-							index = limit = (length === true) ? args.length: length;
+							index = limit = (length === false) ? args.length: length;
 							current = cache;
 
 							if (limit === 0) {
@@ -1919,6 +1928,20 @@
 						  , args = toArray(arguments);
 						return function () {
 							return fn.apply(this, concat(arguments, args));
+						};
+					});
+				},
+				"remove.js": function (exports, module, require) {
+					// Returns a function that takes an object, and deletes given
+					// object's property
+
+					'use strict';
+
+					var memoize = require('./memoize');
+
+					module.exports = memoize(function (name) {
+						return function (obj) {
+							delete obj[name];
 						};
 					});
 				},
@@ -2183,6 +2206,25 @@
 						return r;
 					});
 				},
+				"find.js": function (exports, module, require) {
+					// Find element in list
+
+					'use strict';
+
+					var f    = require('../Function/functionalize')
+					  , some = require('./some/call');
+
+					module.exports = f(function (query, scope) {
+						var r;
+						return some(this, function (value) {
+							if (query.apply(this, arguments)) {
+								r = value;
+								return true;
+							}
+							return false;
+						}, scope) ? r : null;
+					});
+				},
 				"first.js": function (exports, module, require) {
 					// Returns first element from array
 
@@ -2270,6 +2312,28 @@
 						forEach(this, aritize(fn, 1), scope);
 					});
 				},
+				"group.js": function (exports, module, require) {
+					// Group list elements
+					// Inspired by Underscore's groupBy:
+					// http://documentcloud.github.com/underscore/#groupBy
+
+					'use strict';
+
+					var f       = require('../Function/functionalize')
+					  , forEach = require('./for-each/call');
+
+					module.exports = f(function (fn, scope) {
+						var r = {};
+						forEach(this, function (v) {
+							var key = fn.apply(scope, arguments);
+							if (!r.hasOwnProperty(key)) {
+								r[key] = [];
+							}
+							r[key].push(v);
+						});
+						return r;
+					});
+				},
 				"index-of": {
 					"call.js": function (exports, module, require) {
 						// call binded to Array.prototype.indexOf
@@ -2287,9 +2351,6 @@
 					}
 				},
 				"index.js": function (exports, module, require) {
-					// Export all modules.
-					// We could as well scan file system but it won't work in browser environment.
-
 					'use strict';
 
 					module.exports = {
@@ -2302,11 +2363,13 @@
 						first:               require('./first'),
 						exclusion:           require('./exclusion'),
 						filter:              require('./filter'),
+						find:                require('./find'),
 						findSameStartLength: require('./find-same-start-length'),
 						flatten:             require('./flatten'),
 						forEach:             require('./for-each'),
 						forEachRight:        require('./for-each-right'),
 						forEachSimple:       require('./for-each-simple'),
+						group:               require('./group'),
 						indexOf:             require('./index-of'),
 						indexesOf:           require('./indexes-of'),
 						intersection:        require('./intersection'),
@@ -2314,11 +2377,15 @@
 						isList:              require('./is-list'),
 						join:                require('./join'),
 						map:                 require('./map'),
+						mapRight:            require('./map-right'),
 						peek:                require('./peek'),
 						reduce:              require('./reduce'),
 						shiftSame:           require('./shift-same'),
 						slice:               require('./slice'),
 						some:                require('./some'),
+						someValue:           require('./some-value'),
+						someRight:           require('./some-right'),
+						sort:                require('./sort'),
 						sorted:              require('./sorted'),
 						toArray:             require('./to-array')
 					};
@@ -2416,6 +2483,24 @@
 						};
 					}
 				},
+				"map-right.js": function (exports, module, require) {
+					// map, starting from last element
+
+					'use strict';
+
+					var f = require('../Function/functionalize');
+
+					module.exports = f(function (fn, scope) {
+						var resultArray = new Array(this.length), count = 0;
+						for (var i = this.length-1; i >= 0; i--) {
+							if (this.hasOwnProperty(i)) {
+								resultArray[count] = (fn.call(scope, this[i], i, this));
+							}
+							count++;
+						}
+						return resultArray;
+					});
+				},
 				"peek.js": function (exports, module, require) {
 					// Returns the last element in an array without removing it.
 					// Inspired and stole naming from Closure library:
@@ -2488,6 +2573,51 @@
 							call: require('./call')
 						};
 					}
+				},
+				"some-right.js": function (exports, module, require) {
+					// some, starting from last element
+
+					'use strict';
+
+					var f = require('../Function/functionalize');
+
+					module.exports = f(function (fn, scope) {
+						scope = scope || this;
+						for (var i = this.length; i >= 0; --i) {
+							if (this.hasOwnProperty(i) && fn.call(scope, this[i], i, this)) {
+								return true;
+							}
+						}
+						return false;
+					});
+				},
+				"some-value.js": function (exports, module, require) {
+					// Same as 'some', however returns first 'truthy' value instead of just 'true'
+
+					'use strict';
+
+					var f    = require('../Function/functionalize')
+					  , some = require('./some/call')
+
+					module.exports = f(function (cb, context) {
+						var r;
+						return some(this, function () {
+							return (r = cb.apply(this, arguments));
+						}, context) ? r : null;
+					});
+				},
+				"sort.js": function (exports, module, require) {
+					// Sort for array-like object,
+					// it copies list to array and applies sort on that array.
+
+					'use strict';
+
+					var f    = require('../Function/functionalize')
+					  , copy = require('./clone').call
+
+					module.exports = f(function (compareFn) {
+						return copy(this).sort(compareFn);
+					});
 				},
 				"sorted": {
 					"binary-boundary-search.js": function (exports, module, require) {
@@ -2741,6 +2871,25 @@
 							.reduce(fn(scope || this, source || this), {}));
 					});
 				},
+				"clone.js": function (exports, module, require) {
+					// Clone object
+
+					'use strict';
+
+					var create                   = Object.create
+					  , getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor
+					  , getOwnPropertyNames      = Object.getOwnPropertyNames
+					  , getPrototypeOf           = Object.getPrototypeOf
+					  , f                        = require('../Function/functionalize');
+
+					module.exports = f(function () {
+						return create(getPrototypeOf(this),
+							getOwnPropertyNames(this).reduce(function (o, key) {
+								o[key] = getOwnPropertyDescriptor(this, key);
+								return o;
+							}.bind(this), {}));
+					});
+				},
 				"compare-by.js": function (exports, module, require) {
 					// Compare by given property
 
@@ -2802,7 +2951,7 @@
 							} else {
 								b = b.toString();
 							}
-							return strCompare(b, a);
+							return strCompare(a, b);
 						} else {
 							return Number(a) - Number(b);
 						}
@@ -2953,6 +3102,7 @@
 
 					module.exports = {
 						bindMethods:      require('./bind-methods'),
+						clone:            require('./clone'),
 						compare:          require('./compare'),
 						compareBy:        require('./compare-by'),
 						descriptors:      require('./descriptors'),
@@ -2960,6 +3110,7 @@
 						extend:           require('./extend'),
 						getPropertyNames: require('./get-property-names'),
 						invoke:           require('./invoke'),
+						isEqual:          require('./is-equal'),
 						isObject:         require('./is-object'),
 						mapToArray:       require('./map-to-array'),
 						merge:            require('./merge'),
@@ -2991,6 +3142,15 @@
 						return fn.bind(this, arguments);
 					});
 				},
+				"is-equal.js": function (exports, module, require) {
+					'use strict';
+
+					var f = require('../Function/functionalize');
+
+					module.exports = f(function (other) {
+						return this == other;
+					});
+				},
 				"is-object.js": function (exports, module, require) {
 					// Whether value is not primitive
 
@@ -3011,11 +3171,11 @@
 					var f       = require('../Function/functionalize')
 					  , forEach = require('./plain/for-each').call;
 
-					module.exports = f(function (callback, scope) {
+					module.exports = f(function (callback, scope, compareFn, compareByKey) {
 						var a = [];
 						forEach(this, function (value, key) {
-							a.push(callback.call(this, value, key));
-						}, scope);
+							a.push(callback.call(scope, value, key, this));
+						}, this, compareFn, compareByKey);
 						return a;
 					});
 				},
@@ -3090,6 +3250,55 @@
 					});
 				},
 				"plain": {
+					"_iterate.js": function (exports, module, require) {
+						// Internal method, used by iteration functions.
+						// Calls a function for each key-value pair found in object
+						// Optionally takes compareFn to iterate object in specific order
+
+						'use strict';
+
+						var getKeys    = Object.keys
+						  , isFunction = require('../../Function/is-function')
+						  , values     = require('./values').call;
+
+						module.exports = function (method) {
+							return function (callback, scope, compareFn, compareByKey) {
+								var keys, count, fn, col, index;
+								col = keys = getKeys(this);
+								index = -1;
+								count = keys.length;
+								if (compareFn) {
+									if (compareByKey) {
+										keys.sort(compareFn);
+									} else {
+										fn = function (value) {
+											var key;
+											keys.some(function (k, index) {
+												if (this[k] === value) {
+													key = k;
+													keys.splice(index, 1);
+													return true;
+												}
+												return false;
+											}, this);
+											return callback.call(scope, value, key, this, ++index, count);
+										};
+										col = values(this).sort(compareFn);
+									}
+								}
+								if (!fn) {
+									fn = function (key) {
+										return callback.call(scope, this[key], key, this, ++index, count);
+									};
+								}
+								if (isFunction(method)) {
+									return method.call(col, fn, this);
+								} else {
+									return col[method](fn, this);
+								}
+							};
+						};
+					},
 					"bind-methods.js": function (exports, module, require) {
 						// Bind all object functions to given scope.
 						// If scope is not given then functions are bound to object they're assigned to.
@@ -3158,13 +3367,26 @@
 						var keys = Object.keys
 						  , f    = require('../../Function/functionalize');
 
-						module.exports = f(function () {
+						module.exports = f(function (cb) {
+							if (!cb) {
+								cb = Boolean;
+							}
 							keys(this).forEach(function (name) {
-								if (!this[name]) {
+								if (!cb(this[name], name, this)) {
 									delete this[name];
 								}
 							}, this);
 							return this;
+						});
+					},
+					"count.js": function (exports, module, require) {
+						// Return count of properties
+
+						var keys = Object.keys
+						  , f    = require('../../Function/functionalize');
+
+						module.exports = f(function () {
+							return keys(this).length;
 						});
 					},
 					"create.js": function (exports, module, require) {
@@ -3262,13 +3484,10 @@
 
 						'use strict';
 
-						var f   = require('../../Function/functionalize')
-						  , s   = require('../../Function/s').call
-						  , get = require('./get').bind;
+						var f       = require('../../Function/functionalize')
+						  , iterate = require('./_iterate');
 
-						module.exports = f(function (callback, scope) {
-							return Object.keys(this).every(s(callback, get(this)), scope);
-						});
+						module.exports = f(iterate('every'));
 					},
 					"extend.js": function (exports, module, require) {
 						// extend ES3 way, no descriptors involved
@@ -3334,16 +3553,14 @@
 						// Analogous to Array.prototype.forEach
 						//
 						// Calls a function for each key-value pair found in object
+						// Additionally you can provide compareFn to iterate object in desired order
 
 						'use strict';
 
-						var f    = require('../../Function/functionalize')
-						  , s    = require('../../Function/s').call
-						  , get  = require('./get').bind;
+						var f       = require('../../Function/functionalize')
+						  , iterate = require('./_iterate');
 
-						module.exports = f(function (callback, scope) {
-							Object.keys(this).forEach(s(callback, get(this)), scope);
-						});
+						module.exports = f(iterate('forEach'));
 					},
 					"get-length.js": function (exports, module, require) {
 						// Return number of assigned properties;
@@ -3375,6 +3592,7 @@
 							bindMethods:   require('./bind-methods'),
 							clone:         require('./clone'),
 							compact:       require('./compact'),
+							count:         require('./count'),
 							create:        require('./create'),
 							delete:        require('./delete'),
 							diff:          require('./diff'),
@@ -3395,6 +3613,7 @@
 							map:           require('./map'),
 							merge:         require('./merge'),
 							same:          require('./same'),
+							slice:         require('./slice'),
 							some:          require('./some'),
 							setValue:      require('./set-value'),
 							set:           require('./set'),
@@ -3464,11 +3683,11 @@
 						var f       = require('../../Function/functionalize')
 						  , forEach = require('./for-each').call;
 
-						module.exports = f(function (callback, scope) {
+						module.exports = f(function (callback, scope, compareFn, compareByKey) {
 							var o = {};
 							forEach(this, function (value, key) {
-								o[callback.call(this, key, value)] = value;
-							}, scope);
+								o[callback.call(scope, key, value, this)] = value;
+							}, this, compareFn, compareByKey);
 							return o;
 						});
 					},
@@ -3563,6 +3782,57 @@
 							return (this[key] = value);
 						});
 					},
+					"slice.js": function (exports, module, require) {
+						// Slice for plain objects
+						// Returns limited set of properties, optionally specific order in which
+						// properties are chosen is considered
+
+						'use strict';
+
+						var max  = Math.max
+						  , f    = require('../../Function/functionalize')
+						  , copy = require('./clone').call
+						  , some = require('./some').call;
+
+						module.exports = f(function (start, end, compareFn, compareByKeys) {
+							var r;
+							if ((start == null) || isNaN(Number(start))) {
+								start = 0;
+							}
+							if (end == null) {
+								end = Infinity;
+							} else if (isNaN(Number(end))) {
+								end = 0;
+							}
+							start = Number(start);
+							end = Number(end);
+
+							if ((end === Infinity) && (start === 0)) {
+								return copy(this);
+							}
+
+							r = {};
+							if (start < end) {
+								some(this, function (value, key, scope, index, count) {
+									if (start < 0) {
+										start = max(count + start, 0);
+									}
+									if (end < 0) {
+										end = max(count + end, 0);
+									}
+									if (index === end) {
+										return true;
+									}
+									if (index >= start) {
+										r[key] = value;
+									}
+									return false;
+								}, null, compareFn, compareByKeys);
+							}
+
+							return r;
+						});
+					},
 					"some.js": function (exports, module, require) {
 						// Analogous to Array.prototype.some
 						//
@@ -3571,13 +3841,10 @@
 
 						'use strict';
 
-						var f   = require('../../Function/functionalize')
-						  , s   = require('../../Function/s').call
-						  , get = require('./get').bind;
+						var f       = require('../../Function/functionalize')
+						  , iterate = require('./_iterate');
 
-						module.exports = f(function (callback, scope) {
-							return Object.keys(this).some(s(callback, get(this)), scope);
-						});
+						module.exports = f(iterate('some'));
 					},
 					"to-array.js": function (exports, module, require) {
 						// Returns object keys and values in array
@@ -3619,11 +3886,12 @@
 
 						'use strict';
 
-						var f   = require('../../Function/functionalize')
-						  , get = require('./get').bind;
+						var keys = Object.keys
+						  , f    = require('../../Function/functionalize')
+						  , get  = require('./get').bind;
 
 						module.exports = f(function () {
-							return Object.keys(this).map(get(this));
+							return keys(this).map(get(this));
 						});
 					}
 				},
@@ -3768,6 +4036,19 @@
 						};
 					};
 				},
+				"contains.js": function (exports, module, require) {
+					// Whether string contains given string
+					//
+					// Name inspired by Closure library: http://closure-library.googlecode.com/svn/trunk/closure/goog/string/string.js
+
+					'use strict';
+
+					var f       = require('../Function/functionalize');
+
+					module.exports = f(function (x) {
+						return this.indexOf(x) > -1;
+					});
+				},
 				"convert": {
 					"dash-to-camel-case.js": function (exports, module, require) {
 						// Convert dash separated string to camelCase
@@ -3874,6 +4155,7 @@
 
 					module.exports = {
 						autoId:                   require('./auto-id'),
+						contains:                 require('./contains'),
 						convert:                  require('./convert'),
 						endsWith:                 require('./ends-with'),
 						format:                   require('./format'),

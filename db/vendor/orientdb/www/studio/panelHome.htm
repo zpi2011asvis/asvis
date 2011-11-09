@@ -5,7 +5,7 @@
 				<table width="100%" cellpadding="4" cellspacing="3">
 					<tr>
 						<td colspan="3" align="left" valign="bottom"><a href="http://www.orientechnologies.com/orient-db.htm"><img border="0"
-								src="images/orient_db.png" /></a><b class="help"> Studio</b></td>
+								src="images/orient_db.png" /> </a><b class="help"> Studio</b></td>
 					</tr>
 					<tr>
 						<td colspan="2" align="left" class="help"><br>
@@ -141,6 +141,7 @@
 				.open($('#user').val(), $('#password').val());
 		if (databaseInfo == null) {
 			jQuery("#output").text(orientServer.getErrorMessage());
+			orientServer = null;
 		} else {
 			controller.loadFragment("panelDatabase.htm", null, null, 'panel');
 

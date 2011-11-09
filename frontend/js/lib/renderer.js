@@ -79,13 +79,13 @@
 				return;
 			}
 
-			global.DEBUG && console.log('Start rendering');
+			global.DEBUG2 && console.log('Start rendering');
 			_started = true;
 			_refresh();
 		};
 
 		this.stop = function stop() {
-			global.DEBUG && console.log('Stop rendering');
+			global.DEBUG2 && console.log('Stop rendering');
 			_started = false;
 			global.clearInterval(_refreshing_interval);
 			_refreshing_interval = null;

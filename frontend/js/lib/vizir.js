@@ -4,7 +4,8 @@
 	var T = global.THREE,
 		T_Vertex = T.Vertex,
 		T_Vector3 = T.Vector3,
-		T_Matrix4 = T.Matrix4;
+		T_Matrix4 = T.Matrix4,
+		uniq = global.es5ext.Array.uniq.call;
 	
 	var Vizir = function Vizir() {
 		// consts
@@ -123,13 +124,14 @@
 		 */
 		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector, depth) {
 			var data = _graph[num],
-				cons = data.out, // TODO add downstream connections .concat(data.in),
+				cons = uniq(data.out.concat(data.in)),
 				consl = cons.length,
 				current_pos,
 				new_pos,
 				new_num,
-				rot_angle = A360 / 36 * 1.5, //15deg
+				rot_angle = A360 / 36 * 1, //10deg
 				rotated = 0; // already rotated in current surface 
+
 
 			_done.push(num);
 			current_pos = pos.clone();
