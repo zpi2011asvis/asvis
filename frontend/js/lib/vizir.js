@@ -149,6 +149,8 @@
 				rotated = 0, // already rotated in current surface 
 				todo = []; //queue for _runRecursiveVertexPos
 
+			// this is done twice (also before node was added to the queue)
+			// because of order in BFS
 			if (_nodes_done.indexOf(num) > -1) {
 				return;
 			}
@@ -158,12 +160,12 @@
 			_vertices.push(current_pos);
 			data.pos = current_pos;
 			
+			// break if reached given depth
 			if (depth < 0) return;
-
 			// break if no children
 			if (consl === 0) return;
 
-			// remove duplicated connections
+			// remove duplicated connections (bidirectional)
 			// here (not before) because of performance
 			// -- do this after upper returns
 			cons = uniq(cons);
@@ -179,7 +181,6 @@
 			var m2 = new T_Matrix4();
 			m2.setRotationAxis(_nvec(1, 0, 0), rot_angle);
 			
-			//console.log(num, cons);
 			for (var i = 0; i < consl; ++i) {
 				new_num = cons[i];
 
@@ -191,7 +192,6 @@
 						// add child to queue
 						todo.push([cons[i], new_pos, vector.clone().multiplyScalar(0.9), depth - 1]);
 
-						//console.log('A', num, new_num);
 						_pushEdge(num, new_num);
 				
 						// calculate new position on sphere
@@ -204,7 +204,6 @@
 					}
 					// traversing this vertex again (push only edge)
 					else {
-						//console.log('B', num, new_num);
 						_pushEdge(num, new_num);
 					}
 				}
