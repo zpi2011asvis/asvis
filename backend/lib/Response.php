@@ -12,4 +12,20 @@ class Response extends TonicResponse {
 		$this->addHeader('Content-Type', 'application/json');
 		$this->body = json_encode($obj);
 	}
+	
+	public function s404Unless($boolean) {
+		if(!$boolean) {
+			$this->code = Response::NOTFOUND;
+		}
+		
+		return $boolean;
+	}
+	
+	public function s500Unless($boolean) {
+		if(!$boolean) {
+			$this->code = Response::INTERNALSERVERERROR;
+		}
+		
+		return $boolean;
+	}
 }
