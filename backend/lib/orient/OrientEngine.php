@@ -79,13 +79,20 @@ class OrientEngine implements Engine {
 	 */
 	public function structureGraph($nodeNum, $depth) {	
 		
+		$nodeNum = (int)$nodeNum;
+		$depth   = (int)$depth;
+		
+		if($nodeNum < 0 || $depth < 0 || $depth > Config::get('orient_max_fetch_depth')) {
+			return null;
+		}
+		
 		// +1 because we want maximum distance to be equal with $depth
 		$fp = $depth + 1;
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
 		$fetchplan = "*:{$fp} ASNode.pools:0";
 		
-		$json = $this->_orient->query($query, null, 1, $fetchplan);
+		$json = $this->_orient->query($query, null, 1, $fetchplan);		
 		$result = json_decode($json->getBody())->result;
 
 		if (!count($result)) {

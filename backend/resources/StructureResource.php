@@ -11,7 +11,10 @@ use asvis\lib\Resource as Resource;
 class StructureGraphResource extends Resource {
 	function get($request, $number, $depth) {
 		$forJSON = $this->_engine->structureGraph((int) $number, (int) $depth);
+		
 		$response = new Response($request);
+		
+		$response->s404Unless(!is_null($forJSON));
 		$response->json($forJSON);
 		return $response;
 	}

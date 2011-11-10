@@ -19,7 +19,7 @@ class Config {
 		'orient_db_user'		=> 'admin',
 		'orient_db_pass'		=> 'admin',
 
-		'backend_db_engine'		=> 'OrientEngine',
+		'orient_max_fetch_depth'=> 15,
 	);
 
 	public static function get($name) {
