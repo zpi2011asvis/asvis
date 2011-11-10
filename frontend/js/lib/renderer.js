@@ -108,8 +108,12 @@
 
 			// stop rendering for the time needed to recalculate everything
 			this.stop();
+	
+			// for FBA, TODO - only set by some event fired by FBA
+			verts_geometry.dynamic = true;
+			edges_geometry.dynamic = true;
 
-			// clear grap object3d
+			// clear graph object3d
 			_graph_objects.forEach(function (obj) {
 				_graph_object.remove(obj);
 			});
@@ -134,6 +138,7 @@
 			line.type = T.Lines;
 			_graph_object.add(psystem);
 			_graph_object.add(line);
+			_graph_objects.push(psystem, line);
 
 			if (was_started) {
 				this.start();
@@ -155,6 +160,9 @@
 
 		_refresh = function _refresh() {
 			if (_started) {
+				_graph_objects.forEach(function (obj) {
+					obj.geometry.__dirtyVertices = true;
+				});
 				_renderer.render(_scene, _camera_man.camera);
 				requestAnimationFrame(_refresh, that.getEl());
 			}

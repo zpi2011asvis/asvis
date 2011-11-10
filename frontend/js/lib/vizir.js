@@ -24,7 +24,7 @@
 			_distance_order,
 			_order,
 			_nodes_done = [],	// indexes of recalculated vertices
-			_edges_done = {},	// 'num1_num2': true for recalculated edges
+			_edges_done = {},	// 'num1_num2': true for recalculated edge
 			_vertices = [],		// ordered as in _order
 			_edges = [],
 			_dirty = false,
@@ -117,8 +117,8 @@
 			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
 			_dirty = false;
 
-			_fba = new FBA(_vertices);
-			_fba.run(1000);
+			_fba = new FBA(_root, _graph, _edges_done);
+			setTimeout(_fba.run.bind(_fba, 2000), 1000); // run for 2s after 1s
 		};
 
 		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {
@@ -144,8 +144,8 @@
 		 */
 		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector, depth) {
 			var data = _graph[num],
-				cons = data.out.concat(data.in),
-				consl = cons.length,
+				conns = data.out.concat(data.in),
+				connsl = conns.length,
 				current_pos,
 				new_pos,
 				new_num,
@@ -163,18 +163,18 @@
 			current_pos = pos.clone();
 			_vertices.push(current_pos);
 			data.pos = current_pos;
-			data.cons = [];
+			data.conns = [];
 			
 			// break if reached given depth
 			if (depth < 0) return;
 			// break if no children
-			if (consl === 0) return;
+			if (connsl === 0) return;
 
 			// remove duplicated connections (bidirectional)
 			// here (not before) because of performance
 			// -- do this after upper returns
-			cons = uniq(cons);
-			consl = cons.length;
+			conns = data.conns = uniq(conns);
+			connsl = conns.length;
 		
 			//generating vector inclined from tree generation direction
 			var m = new T_Matrix4(),
@@ -186,8 +186,8 @@
 			var m2 = new T_Matrix4();
 			m2.setRotationAxis(_nvec(1, 0, 0), rot_angle);
 			
-			for (var i = 0; i < consl; ++i) {
-				new_num = cons[i];
+			for (var i = 0; i < connsl; ++i) {
+				new_num = conns[i];
 
 				if (!_hasEdge(num, new_num)) {
 					// traversing for the first time
@@ -195,7 +195,7 @@
 						new_pos = pos.clone().addSelf(vector);
 						
 						// add child to queue
-						todo.push([cons[i], new_pos, vector.clone().multiplyScalar(0.9), depth - 1]);
+						todo.push([conns[i], new_pos, vector.clone().multiplyScalar(0.9), depth - 1]);
 
 						_pushEdge(num, new_num);
 				
@@ -226,6 +226,7 @@
 		};
 
 		_hasEdge = function _hasEdge(num1, num2) {
+			// TODO maybe _edges_done search will be faster?
 			return (
 				_nodes_done.indexOf(num1) > -1 &&
 				_nodes_done.indexOf(num2) > -1
