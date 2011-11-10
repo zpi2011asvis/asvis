@@ -14,15 +14,8 @@ class Structure {
 			$this->_structure = array();
 		} else {
 			foreach ($structure as $num => $node) {
-				$out = array();				
-				foreach ($node->out as $linkedNum) {
-					$out[] = $linkedNum;
-				}
-				
-				$in  = array();
-				foreach ($node->in as $linkedNum) {
-					$in[] = $linkedNum;
-				}
+				$out = array_values($node->out);				
+				$in = array_values($node->in);
 							
 				$this->_structure[$num] =
 					new Node(
@@ -31,7 +24,7 @@ class Structure {
 						$node->name,
 						$out,
 						$in,
-						$node->depth
+						$node->distance
 					);
 			}
 		}
