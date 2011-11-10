@@ -218,8 +218,8 @@
 				clearAlpha: 0
 			});
 			/*alert(
-				'Your browser doesn\'t have support for WebGL. ' +
-				'Visualization\'s going to burn Your CPU!'
+				'Your browser doesn\'t support WebGL. ' +
+				'Visualization\'s going to burn your CPU!'
 			);*/
 		}
 		_scene = new T.Scene();

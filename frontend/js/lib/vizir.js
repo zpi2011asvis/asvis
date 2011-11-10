@@ -5,6 +5,7 @@
 		T_Vertex = T.Vertex,
 		T_Vector3 = T.Vector3,
 		T_Matrix4 = T.Matrix4,
+		FBA = lib.FBA,
 		uniq = global.util.arrayUniq;
 	
 	var Vizir = function Vizir() {
@@ -23,10 +24,11 @@
 			_distance_order,
 			_order,
 			_nodes_done = [],	// indexes of recalculated vertices
-			_edges_done = [],	// strings 'num1_num2' for recalculated edges
+			_edges_done = {},	// 'num1_num2': true for recalculated edges
 			_vertices = [],		// ordered as in _order
 			_edges = [],
-			_dirty = false;
+			_dirty = false,
+			_fba;
 
 		// methods
 		var _nver,
@@ -76,7 +78,7 @@
 			_vertices = [];
 			_edges = [];
 			_nodes_done = [];
-			_edges_done = [];
+			_edges_done = {};
 			_dirty = false;
 			return this;
 		};
@@ -97,31 +99,33 @@
 			var d = +new Date(),
 				i = 0;
 
-			_runRecursiveVertexPos([
+			_runRecursiveVertexPos(
 				[_order[i++], _nvec(BASE, 0, 0), _nvec(BASE, 0, 0), 1]
-			]);
+			);
 			
 			// jump to the next not yet nodes_done or to the end
 			while (_nodes_done[_order[i++]]){}
 			
 			if (i < _order.length) {	
 				// traverse to the end
-				_runRecursiveVertexPos([
+				_runRecursiveVertexPos(
 					[_order[i], _nvec(-BASE, 0, 0), _nvec(-BASE, 0, 0), 1e5]
-				]);
+				);
 			}
 
 			_generateVEObjects();
-
 			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
-
 			_dirty = false;
+
+			_fba = new FBA(_vertices);
+			_fba.run(1000);
 		};
 
 		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {
+			queue = [ queue ];
 			while (queue.length > 0) {
 				var args = queue.shift(),
-					todo = _recursiveVertexPos(args[0], args[1], args[2], args[3]);
+					todo = _recursiveVertexPos.apply(null, args);
 
 				todo && (queue = queue.concat(todo));
 			}
@@ -159,6 +163,7 @@
 			current_pos = pos.clone();
 			_vertices.push(current_pos);
 			data.pos = current_pos;
+			data.cons = [];
 			
 			// break if reached given depth
 			if (depth < 0) return;
@@ -214,15 +219,13 @@
 
 		_pushEdge = function _pushEdge(num1, num2) {
 			// add in both directions - simpler to search them
-			_edges_done.push(
-				num1 + '_' + num2,
-				num2 + '_' + num1
-			);
+			_edges_done[num1 + '_' + num2] = true;
+			_edges_done[num2 + '_' + num1] = true;
+
 			_edges.push(num1, num2);
 		};
 
 		_hasEdge = function _hasEdge(num1, num2) {
-			// more than 10x faster than searching _edges_done
 			return (
 				_nodes_done.indexOf(num1) > -1 &&
 				_nodes_done.indexOf(num2) > -1
@@ -230,18 +233,18 @@
 		};
 
 		_generateVEObjects = function _generateVEObjects() {
-			var edges = [];
+			var edges = [],
+				vertices = [];
+
 			for (var i = 0, il = _edges.length; i < il; ++i) {
 				edges[i] = new T_Vertex(_graph[_edges[i]].pos);
 			}
 
-			_edges = edges; //fast swap
-
-			var vertices = [];
 			for (var i = 0, il = _vertices.length; i < il; ++i) {
 				vertices[i] = new T_Vertex(_vertices[i]);
 			}
 
+			_edges = edges; //fast swap
 			_vertices = vertices; //fast swap
 		};
 	};

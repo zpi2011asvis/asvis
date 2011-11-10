@@ -117,6 +117,7 @@
 		},
 
 		err: function err(error) {
+			console.log(error.message);
 			console.log(error.stack);
 			alert('Błąd: ' + error.message);
 		}

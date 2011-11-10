@@ -210,6 +210,7 @@ function includeTemplates() {
 		'lib/local_db.js',
 		'lib/flash.js',
 		'lib/templates.js',
+		'lib/fba.js',
 		'lib/vizir.js',
 		'lib/camera_man.js',
 		'lib/renderer.js',

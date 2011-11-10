@@ -100,7 +100,7 @@ this.util = {};
 			}
 		}
 		return a;
-	}
+	};
 
 	exports.classy = classy;
 	exports.requestAnimationFrame = requestAnimationFrame;
