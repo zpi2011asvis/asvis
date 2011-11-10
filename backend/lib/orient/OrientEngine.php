@@ -79,6 +79,13 @@ class OrientEngine implements Engine {
 	 */
 	public function structureGraph($nodeNum, $depth) {	
 		
+		$nodeNum = (int)$nodeNum;
+		$depth   = (int)$depth;
+		
+		if($nodeNum < 0 || $depth < 0) {
+			return null;
+		}
+		
 		// +1 because we want maximum distance to be equal with $depth
 		$fp = $depth + 1;
 		
