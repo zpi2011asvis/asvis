@@ -13,7 +13,7 @@
 		var STEPS_AT_ONCE = 2,
 			SPRING_LEN = 40,
 			SPRING_FORCE = 0.025,
-			CHARGE = 0.075,				// for coulomb's law
+			CHARGE = 0.05,				// for coulomb's law
 			DAMPING = 0.8;
 
 		// properties

@@ -10,7 +10,9 @@
 		var	TARGET = new T.Vector3(0, 0, 0), // probably redundant
 			NORMAL = new T.Vector3(0, 0, 1),
 			UP = new T.Vector3(0, 1, 0),
-			RIGHT = new T.Vector3(1, 0, 0);
+			RIGHT = new T.Vector3(1, 0, 0),
+			NEAR = 50,	// for camera
+			FAR = 5000; // for camera
 
 		var that = this,
 			_renderer,
@@ -110,7 +112,7 @@
 		};
 
 		_newCamera = function _newCamera() {
-			_camera = new T.PerspectiveCamera(45, _view_width / _view_height, 100, 10000);
+			_camera = new T.PerspectiveCamera(45, _view_width / _view_height, NEAR, FAR);
 			that.camera = _camera;
 			_updateEye();
 				
