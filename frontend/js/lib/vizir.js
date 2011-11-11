@@ -10,7 +10,7 @@
 	
 	var Vizir = function Vizir() {
 		// consts
-		var BASE = 100, //base length
+		var BASE = 50, //base length
 			WEIGHT_FACTOR = 1.5,
 			MAX_X = 200,
 			MAX_Y = 100,
@@ -100,25 +100,15 @@
 				i = 0;
 
 			_runRecursiveVertexPos(
-				[_order[i++], _nvec(BASE, 0, 0), _nvec(BASE, 0, 0), 1]
+				[_order[i++], _nvec(BASE, 0, 0), _nvec(BASE, 0, 0)]
 			);
-			
-			// jump to the next not yet nodes_done or to the end
-			while (_nodes_done[_order[i++]]){}
-			
-			if (i < _order.length) {	
-				// traverse to the end
-				_runRecursiveVertexPos(
-					[_order[i], _nvec(-BASE, 0, 0), _nvec(-BASE, 0, 0), 1e5]
-				);
-			}
 
 			_generateVEObjects();
 			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
 			_dirty = false;
 
-			_fba = new FBA(_root, _graph, _edges_done);
-			setTimeout(_fba.run.bind(_fba, 2000), 1000); // run for 2s after 1s
+			_fba = new FBA(_root, _graph);
+			setTimeout(_fba.run.bind(_fba, 20000), 100); // run for 2s after 100ms
 		};
 
 		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {
@@ -142,16 +132,16 @@
 		 * * depth gives poor results - traverse while vertex has big
 		 * number of unnodes_done children
 		 */
-		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector, depth) {
+		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector) {
 			var data = _graph[num],
 				conns = data.out.concat(data.in),
 				connsl = conns.length,
 				current_pos,
 				new_pos,
 				new_num,
-				rot_angle = A360 / 36 * 1, //10deg
-				rotated = 0, // already rotated in current surface 
-				todo = []; //queue for _runRecursiveVertexPos
+				rot_angle = A360 / 360 * 5.1,	//10deg
+				rotated = 0,					// already rotated in current surface 
+				todo = [];						//queue for _runRecursiveVertexPos
 
 			// this is done twice (also before node was added to the queue)
 			// because of order in BFS
@@ -165,11 +155,6 @@
 			data.pos = current_pos;
 			data.conns = [];
 			
-			// break if reached given depth
-			if (depth < 0) return;
-			// break if no children
-			if (connsl === 0) return;
-
 			// remove duplicated connections (bidirectional)
 			// here (not before) because of performance
 			// -- do this after upper returns
@@ -195,7 +180,7 @@
 						new_pos = pos.clone().addSelf(vector);
 						
 						// add child to queue
-						todo.push([conns[i], new_pos, vector.clone().multiplyScalar(0.9), depth - 1]);
+						todo.push([conns[i], new_pos, vector.clone().multiplyScalar(0.9)]);
 
 						_pushEdge(num, new_num);
 				
