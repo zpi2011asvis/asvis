@@ -11,10 +11,10 @@
 	var FBA = function FBA(root, graph) {
 		// consts
 		var STEPS_AT_ONCE = 2,
-			SPRING_LEN = 50,
-			SPRING_FORCE = 0.001,
-			CHARGE = 0.005,				// for coulomb's law
-			DAMPING = 0.1;
+			SPRING_LEN = 40,
+			SPRING_FORCE = 0.025,
+			CHARGE = 0.075,				// for coulomb's law
+			DAMPING = 0.8;
 
 		// properties
 		var _root,
@@ -84,7 +84,7 @@
 				velocity = _velocities[i];
 				nfx = nfy = nfz = 0;
 	
-				// repulsion
+				// repulsion - 95% of CPU in profiler
 				for (j = il; j--;) {
 					if (i !== j) {
 						node2 = _graph_arr[j];
@@ -117,10 +117,10 @@
 					nfy += dy * a;
 					nfz += dz * a;
 				}
-
-				velocity.x = DAMPING * (velocity.x + nfx);
-				velocity.y = DAMPING * (velocity.y + nfy);
-				velocity.z = DAMPING * (velocity.z + nfz);
+	
+				velocity.x = DAMPING * (velocity.x + nfx / weight);
+				velocity.y = DAMPING * (velocity.y + nfy / weight);
+				velocity.z = DAMPING * (velocity.z + nfz / weight);
 			}
 
 			// update positions

@@ -139,7 +139,7 @@
 				current_pos,
 				new_pos,
 				new_num,
-				rot_angle = A360 / 360 * 5.1,	//10deg
+				rot_angle = A360 / 360 * 7.33,	//7.33deg
 				rotated = 0,					// already rotated in current surface 
 				todo = [];						//queue for _runRecursiveVertexPos
 
