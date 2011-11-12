@@ -138,6 +138,5 @@ class OrientEngine implements Engine {
 		
 		return $graphAlgorithms->getTree($height);
 	}
-	
 }
 
