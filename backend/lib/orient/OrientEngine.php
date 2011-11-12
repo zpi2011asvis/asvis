@@ -113,7 +113,6 @@ class OrientEngine implements Engine {
 	
 		$nodeNum = (int) $nodeNum;
 		$depth   = (int) $height;
-		$dir = 'in'; //trzeba poprawić API, aby dodać ten parametr
 		
 		if($nodeNum < 0 || $height < 0 || $height > Config::get('orient_max_fetch_depth')) {
 			return null;
@@ -137,7 +136,7 @@ class OrientEngine implements Engine {
 		
 		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
 		
-		return $graphAlgorithms->getTree($height, $dir);
+		return $graphAlgorithms->getTree($height);
 	}
 	
 }

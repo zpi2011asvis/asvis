@@ -4,16 +4,20 @@ namespace asvis\lib;
 
 class GraphAlgorithms {
 
-	private $_structure;
+	private $_structure = null;
+	private $_weigt_order = null;
+	private $_distance_order = null;
 
 	public function __construct($graph) {
 		$this->_structure = $graph['structure'];
+		$this->_weight_order = $graph['weight_order'];
+		$this->_distance_order = $graph['distance_order'];
 	}
 	
 	public function getShortestPaths($n1, $n2) {
 	}
 	
-	public function getTree($height, $dir) {
+	public function getTree($height, $dir = null) {
 		$leafs = $this->_findLeafs($height+1);
 		$conns = $this->_findConnected($leafs, $dir);
 		
@@ -40,8 +44,16 @@ class GraphAlgorithms {
 			
 			if($distance > 1) {
 				$conns_up = array();
+				$nums_up = array();
 				
-				foreach($this->_structure[$num]->$dir as $num_up) {
+				if(!isset($dir)) {
+					$nums_up = array_merge($this->_structure[$num]->in, $this->_structure[$num]->$out);
+				}
+				else {
+					$nums_up = $this->_structure[$num]->$dir;
+				}
+				
+				foreach($nums_up as $num_up) {
 					if($this->_structure[$num_up]->distance < $distance) {
 						$conns_up[] = $num_up;
 					}
@@ -57,14 +69,13 @@ class GraphAlgorithms {
 	
 	private function _rebuildTree($conns, $height) {
 		$tree = array();
-		$distance1nums = array();
-		$root_num = null;
+		$distance_order = array();
 		
 		foreach($this->_structure as $num=>$node) {
 			if(!in_array($num, $conns)) {
 				$tree[$num] = $node; 
 				
-				if($node->distance === 0) {
+				if($node->distance === 0 || $node->distance === $height) {
 					$in_array = array();
 					$out_array = array();
 					
@@ -83,13 +94,21 @@ class GraphAlgorithms {
 					$tree[$num]->in = $in_array;
 					$tree[$num]->out = $out_array;
 				}
-				else if($node->distance === $height) {
-					$tree[$num]->in = array();
-					$tree[$num]->out = array();
-				}
 			}   
 		}
 		
-		return $tree;
+		foreach($this->_weight_order as $num) {
+			if(!in_array($num, $conns)) {
+				$weight_order[] = $num;
+			}
+		}
+		
+		foreach($this->_distance_order as $num) {
+			if(!in_array($num, $conns)) {
+				$distance_order[] = $num;
+			}
+		}
+		
+		return array('structure'=>$tree, 'weight_order'=>$weight_order, 'distance_order'=>$distance_order);
 	}
 }
