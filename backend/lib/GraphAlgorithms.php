@@ -6,98 +6,90 @@ class GraphAlgorithms {
 
 	private $_structure;
 
-	public function __construct($structure) {
-		$this->_structure = $structure;
+	public function __construct($graph) {
+		$this->_structure = $graph['structure'];
 	}
 	
 	public function getShortestPaths($n1, $n2) {
 	}
 	
 	public function getTree($height, $dir) {
-		$tree = array();
-		$leafs = array();
+		$leafs = $this->_findLeafs($height+1);
+		$conns = $this->_findConnected($leafs, $dir);
 		
-		for($i=$height; $i>=0; $i--) {
-			$new_leafs = $this->_findLeafs($i, $dir);
-			
-			if($i < $height) {
-				
-				foreach($leafs as $number=>$properties) {
-					if($this->_isOneConnection($new_leafs, $number, $dir)) {
-						$tree[$number] = $properties;
-					}
-				}
-
-			}
-			
-			$leafs = $new_leafs;
-		}
-		
-		$leafs_keys = array_keys($leafs);
-		$root = $leafs_keys[0];
-		
-		$tree[$root] = $leafs[$root];
-		
-		return $tree; //$this->_rebuildTree($tree, $root, $dir);
+		return $this->_rebuildTree($leafs+$conns, $height);
 	}
 	
-	private function _findLeafs($distance, $dir) {
+	private function _findLeafs($distance) {
 		$leafs = array();
 		
-		foreach($this->_structure as $number=>$properties) {
-			if($properties['distance'] === $distance) {
-				$count = 0;
-			
-				foreach($properties[$dir] as $connection) {
-					if(isset($this->$_structure[$connection])) {
-						if($this->$_structure[$connection]['distance'] === $distance) {
-							$count++;
-						}
-					}
-				}
-			 	
-			 	if($count === 0) {
-					$leafs[$number] = $properties;
-				}
+		foreach($this->_structure as $num=>$conn) {
+			if($conn->distance === $distance) {
+				$leafs[] = $num;
 			}   
 		}
 		
 		return $leafs;
 	}
 	
-	private function _isOneConnection($new_leafs, $number, $dir) {
-		$connected = 0;
+	private function _findConnected($conns, $dir) {
+		$nodes = array();
 		
-		foreach($new_leafs as $new_leaf) {
-			if(in_array($number, $new_leaf[$dir])) {
-				$connected++;
+		foreach($conns as $num) {
+			$distance = $this->_structure[$num]->distance;
+			
+			if($distance > 1) {
+				$conns_up = array();
+				
+				foreach($this->_structure[$num]->$dir as $num_up) {
+					if($this->_structure[$num_up]->distance < $distance) {
+						$conns_up[] = $num_up;
+					}
+				}
+
+				$nodes += $conns_up;
+				$nodes += $this->_findConnected($conns_up, $dir);
 			}
 		}
 		
-		return ($connected === 1);
+		return $nodes;
 	}
 	
-	private function _rebuildTree($tree, $number, $dir) {
-		$new_tree = array();
+	private function _rebuildTree($conns, $height) {
+		$tree = array();
+		$distance1nums = array();
+		$root_num = null;
 		
-		if(isset($tree[$number])) {
-			$new_tree[$number] = array(
-				$dir => array(),
-				'distance' => $tree[$number]['distance'],
-				'count' => 0
-			);
-
-			foreach($tree[$number][$dir] as $connection) {				
-				$node = $this->_rebuildTree($tree, $connection, $dir);
-				if(!empty($node)) {
-					$new_tree[$number][$dir][] = $connection;
-					$new_tree = $new_tree + $node;
+		foreach($this->_structure as $num=>$node) {
+			if(!in_array($num, $conns)) {
+				$tree[$num] = $node; 
+				
+				if($node->distance === 0) {
+					$in_array = array();
+					$out_array = array();
+					
+					foreach($this->_structure[$num]->in as $in) {
+						if(!in_array($in, $conns)) {
+							$in_array[] = $in;
+						}
+					}
+					
+					foreach($this->_structure[$num]->out as $out) {
+						if(!in_array($out, $conns)) {
+							$out_array[] = $out;
+						}
+					}
+					
+					$tree[$num]->in = $in_array;
+					$tree[$num]->out = $out_array;
 				}
-			}
-			
-			$new_tree[$number]['count'] = count($new_tree[$number][$dir]); 
+				else if($node->distance === $height) {
+					$tree[$num]->in = array();
+					$tree[$num]->out = array();
+				}
+			}   
 		}
 		
-		return $new_tree;
+		return $tree;
 	}
 }
