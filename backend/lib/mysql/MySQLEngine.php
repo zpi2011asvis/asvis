@@ -78,6 +78,10 @@ class MySQLEngine implements Engine {
 		
 	}
 	
+	public function structurePath($num_start, $num_end) {
+	
+	}
+	
 	private function mapNode($nodeNum, $currentDepth, $depth, $structure = array()) {
 		if($currentDepth > $depth) {
 			return $structure;
@@ -177,13 +181,3 @@ class MySQLEngine implements Engine {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-

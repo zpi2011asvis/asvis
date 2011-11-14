@@ -43,16 +43,3 @@ class Graph extends Structure {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

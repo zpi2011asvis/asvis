@@ -112,14 +112,14 @@ class OrientEngine implements Engine {
 	public function structureTree($nodeNum, $height) {
 	
 		$nodeNum = (int) $nodeNum;
-		$depth   = (int) $height;
+		$height = (int) $height;
 		
 		if($nodeNum < 0 || $height < 0 || $height > Config::get('orient_max_fetch_depth')) {
 			return null;
 		}
 		
 		// +2 because we want maximum distance to be equal with $height+1
-		$fp = $depth + 2;
+		$fp = $height + 2;
 		
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
 		$fetchplan = "*:{$fp} ASNode.pools:0";
@@ -138,5 +138,34 @@ class OrientEngine implements Engine {
 		
 		return $graphAlgorithms->getTree($height);
 	}
-}
+	
+	public function structurePath($num_start, $num_end) {
+	
+		$num_start = (int) $num_start;
+		$num_end = (int) $num_end;
+		
+		if($num_start < 0 || $num_end < 0) {
+			return null;
+		}
+		
+		// nie wiem jeszcze jak powinien wygladac fetchplan dla tego zapytania
+		$fp = Config::get('orient_max_fetch_depth');
+		
+		$query = "SELECT FROM ASNode WHERE num = {$num_start}";
+		$fetchplan = "*:{$fp} ASNode.pools:0";
+		
+		$json = $this->_orient->query($query, null, 1, $fetchplan);		
+		$result = json_decode($json->getBody())->result;
 
+		if (!count($result)) {
+			return null;
+		}
+		
+		$objectMapper = new ObjectsMapper($result[0]);		
+		$graph = $objectMapper->parse();
+		
+		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
+		
+		return $graphAlgorithms->getShortestPath($num_start, $num_end);
+	}
+}

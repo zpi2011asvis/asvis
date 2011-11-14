@@ -46,4 +46,13 @@ interface Engine {
 	 */
 	public function structureTree($nodeNum, $height);
 	
+	/**
+	 * Returns array of nodes and their connections representing 
+	 * the shortest path between two nodes.
+	 * 
+	 * @param int $num_start
+	 * @param int $num_end
+	 */
+	public function structurePath($num_start, $num_end);
+	
 }

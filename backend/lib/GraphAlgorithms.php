@@ -14,27 +14,27 @@ class GraphAlgorithms {
 		$this->_distance_order = $graph['distance_order'];
 	}
 	
-	public function getShortestPath($num1, $num2, $dir=null) {
+	public function getShortestPath($num_start, $num_stop, $dir=null) {
 		$path = array();
 		
 		$nodes = array(); 
 		$conn = array();
-		if(array_key_exists($num1, $this->_structure) && array_key_exists($num2, $this->_structure)) {
-			$nodes[$num1] = $this->_createNode($num1, $dir, 1);
-			$nodes[$num2] = $this->_createNode($num2, $dir);
+		if(array_key_exists($num_start, $this->_structure) && array_key_exists($num_stop, $this->_structure)) {
+			$nodes[$num_start] = $this->_createNode($num_start, $dir, 1);
+			$nodes[$num_stop] = $this->_createNode($num_stop, $dir);
 		
 			foreach($this->_structure as $num=>$node) {
-				if($num !== $num1 && $num !== $num2) {
+				if($num !== $num_start && $num !== $num_stop) {
 					$nodes[$num] = $this->_createNode($num, $dir);
 				}
 			}
 
 			$nodes = $this->_breadthFirstSearch($nodes);
 		
-			$path =	$this->_resolvePath($num1, $num2, $nodes);
+			$path =	$this->_resolvePath($num_start, $num_stop, $nodes);
 		}	
 		
-		return $path;
+		return $this->_rebuildStructure($path);
 	}
 	
 	private function _createNode($num, $dir, $color=0) {
@@ -71,12 +71,12 @@ class GraphAlgorithms {
 		return $nodes;
 	}
 	
-	private function _resolvePath($num1, $num2, $nodes) {
-		$path = array($num2);
+	private function _resolvePath($num_start, $num_stop, $nodes) {
+		$path = array($num_stop);
 		
-		$parent = $num2;
+		$parent = $num_stop;
 		
-		while($parent !== $num1) {
+		while($parent !== $num_start) {
 			$parent = $nodes[$parent]['parent'];
 			$path[] = $parent;
 		}
@@ -88,7 +88,7 @@ class GraphAlgorithms {
 		$leafs = $this->_findLeafs($height+1);
 		$conns = $this->_findConnected($leafs, $dir);
 		
-		return $this->_rebuildTree($leafs+$conns, $height);
+		return $this->_rebuildStructure($leafs+$conns);
 	}
 	
 	private function _findLeafs($distance) {
@@ -134,35 +134,32 @@ class GraphAlgorithms {
 		return $nodes;
 	}
 	
-	private function _rebuildTree($conns, $height) {
+	private function _rebuildStructure($conns) {
 		$tree = array();
-		$distance_order = array();
 		
 		foreach($this->_structure as $num=>$node) {
 			if(!in_array($num, $conns)) {
 				$tree[$num] = $node; 
 				
-				if($node->distance === 0 || $node->distance === $height) {
-					$in_array = array();
-					$out_array = array();
-					
-					foreach($this->_structure[$num]->in as $in) {
-						if(!in_array($in, $conns)) {
-							$in_array[] = $in;
-						}
+				$in_array = array();
+				$out_array = array();
+				
+				foreach($this->_structure[$num]->in as $in) {
+					if(!in_array($in, $conns)) {
+						$in_array[] = $in;
 					}
-					
-					foreach($this->_structure[$num]->out as $out) {
-						if(!in_array($out, $conns)) {
-							$out_array[] = $out;
-						}
-					}
-					
-					$tree[$num]->in = $in_array;
-					$tree[$num]->out = $out_array;
 				}
-			}   
-		}
+				
+				foreach($this->_structure[$num]->out as $out) {
+					if(!in_array($out, $conns)) {
+						$out_array[] = $out;
+					}
+				}
+					
+				$tree[$num]->in = $in_array;
+				$tree[$num]->out = $out_array;
+			}
+		}   
 		
 		foreach($this->_weight_order as $num) {
 			if(!in_array($num, $conns)) {
