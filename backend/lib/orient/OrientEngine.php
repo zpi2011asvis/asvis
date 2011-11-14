@@ -101,7 +101,7 @@ class OrientEngine implements Engine {
 		
 		$objectMapper = new ObjectsMapper($result[0]);		
 		$graph = $objectMapper->parse();
-		
+
 		return $graph->forJSON();
 	}
 	
@@ -110,114 +110,33 @@ class OrientEngine implements Engine {
 	 * @see asvis\lib.Engine::structureTree()
 	 */
 	public function structureTree($nodeNum, $height) {
-		
-		//przykładowe dane do testów
-		$structure = array(
-			1 => array(
-				'up' => array(2, 3, 4, 5, 6),
-				'down' => array(2, 3, 5),
-				'distance' => 0,
-				'count' => 8
-			),
-			2 => array(
-				'up' => array(1, 7, 8),
-				'down' => array(),
-				'distance' => 1,
-				'count' => 3
-			),
-			3 => array(
-				'up' => array(9),
-				'down' => array(),
-				'distance' => 1,
-				'count' => 1
-			),
-			4 => array(
-				'up' => array(3, 10),
-				'down' => array(),
-				'distance' => 1,
-				'count' => 2
-			),
-			5 => array(
-				'up' => array(11, 12),
-				'down' => array(),
-				'distance' => 1,
-				'count' => 2
-			),
-			6 => array(
-				'up' => array(),
-				'down' => array(),
-				'distance' => 1,
-				'count' => 0
-			),
-			7 => array(
-				'up' => array(),
-				'down' => array(),
-				'distance' => 2,
-				'count' => 0
-			),
-			8 => array(
-				'up' => array(),
-				'down' => array(),
-				'distance' => 2,
-				'count' => 0
-			),
-			9 => array(
-				'up' => array(),
-				'down' => array(),
-				'distance' => 2,
-				'count' => 0
-			),
-			10 => array(
-				'up' => array(),
-				'down' => array(),
-				'distance' => 2,
-				'count' => 0
-			),
-			11 => array(
-				'up' => array(),
-				'down' => array(13),
-				'distance' => 2,
-				'count' => 1
-			),
-			12 => array(
-				'up' => array(14, 15),
-				'down' => array(),
-				'distance' => 2,
-				'count' => 2
-			),
-			13 => array(
-				'up' => array(),
-				'down' => array(),
-				'distance' => 3,
-				'count' => 0
-			),
-			14 => array(
-				'up' => array(),
-				'down' => array(15),
-				'distance' => 3,
-				'count' => 0
-			),
-			15 => array(
-				'up' => array(),
-				'down' => array(),
-				'distance' => 3,
-				'count' => 0
-			),
-		);
-		
-		$graphAlgorithms = new GraphAlgorithms($structure);
-		
-		return $graphAlgorithms->getTree($height, 'up');
-	}
 	
+		$nodeNum = (int) $nodeNum;
+		$depth   = (int) $height;
+		
+		if($nodeNum < 0 || $height < 0 || $height > Config::get('orient_max_fetch_depth')) {
+			return null;
+		}
+		
+		// +2 because we want maximum distance to be equal with $height+1
+		$fp = $depth + 2;
+		
+		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
+		$fetchplan = "*:{$fp} ASNode.pools:0";
+		
+		$json = $this->_orient->query($query, null, 1, $fetchplan);		
+		$result = json_decode($json->getBody())->result;
+
+		if (!count($result)) {
+			return null;
+		}
+		
+		$objectMapper = new ObjectsMapper($result[0]);		
+		$graph = $objectMapper->parse();
+		
+		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
+		
+		return $graphAlgorithms->getTree($height);
+	}
 }
-
-
-
-
-
-
-
-
-
 

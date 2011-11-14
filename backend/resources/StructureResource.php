@@ -21,15 +21,18 @@ class StructureGraphResource extends Resource {
 }
 
 /**
- * @uri /structure/tree
+ * @uri /structure/tree/{number}/{height}
  */
 class StructureTreeResource extends Resource {
-	function get($request) {
+	function get($request, $number, $height) {
+		$dir = $this->getParam('dir', 'null');
+		
+		$forJSON = $this->_engine->structureTree((int) $number, (int) $height);
+		
 		$response = new Response($request);
-		$response->json(array(
-			"345"=>array("connections_up"=>array(3245,2345,2356),"connections_down"=>array(34765,1235,5325)),
-			"4234"=>array("connections_up"=>array(3245,2345,2356),"connections_down"=>array())
-		));
+		
+		$response->s404Unless(!is_null($forJSON));
+		$response->json($forJSON);
 		return $response;
 	}
 }
