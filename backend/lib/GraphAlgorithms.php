@@ -88,7 +88,7 @@ class GraphAlgorithms {
 		$leafs = $this->_findLeafs($height+1);
 		$conns = $this->_findConnected($leafs, $dir);
 		
-		return $this->_rebuildStructure($leafs+$conns);
+		return $this->_rebuildStructure($leafs+$conns, true);
 	}
 	
 	private function _findLeafs($distance) {
@@ -134,45 +134,59 @@ class GraphAlgorithms {
 		return $nodes;
 	}
 	
-	private function _rebuildStructure($conns) {
-		$tree = array();
+	private function _rebuildStructure($conns, $difference = false) {
+		$structure = array();
 		
 		foreach($this->_structure as $num=>$node) {
-			if(!in_array($num, $conns)) {
-				$tree[$num] = $node; 
+			$difference ? $add = !in_array($num, $conns) : $add = in_array($num, $conns);
+
+			if($add) {
+				$structure[$num] = $node; 
 				
 				$in_array = array();
 				$out_array = array();
 				
 				foreach($this->_structure[$num]->in as $in) {
-					if(!in_array($in, $conns)) {
+					$difference ? $add = !in_array($in, $conns) : $add = in_array($in, $conns);
+					
+					if($add) {
 						$in_array[] = $in;
 					}
 				}
 				
 				foreach($this->_structure[$num]->out as $out) {
-					if(!in_array($out, $conns)) {
+					$difference ? $add = !in_array($out, $conns) : $add = in_array($out, $conns);
+					
+					if($add) {
 						$out_array[] = $out;
 					}
 				}
 					
-				$tree[$num]->in = $in_array;
-				$tree[$num]->out = $out_array;
+				$structure[$num]->in = $in_array;
+				$structure[$num]->out = $out_array;
 			}
 		}   
 		
 		foreach($this->_weight_order as $num) {
-			if(!in_array($num, $conns)) {
+			$difference ? $add = !in_array($num, $conns) : $add = in_array($num, $conns);
+			
+			if($add) {
 				$weight_order[] = $num;
 			}
 		}
 		
 		foreach($this->_distance_order as $num) {
-			if(!in_array($num, $conns)) {
+			$difference ? $add = !in_array($num, $conns) : $add = in_array($num, $conns);
+			
+			if($difference) {
+				$add = !$add;
+			}
+			
+			if($add) {
 				$distance_order[] = $num;
 			}
 		}
 		
-		return array('structure'=>$tree, 'weight_order'=>$weight_order, 'distance_order'=>$distance_order);
+		return array('structure'=>$structure, 'weight_order'=>$weight_order, 'distance_order'=>$distance_order);
 	}
 }
