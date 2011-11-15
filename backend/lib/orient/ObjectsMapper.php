@@ -26,23 +26,22 @@ class ObjectsMapper {
 			return new Graph($this->_structure);
 		}
 		
+// 		$m = microtime(true);
 		$this->_parseNode($this->_json);
+// 		echo (microtime(true) - $m) ."\n";
 		$this->_resolveNodes();		
+// 		echo (microtime(true) - $m) ."\n";
 		$this->_calculateDistances();
+// 		echo (microtime(true) - $m) ."\n";
 		
 		$this->_isParsed = true;
+		
+		
 		return new Graph($this->_structure);
 	}
 	
 	
 	private function _parseNode($node) {
-		if (!is_object($node)) {
-			return;
-		}
-
-		// check if this is whole object rather than empty one
-		// with empty we mean e.g.:
-		// { "@type": "d", "@rid": "#5:368", "@version": 1, "@class": "ASNode" }
 		if (isset($node->num)) {
 			$this->_structure[$node->{'@rid'}] = $node;
 		} 
@@ -52,13 +51,17 @@ class ObjectsMapper {
 		
 		if (isset($node->in)) {
 			foreach ($node->in as $object) {
-				$this->_parseNode($object);
+				if (is_object($object)) {
+					$this->_parseNode($object);
+				}
 			}
 		}
 		
 		if (isset($node->out)) {
 			foreach ($node->out as $object) {
-				$this->_parseNode($object);
+				if (is_object($object)) {
+					$this->_parseNode($object);
+				}
 			}
 		}
 	}
@@ -151,12 +154,15 @@ class ObjectsMapper {
 	
 	private function _calculateDistances() {		
 		$heap = array();
+		$heapIndex = 0;
+		$heapLength = 0;
 
 		// begin from root node
 		$heap[] = array('node' => $this->_structure[$this->_rootNum], 'distance' => 0);
+		$heapLength++;
 		
-		while (count($heap) > 0) {
-			$current = array_shift($heap);
+		while ($heapIndex < $heapLength) {
+			$current = $heap[$heapIndex++];
 			$node = $current['node'];
 			$distance = $current['distance'];
 		
@@ -165,26 +171,17 @@ class ObjectsMapper {
 				$distance += 1;
 				foreach ($node->out as $num) {
 					$heap[] = array('node' => $this->_structure[$num], 'distance' => $distance);
+					$heapLength++;
 				}
 				foreach ($node->in as $num) {
 					$heap[] = array('node' => $this->_structure[$num], 'distance' => $distance);
+					$heapLength++;
 				}
 			}
 		}
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
