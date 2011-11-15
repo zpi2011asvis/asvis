@@ -8,9 +8,7 @@
                 <parameter name="network.multicast.address" value="235.1.1.1"/>
                 <parameter name="network.multicast.port" value="2424"/>
                 <parameter name="network.multicast.heartbeat" value="10"/>
-                <parameter name="server.update.delay" value="5000"/>
-                <parameter name="server.electedForLeadership" value="true"/>
-                <parameter name="security.key" value="5Wd/kOcRKATIWzuv"/>
+                <parameter name="security.key" value="YzPbVcHWCzoZdCZm"/>
             </parameters>
         </handler>
         <handler class="com.orientechnologies.orient.server.handler.OAutomaticBackup">
@@ -32,7 +30,7 @@
         </protocols>
         <listeners>
             <listener ip-address="0.0.0.0" port-range="2424-2430" protocol="distributed"/>
-            <listener ip-address="0.0.0.0" port-range="2480-2490" protocol="http">
+            <listener ip-address="127.0.0.1" port-range="2480-2490" protocol="http">
                 <commands>
                     <command pattern="GET|www GET|studio/ GET| GET|*.htm GET|*.html GET|*.xml GET|*.jpeg GET|*.jpg GET|*.png GET|*.gif GET|*.js GET|*.css GET|*.swf GET|*.ico GET|*.txt" implementation="com.orientechnologies.orient.server.network.protocol.http.command.get.OServerCommandGetStaticContent">
                         <parameters>
@@ -57,6 +55,7 @@
     </users>
     <properties>
         <entry name="server.cache.file.static" value="false"/>
+        <entry name="network.http.sessionExpireTimeout" value="300"/>
         <entry name="log.console.level" value="info"/>
         <entry name="log.file.level" value="fine"/>
     </properties>
