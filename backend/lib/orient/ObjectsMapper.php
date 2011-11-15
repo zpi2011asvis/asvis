@@ -14,8 +14,9 @@ class ObjectsMapper {
 	
 	private $_rootNum;
 	
-	public function __construct($json) {
+	public function __construct($json, $rootNum) {
 		$this->_json = $json;
+		$this->_rootNum = $rootNum;
 		$this->_isParsed = false;
 		$this->_structure = null;
 	}
@@ -25,7 +26,6 @@ class ObjectsMapper {
 			return new Graph($this->_structure);
 		}
 		
-		$_rootNum = null;
 		$this->_parseNode($this->_json);
 		$this->_resolveNodes();		
 		$this->_calculateDistances();
@@ -39,13 +39,15 @@ class ObjectsMapper {
 		if (!is_object($node)) {
 			return;
 		}
-		
+
+		// check if this is whole object rather than empty one
+		// with empty we mean e.g.:
+		// { "@type": "d", "@rid": "#5:368", "@version": 1, "@class": "ASNode" }
 		if (isset($node->num)) {
 			$this->_structure[$node->{'@rid'}] = $node;
-		}		
-		
-		if(is_null($this->_rootNum)) {
-			$this->_rootNum = $node->num;
+		} 
+		else {
+			return;
 		}
 		
 		if (isset($node->in)) {

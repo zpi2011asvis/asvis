@@ -99,7 +99,7 @@ class OrientEngine implements Engine {
 			return null;
 		}
 		
-		$objectMapper = new ObjectsMapper($result[0]);		
+		$objectMapper = new ObjectsMapper($result[0], $nodeNum);		
 		$graph = $objectMapper->parse();
 
 		return $graph->forJSON();
@@ -131,7 +131,7 @@ class OrientEngine implements Engine {
 			return null;
 		}
 		
-		$objectMapper = new ObjectsMapper($result[0]);		
+		$objectMapper = new ObjectsMapper($result[0], $nodeNum);		
 		$graph = $objectMapper->parse();
 		
 		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
@@ -161,7 +161,7 @@ class OrientEngine implements Engine {
 			return null;
 		}
 		
-		$objectMapper = new ObjectsMapper($result[0]);		
+		$objectMapper = new ObjectsMapper($result[0], $num_start);		
 		$graph = $objectMapper->parse();
 		
 		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
