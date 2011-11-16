@@ -8,7 +8,7 @@
 	/*
 	 * Forced based algorithm for drawing graphs in an aesthetically pleasing way
 	 */
-	var FBA = function FBA(root, graph) {
+	var FBA = function FBA(root, graph, mass_centers) {
 		// consts
 		var STEPS_AT_ONCE = 2,
 			SPRING_LEN = 40,
@@ -20,7 +20,7 @@
 		var _root,
 			_root_index,
 			_graph,
-			_connections,
+			_mass_centers,  // nodes that should stay in place
 			_graph_arr,		// see: http://jsperf.com/for-in-loop-vs-for-with-keys-array
 			_graph_nums,	// performance boost while iterating over object keys array
 			_velocities,

@@ -97,10 +97,15 @@
 
 		_recalculatePositions = function _recalculatePositions() {
 			var d = +new Date(),
-				i = 0;
+				node;
 
+			/*node = _graph[_order[0]];
+			node.pos = _nvec(-BASE, 0, 0);
+			node = _graph[_order[1]];
+			node.pos = _nvec(BASE, 0, 0);*/
+			
 			_runRecursiveVertexPos(
-				[_order[i++], _nvec(BASE, 0, 0), _nvec(BASE, 0, 0)]
+				[_order[0], _nvec(0, BASE, 0), _nvec(0, BASE, 0)]
 			);
 
 			_generateVEObjects();
@@ -108,7 +113,7 @@
 			_dirty = false;
 
 			_fba = new FBA(_root, _graph);
-			setTimeout(_fba.run.bind(_fba, 20000), 100); // run for 2s after 100ms
+			setTimeout(_fba.run.bind(_fba, 10000), 100); // run for 10s after 100ms
 		};
 
 		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {
@@ -160,16 +165,22 @@
 			// -- do this after upper returns
 			conns = data.conns = uniq(conns);
 			connsl = conns.length;
+
+			// generating matrix for "circular" rotations
+			var m2 = new T_Matrix4();
+			m2.setRotationAxis(vector.clone().normalize(), rot_angle);
 		
 			//generating vector inclined from tree generation direction
 			var m = new T_Matrix4(),
 				p = _nvec(0, 1, 0).crossSelf(vector).normalize();
+
+			// if vector was (0,1,0) then cross product is (0,0,0)
+			// so try with other axis rotation
+			if (p.lengthSq() === 0) {
+				p = _nvec(0, 0, 1).crossSelf(vector).normalize();
+			}
 			m.setRotationAxis(p, rot_angle);
 			m.multiplyVector3(vector);
-
-			// generating matrix for "circular" rotations
-			var m2 = new T_Matrix4();
-			m2.setRotationAxis(_nvec(1, 0, 0), rot_angle);
 			
 			for (var i = 0; i < connsl; ++i) {
 				new_num = conns[i];

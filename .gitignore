@@ -1,6 +1,9 @@
 db/vendor/orientdb/databases/*
 db/vendor/orientdb/log/*
 db/vendor/orientdb/bin/.orientdb_history
+db/vendor/orientdb_stable/databases/*
+db/vendor/orientdb_stable/log/*
+db/vendor/orientdb_stable/bin/.orientdb_history
 config.php
 .project
 .buildpath
