@@ -71,56 +71,58 @@
 			var i, il, j,
 				node, pos, conns, velocity, weight,		// current node data
 				node2, pos2, weight2,					// second node data
-				dx, dy, dz,							// node2.pos - node.pos
-				nfx, nfy, nfz,						// current node net force
-				a, b, c,							// helpers
+				dx, dy, dz,								// node2.pos - node.pos
+				nfx, nfy, nfz,							// current node net force
+				a, b, c,								// helpers
 				start_time = +new Date();
 
 			for (i = il = _graph_nums.length; i--;) {
-				node = _graph_arr[i];
-				pos = node.pos;
-				conns = node.conns;
-				weight = node.weight;
-				velocity = _velocities[i];
-				nfx = nfy = nfz = 0;
-	
-				// repulsion - 95% of CPU in profiler
-				for (j = il; j--;) {
-					if (i !== j) {
-						node2 = _graph_arr[j];
-						pos2 = node2.pos;
-						weight2 = node2.weight;
+				if (!_mass_centers[i]) {
+					node = _graph_arr[i];
+					pos = node.pos;
+					conns = node.conns;
+					weight = node.weight;
+					velocity = _velocities[i];
+					nfx = nfy = nfz = 0;
+		
+					// repulsion - 95% of CPU in profiler
+					for (j = il; j--;) {
+						if (i !== j) {
+							node2 = _graph_arr[j];
+							pos2 = node2.pos;
+							weight2 = node2.weight;
+
+							dx = pos2.x - pos.x;
+							dy = pos2.y - pos.y;
+							dz = pos2.z - pos.z;
+							// coulombs factor q*w1*w2 / r^2
+							a = CHARGE * (weight * weight2) / (dx*dx + dy*dy + dz*dz);
+
+							nfx -= dx * a;
+							nfy -= dy * a;
+							nfz -= dz * a;
+						}
+					}
+
+					// attraction
+					for (j = conns.length; j--;) {
+						pos2 = _graph[conns[j]].pos;
 
 						dx = pos2.x - pos.x;
 						dy = pos2.y - pos.y;
 						dz = pos2.z - pos.z;
-						// coulombs factor q*w1*w2 / r^2
-						a = CHARGE * (weight * weight2) / (dx*dx + dy*dy + dz*dz);
+						// -k*x
+						a = SPRING_FORCE * (Math.sqrt(dx*dx + dy*dy + dz*dz) - SPRING_LEN);
 
-						nfx -= dx * a;
-						nfy -= dy * a;
-						nfz -= dz * a;
+						nfx += dx * a;
+						nfy += dy * a;
+						nfz += dz * a;
 					}
+		
+					velocity.x = DAMPING * (velocity.x + nfx / weight);
+					velocity.y = DAMPING * (velocity.y + nfy / weight);
+					velocity.z = DAMPING * (velocity.z + nfz / weight);
 				}
-
-				// attraction
-				for (j = conns.length; j--;) {
-					pos2 = _graph[conns[j]].pos;
-
-					dx = pos2.x - pos.x;
-					dy = pos2.y - pos.y;
-					dz = pos2.z - pos.z;
-					// -k*x
-					a = SPRING_FORCE * (Math.sqrt(dx*dx + dy*dy + dz*dz) - SPRING_LEN);
-
-					nfx += dx * a;
-					nfy += dy * a;
-					nfz += dz * a;
-				}
-	
-				velocity.x = DAMPING * (velocity.x + nfx / weight);
-				velocity.y = DAMPING * (velocity.y + nfy / weight);
-				velocity.z = DAMPING * (velocity.z + nfz / weight);
 			}
 
 			// update positions
@@ -150,6 +152,12 @@
 		});
 		_root = graph[root];
 		_root_index = _graph_nums.indexOf(+root);
+		// switch mass_center to based on grah_nums indexes
+		// for performance reasons
+		_mass_centers = {};
+		Object.keys(mass_centers).forEach(function (v) {
+			_mass_centers[_graph_nums.indexOf(+v)] = true;
+		});
 	};
 
 	exports.FBA = FBA;

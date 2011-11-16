@@ -51,7 +51,7 @@
         <storage name="temp" path="memory:temp" userName="admin" userPassword="admin" loaded-at-startup="true"/>
     </storages>
     <users>
-        <user name="root" password="92A45F09452131C869EF699FBC298A8B59B53F82D4908C0167CF352E014A4F4C" resources="*"/>
+        <user name="root" password="root" resources="*"/>
         <user name="guest" password="guest" resources="connect,server.listDatabases"/>
         <user name="replicator" password="0B3C59E1E9243A10A2A0CCC65B75E514FBE4119640D7153A9CBBB28BEB049309" resources="database.passthrough"/>
     </users>

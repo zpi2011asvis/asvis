@@ -10,7 +10,7 @@
 	
 	var Vizir = function Vizir() {
 		// consts
-		var BASE = 50, //base length
+		var BASE = 40, //base length
 			WEIGHT_FACTOR = 1.5,
 			MAX_X = 200,
 			MAX_Y = 100,
@@ -98,22 +98,30 @@
 		_recalculatePositions = function _recalculatePositions() {
 			var d = +new Date(),
 				node;
-
-			/*node = _graph[_order[0]];
+			
+			// set mass centers in triangle
+			node = _graph[_order[0]];
 			node.pos = _nvec(-BASE, 0, 0);
 			node = _graph[_order[1]];
-			node.pos = _nvec(BASE, 0, 0);*/
+			node.pos = _nvec(BASE, 0, 0);
+			node = _graph[_order[2]];
+			node.pos = _nvec(0, -BASE, 0);
 			
 			_runRecursiveVertexPos(
-				[_order[0], _nvec(0, BASE, 0), _nvec(0, BASE, 0)]
+				[_order[0]]
 			);
 
 			_generateVEObjects();
 			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
 			_dirty = false;
 
-			_fba = new FBA(_root, _graph);
-			setTimeout(_fba.run.bind(_fba, 10000), 100); // run for 10s after 100ms
+			var mc = {};
+			mc[_order[0]] = true;
+			mc[_order[1]] = true;
+			mc[_order[2]] = true;
+
+			_fba = new FBA(_root, _graph, mc);
+			setTimeout(_fba.run.bind(_fba, 10000), 1000); // run for 10s after 100ms
 		};
 
 		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {
@@ -138,15 +146,15 @@
 		 * number of unnodes_done children
 		 */
 		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector) {
-			var data = _graph[num],
+			var data = _graph[num],				// node
 				conns = data.out.concat(data.in),
 				connsl = conns.length,
 				current_pos,
 				new_pos,
 				new_num,
-				rot_angle = A360 / 360 * 7.33,	//7.33deg
+				rot_angle = A360 / 360 * 7.33,	// 7.33deg
 				rotated = 0,					// already rotated in current surface 
-				todo = [];						//queue for _runRecursiveVertexPos
+				todo = [];						// queue for _runRecursiveVertexPos
 
 			// this is done twice (also before node was added to the queue)
 			// because of order in BFS
@@ -154,11 +162,20 @@
 				return;
 			}
 
-			_nodes_done.push(num);
-			current_pos = pos.clone();
+			// position already set (for the mass center)
+			// so use it
+			if (data.pos) {
+				pos = data.pos.clone();
+				current_pos = data.pos;
+				vector = data.pos.clone();
+			}
+			else {
+				current_pos = pos.clone();
+				data.pos = current_pos;
+				data.conns = [];
+			}
 			_vertices.push(current_pos);
-			data.pos = current_pos;
-			data.conns = [];
+			_nodes_done.push(num);
 			
 			// remove duplicated connections (bidirectional)
 			// here (not before) because of performance
@@ -191,7 +208,7 @@
 						new_pos = pos.clone().addSelf(vector);
 						
 						// add child to queue
-						todo.push([conns[i], new_pos, vector.clone().multiplyScalar(0.9)]);
+						todo.push([conns[i], new_pos, vector.clone().multiplyScalar(0.95)]);
 
 						_pushEdge(num, new_num);
 				
