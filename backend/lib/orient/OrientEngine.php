@@ -34,7 +34,7 @@ class OrientEngine implements Engine {
 	private $_client;
 	
 	public function __construct() {
-		$this->_client   = new Curl();
+		$this->_client   = new Curl(true, 100); // 100s - timeout
 		$this->_orient   = new Binding(
 			$this->_client,
 			Config::get('orient_db_host'),
@@ -92,8 +92,12 @@ class OrientEngine implements Engine {
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
 		$fetchplan = "*:{$fp} ASNode.pools:0";
 		
-		$json = $this->_orient->query($query, null, 1, $fetchplan);		
+// 		$m = microtime(true);
+		$json = $this->_orient->query($query, null, 1, $fetchplan);	
+// 		echo (microtime(true) - $m) ." - Orient query time\n";
+// 		$m = microtime(true);
 		$result = json_decode($json->getBody())->result;
+// 		echo (microtime(true) - $m) ." - json decode time\n";
 
 		if (!count($result)) {
 			return null;
