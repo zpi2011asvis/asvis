@@ -11,8 +11,11 @@
 	
 	var Vizir = function Vizir() {
 		// consts
-		var BASE = 50, //base length
-			A360 = Math.PI * 2;
+		var BASE = 50,				// base length
+			A360 = Math.PI * 2,
+			AUTO_FBA_MAX_NODES = 4000,
+			AUTO_FBA_WORK_TIME = 5000,
+			AUTO_FBA_DELAY = 1000;
 
 		// properties
 		var _root,
@@ -121,8 +124,8 @@
 			_dirty = false;
 
 			_fba = new FBA(_root, _graph, mc);
-			if (_order.length < 5000) {
-				setTimeout(_fba.run.bind(_fba, 10000), 1000); // run for 10s after 100ms
+			if (_order.length < AUTO_FBA_MAX_NODES) {
+				setTimeout(_fba.run.bind(_fba, AUTO_FBA_WORK_TIME), AUTO_FBA_DELAY);
 			}
 		};
 
@@ -213,7 +216,7 @@
 						new_pos = pos.clone().addSelf(vector);
 						
 						// add child to queue
-						todo.push([conns[i], new_pos, vector.clone().multiplyScalar(0.95)]);
+						todo.push([conns[i], new_pos, vector.clone()]);
 
 						_pushEdge(num, new_num);
 				
@@ -276,7 +279,7 @@
 				return 0;
 			}
 
-			return deg2Rad(90 / Math.sqrt(connsl) + 4.9); 
+			return deg2Rad(75 / Math.sqrt(connsl) + 4.9); 
 		};
 
 		_calculateRotationAngle = function (incl_angle) {

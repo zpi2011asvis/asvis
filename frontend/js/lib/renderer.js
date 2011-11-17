@@ -15,7 +15,7 @@
 					var sprite = T.ImageUtils.loadTexture(app.opts.root + 'img/square_1.png'),
 						material = new T.ParticleBasicMaterial({
 							color: 0x77FF77,
-							size: 8,
+							size: 6,
 							sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
 							map: sprite
 						});
