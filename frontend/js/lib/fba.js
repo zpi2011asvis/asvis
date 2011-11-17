@@ -74,8 +74,9 @@
 		/**/
 		_step = function _step() {
 			var i, il, j,
-				pos, conns, velocity, weight,			// current node data
+				pos, conns, weight,						// current node data
 				pos2, weight2,							// second node data
+				vx, vy, vz,
 				dx, dy, dz,								// node2.pos - node.pos
 				nfx, nfy, nfz,							// current node net force
 				a, b, c,								// helpers
@@ -86,7 +87,6 @@
 					pos = _positions[i];
 					conns = _connections[i];
 					weight = _weights[i];
-					velocity = _velocities[i];
 					nfx = nfy = nfz = 0;
 		
 					// repulsion - 95% of CPU in profiler
@@ -122,20 +122,21 @@
 						nfz += dz * a;
 					}
 		
-					velocity.x = DAMPING * (velocity.x + nfx / weight);
-					velocity.y = DAMPING * (velocity.y + nfy / weight);
-					velocity.z = DAMPING * (velocity.z + nfz / weight);
+					a = i * 3;
+					_velocities[a] = DAMPING * (_velocities[a++] + nfx / weight);
+					_velocities[a] = DAMPING * (_velocities[a++] + nfy / weight);
+					_velocities[a] = DAMPING * (_velocities[a] + nfz / weight);
 				}
 			}
 
 			// update positions
 			for (i = _graph_nums.length; i--;) {
 				pos = _positions[i];
-				velocity = _velocities[i];
 
-				pos.x += velocity.x;
-				pos.y += velocity.y;
-				pos.z += velocity.z;
+				a = i * 3;
+				pos.x += _velocities[a++];
+				pos.y += _velocities[a++];
+				pos.z += _velocities[a];
 			}
 
 			_steps_done += 1;
@@ -229,7 +230,8 @@
 
 		_graph = graph;
 		_graph_nums = Object.keys(graph).map(function (v) { return +v; });
-		_velocities = [];
+
+		_velocities = new Float32Array(3 * _graph_nums.length);
 		_net_forces = [];
 		_positions = [];
 		_weights = new Uint16Array(_graph_nums.length);
@@ -237,7 +239,9 @@
 		
 		_graph_arr = _graph_nums.map(function (num, i) {
 			var obj = _graph[num];
-			_velocities.push(new T_Vector3());
+			_velocities[i*3] = 0;
+			_velocities[i*3+1] = 0;
+			_velocities[i*3+2] = 0;
 			_net_forces.push(new T_Vector3());
 			_positions.push(obj.pos);
 			_weights[i] = obj.weight;
