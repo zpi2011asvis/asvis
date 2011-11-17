@@ -25,6 +25,9 @@
 			_graph_nums,	// performance boost while iterating over object keys array
 			_velocities,
 			_net_forces,
+			_positions,
+			_weights,
+			_connections,
 			_start_time,
 			_end_time,
 			_steps_done;
@@ -71,8 +74,8 @@
 		/**/
 		_step = function _step() {
 			var i, il, j,
-				node, pos, conns, velocity, weight,		// current node data
-				node2, pos2, weight2,					// second node data
+				pos, conns, velocity, weight,			// current node data
+				pos2, weight2,							// second node data
 				dx, dy, dz,								// node2.pos - node.pos
 				nfx, nfy, nfz,							// current node net force
 				a, b, c,								// helpers
@@ -80,19 +83,17 @@
 
 			for (i = 0, il = _graph_nums.length; i < il; ++i) {
 				if (!_mass_centers[i]) {
-					node = _graph_arr[i];
-					pos = node.pos;
-					conns = node.conns;
-					weight = node.weight;
+					pos = _positions[i];
+					conns = _connections[i];
+					weight = _weights[i];
 					velocity = _velocities[i];
 					nfx = nfy = nfz = 0;
 		
 					// repulsion - 95% of CPU in profiler
 					for (j = 0; j < il; ++j) {
 						if (i !== j) {
-							node2 = _graph_arr[j];
-							pos2 = node2.pos;
-							weight2 = node2.weight;
+							pos2 = _positions[j];
+							weight2 = _weights[j];
 
 							dx = pos2.x - pos.x;
 							dy = pos2.y - pos.y;
@@ -129,7 +130,7 @@
 
 			// update positions
 			for (i = _graph_nums.length; i--;) {
-				pos = _graph_arr[i].pos;
+				pos = _positions[i];
 				velocity = _velocities[i];
 
 				pos.x += velocity.x;
@@ -145,8 +146,8 @@
 		/**
 		_step = function _step() {
 			var i, il, j,
-				node, pos, conns, velocity, weight,	nf,	// current node data
-				node2, pos2, weight2, nf2,				// second node data
+				pos, conns, velocity, weight, nf,		// current node data
+				pos2, weight2, nf2,						// second node data
 				dx, dy, dz,								// node2.pos - node.pos
 				nfx, nfy, nfz,							// current node net force
 				a, b, c,								// helpers
@@ -154,10 +155,9 @@
 
 			for (i = 0, il = _graph_nums.length; i < il; ++i) {
 				if (!_mass_centers[i]) {
-					node = _graph_arr[i];
-					pos = node.pos;
-					conns = node.conns;
-					weight = node.weight;
+					pos = _positions[i];
+					conns = _connections[i];
+					weight = _weights[i];
 					velocity = _velocities[i];
 					nf = _net_forces[i];
 					nfx = nf.x;
@@ -166,9 +166,8 @@
 		
 					// repulsion - 95% of CPU in profiler
 					for (j = i + 1; j < il; ++j) {
-						node2 = _graph_arr[j];
-						pos2 = node2.pos;
-						weight2 = node2.weight;
+						pos2 = _positions[j];
+						weight2 = _weights[j];
 						nf2 = _net_forces[j];
 
 						dx = pos2.x - pos.x;
@@ -211,7 +210,7 @@
 
 			// update positions
 			for (i = _graph_nums.length; i--;) {
-				pos = _graph_arr[i].pos;
+				pos = _positions[i];
 				velocity = _velocities[i];
 
 				pos.x += velocity.x;
@@ -232,10 +231,19 @@
 		_graph_nums = Object.keys(graph).map(function (v) { return +v; });
 		_velocities = [];
 		_net_forces = [];
-		_graph_arr = _graph_nums.map(function (num) {
+		_positions = [];
+		_weights = new Uint16Array(_graph_nums.length);
+		_connections = [];
+		
+		_graph_arr = _graph_nums.map(function (num, i) {
+			var obj = _graph[num];
 			_velocities.push(new T_Vector3());
 			_net_forces.push(new T_Vector3());
-			return _graph[num];
+			_positions.push(obj.pos);
+			_weights[i] = obj.weight;
+			_connections.push(obj.conns);
+
+			return obj;
 		});
 		_root = _graph[root];
 		_root_index = _graph_nums.indexOf(+root);
