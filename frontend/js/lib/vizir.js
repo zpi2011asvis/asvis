@@ -116,16 +116,14 @@
 				mc[_order[2]] = true;
 			}
 			
-			_runRecursiveVertexPos(
-				[_order[0]]
-			);
+			_runRecursiveVertexPos([_order[0]]);
 
 			_generateVEObjects();
 			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
 			_dirty = false;
 
 			_fba = new FBA(_root, _graph, mc);
-			setTimeout(_fba.run.bind(_fba, 5000), 2500); // run for 10s after 100ms
+			setTimeout(_fba.run.bind(_fba, 2000), 2500); // run for 10s after 100ms
 		};
 
 		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {

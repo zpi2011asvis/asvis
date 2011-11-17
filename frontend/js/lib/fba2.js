@@ -10,9 +10,9 @@
 	 */
 	var FBA = function FBA(root, graph, mass_centers) {
 		// consts
-		var STEPS_AT_ONCE = 3,
+		var STEPS_AT_ONCE = 1,			// TODO back to "2"
 			SPRING_LEN = 40,
-			SPRING_FORCE = 0.025,		// for hook's law
+			SPRING_FORCE = 0.025,
 			CHARGE = 0.05,				// for coulomb's law
 			DAMPING = 0.8;
 
@@ -24,7 +24,6 @@
 			_graph_arr,		// see: http://jsperf.com/for-in-loop-vs-for-with-keys-array
 			_graph_nums,	// performance boost while iterating over object keys array
 			_velocities,
-			_net_forces,
 			_positions,
 			_weights,
 			_connections,
@@ -75,6 +74,7 @@
 			var i, il, j, k,							// indexes (int)
 				pos, conns, weight,						// current node data
 				pos2, weight2,							// second node data
+				vx, vy, vz,
 				dx, dy, dz,								// node2.pos - node.pos
 				nfx, nfy, nfz,							// current node net force
 				a, b, c,								// helpers (float)
@@ -85,30 +85,24 @@
 					pos = _positions[i];
 					conns = _connections[i];
 					weight = _weights[i];
-
-					k = i * 3;
-					nfx = _net_forces[k++];
-					nfy = _net_forces[k++];
-					nfz = _net_forces[k];
+					nfx = nfy = nfz = 0;
 		
 					// repulsion - 95% of CPU in profiler
-					for (j = i + 1, k = 3 * j; j < il; ++j) {
-						pos2 = _positions[j];
-						weight2 = _weights[j];
+					for (j = 0; j < il; ++j) {
+						if (i !== j) {
+							pos2 = _positions[j];
+							weight2 = _weights[j];
 
-						dx = pos2.x - pos.x;
-						dy = pos2.y - pos.y;
-						dz = pos2.z - pos.z;
-						// coulombs factor q*w1*w2 / r^2
-						a = CHARGE * (weight * weight2) / (dx*dx + dy*dy + dz*dz);
+							dx = pos2.x - pos.x;
+							dy = pos2.y - pos.y;
+							dz = pos2.z - pos.z;
+							// coulombs factor q*w1*w2 / r^2
+							a = CHARGE * (weight * weight2) / (dx*dx + dy*dy + dz*dz);
 
-						nfx -= dx * a;
-						nfy -= dy * a;
-						nfz -= dz * a;
-				
-						_net_forces[k++] += dx * a;
-						_net_forces[k++] += dy * a;
-						_net_forces[k++] += dz * a;
+							nfx -= dx * a;
+							nfy -= dy * a;
+							nfz -= dz * a;
+						}
 					}
 
 					// attraction
@@ -126,14 +120,10 @@
 						nfz += dz * a;
 					}
 		
-					k = 3 * i;
+					k = i * 3;
 					_velocities[k] = DAMPING * (_velocities[k++] + nfx / weight);
 					_velocities[k] = DAMPING * (_velocities[k++] + nfy / weight);
 					_velocities[k] = DAMPING * (_velocities[k] + nfz / weight);
-					k = 3 * i;
-					_net_forces[k++] = 0;
-					_net_forces[k++] = 0;
-					_net_forces[k] = 0;
 				}
 			}
 
@@ -158,21 +148,15 @@
 		_graph_nums = Object.keys(graph).map(function (v) { return +v; });
 
 		_velocities = new Float32Array(3 * _graph_nums.length);
-		_net_forces = new Float32Array(3 * _graph_nums.length);
 		_positions = [];
 		_weights = new Uint16Array(_graph_nums.length);
 		_connections = [];
 		
 		_graph_arr = _graph_nums.map(function (num, i) {
 			var obj = _graph[num];
-
-			_velocities[i * 3] = 0;
-			_velocities[i * 3 + 1] = 0;
-			_velocities[i * 3 + 2] = 0;
-			_net_forces[i * 3] = 0;
-			_net_forces[i * 3 + 1] = 0;
-			_net_forces[i * 3 + 2] = 0;
-
+			_velocities[i*3] = 0;
+			_velocities[i*3+1] = 0;
+			_velocities[i*3+2] = 0;
 			_positions.push(obj.pos);
 			_weights[i] = obj.weight;
 			_connections.push(obj.conns);
@@ -189,6 +173,6 @@
 		});
 	};
 
-	exports.FBA = FBA;
+	exports.FBA2 = FBA;
 
 }.call({}, this.app.lib, this, this.app.lib));
