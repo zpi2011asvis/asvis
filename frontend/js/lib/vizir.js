@@ -6,16 +6,12 @@
 		T_Vector3 = T.Vector3,
 		T_Matrix4 = T.Matrix4,
 		FBA = lib.FBA,
-		uniq = global.util.arrayUniq;
+		uniq = global.util.arrayUniq,
+		deg2Rad = global.util.deg2Rad;
 	
 	var Vizir = function Vizir() {
 		// consts
-		var BASE = 40, //base length
-			WEIGHT_FACTOR = 1.5,
-			MAX_X = 200,
-			MAX_Y = 100,
-			MAX_Z = 100,
-			MAX_ANGLE = 30,
+		var BASE = 50, //base length
 			A360 = Math.PI * 2;
 
 		// properties
@@ -38,7 +34,9 @@
 			_hasEdge,
 			_generateVEObjects,
 			_recursiveVertexPos,
-			_runRecursiveVertexPos;
+			_runRecursiveVertexPos,
+			_calculateInclinationAngle,
+			_calculateRotationAngle;
 	
 		/*
 		 * Publics -------------------------------------------------------------
@@ -123,7 +121,9 @@
 			_dirty = false;
 
 			_fba = new FBA(_root, _graph, mc);
-			setTimeout(_fba.run.bind(_fba, 2000), 2500); // run for 10s after 100ms
+			if (_order.length < 5000) {
+				setTimeout(_fba.run.bind(_fba, 10000), 1000); // run for 10s after 100ms
+			}
 		};
 
 		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {
@@ -148,15 +148,16 @@
 		 * number of unnodes_done children
 		 */
 		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector) {
-			var data = _graph[num],				// node
-				conns = data.out.concat(data.in),
+			var node = _graph[num],				// node
+				conns = node.out.concat(node.in),
 				connsl = conns.length,
 				current_pos,
 				new_pos,
 				new_num,
-				rot_angle = A360 / 360 * 7.33,	// 7.33deg
+				todo = [],						// queue for _runRecursiveVertexPos
 				rotated = 0,					// already rotated in current surface 
-				todo = [];						// queue for _runRecursiveVertexPos
+				incl_angle, rot_angle,
+				m_incl, m_rot;
 
 			// this is done twice (also before node was added to the queue)
 			// because of order in BFS
@@ -166,15 +167,15 @@
 
 			// position already set (for the mass center)
 			// so use it
-			if (data.pos) {
-				pos = data.pos.clone();
-				current_pos = data.pos;
-				vector = data.pos.clone();
+			if (node.pos) {
+				pos = node.pos.clone();
+				current_pos = node.pos;
+				vector = node.pos.clone();
 			}
 			else {
 				current_pos = pos.clone();
-				data.pos = current_pos;
-				data.conns = [];
+				node.pos = current_pos;
+				node.conns = [];
 			}
 			_vertices.push(current_pos);
 			_nodes_done.push(num);
@@ -182,15 +183,17 @@
 			// remove duplicated connections (bidirectional)
 			// here (not before) because of performance
 			// -- do this after upper returns
-			conns = data.conns = uniq(conns);
+			conns = node.conns = uniq(conns);
 			connsl = conns.length;
+			incl_angle = _calculateInclinationAngle(connsl, node.out, node.in);
+			rot_angle = _calculateRotationAngle(incl_angle);
 
 			// generating matrix for "circular" rotations
-			var m2 = new T_Matrix4();
-			m2.setRotationAxis(vector.clone().normalize(), rot_angle);
+			var m_rot = new T_Matrix4();
+			m_rot.setRotationAxis(vector.clone().normalize(), rot_angle);
 		
 			//generating vector inclined from tree generation direction
-			var m = new T_Matrix4(),
+			var m_incl = new T_Matrix4(),
 				p = _nvec(0, 1, 0).crossSelf(vector).normalize();
 
 			// if vector was (0,1,0) then cross product is (0,0,0)
@@ -198,8 +201,8 @@
 			if (p.lengthSq() === 0) {
 				p = _nvec(0, 0, 1).crossSelf(vector).normalize();
 			}
-			m.setRotationAxis(p, rot_angle);
-			m.multiplyVector3(vector);
+			m_incl.setRotationAxis(p, incl_angle);
+			m_incl.multiplyVector3(vector);
 			
 			for (var i = 0; i < connsl; ++i) {
 				new_num = conns[i];
@@ -215,10 +218,10 @@
 						_pushEdge(num, new_num);
 				
 						// calculate new position on sphere
-						m2.multiplyVector3(vector);
+						m_rot.multiplyVector3(vector);
 						rotated += rot_angle;
 						if (rotated >= A360) {
-							m.multiplyVector3(vector);
+							m_incl.multiplyVector3(vector);
 							rotated = 0;
 						}
 					}
@@ -262,6 +265,22 @@
 
 			_edges = edges; //fast swap
 			_vertices = vertices; //fast swap
+		};
+
+		_calculateInclinationAngle = function (connsl, conns_out, conns_in) {
+			// only one neighbour
+			if (
+					connsl === 1 ||
+					(connsl === 2 && conns_out[0] === conns_in[0])
+			) {
+				return 0;
+			}
+
+			return deg2Rad(90 / Math.sqrt(connsl) + 4.9); 
+		};
+
+		_calculateRotationAngle = function (incl_angle) {
+			return incl_angle;
 		};
 	};
 
