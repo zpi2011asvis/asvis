@@ -97,15 +97,24 @@
 
 		_recalculatePositions = function _recalculatePositions() {
 			var d = +new Date(),
-				node;
+				node,
+				mc = {};
 			
-			// set mass centers in triangle
+			// set mass centers
 			node = _graph[_order[0]];
 			node.pos = _nvec(-BASE, 0, 0);
-			node = _graph[_order[1]];
-			node.pos = _nvec(BASE, 0, 0);
-			node = _graph[_order[2]];
-			node.pos = _nvec(0, -BASE, 0);
+			mc[_order[0]] = true;
+
+			if (_order.length > 1) {
+				node = _graph[_order[1]];
+				node.pos = _nvec(BASE, 0, 0);
+				mc[_order[1]] = true;
+			}
+			if (_order.length > 2) {
+				node = _graph[_order[2]];
+				node.pos = _nvec(0, -BASE, 0);
+				mc[_order[2]] = true;
+			}
 			
 			_runRecursiveVertexPos(
 				[_order[0]]
@@ -115,13 +124,8 @@
 			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
 			_dirty = false;
 
-			var mc = {};
-			mc[_order[0]] = true;
-			mc[_order[1]] = true;
-			mc[_order[2]] = true;
-
 			_fba = new FBA(_root, _graph, mc);
-			setTimeout(_fba.run.bind(_fba, 10000), 1000); // run for 10s after 100ms
+			setTimeout(_fba.run.bind(_fba, 5000), 2500); // run for 10s after 100ms
 		};
 
 		_runRecursiveVertexPos = function _runRecursiveVertexPos(queue) {

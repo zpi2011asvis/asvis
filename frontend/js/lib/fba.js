@@ -10,7 +10,7 @@
 	 */
 	var FBA = function FBA(root, graph, mass_centers) {
 		// consts
-		var STEPS_AT_ONCE = 2,
+		var STEPS_AT_ONCE = 1,			// TODO back to "2"
 			SPRING_LEN = 40,
 			SPRING_FORCE = 0.025,
 			CHARGE = 0.05,				// for coulomb's law
@@ -24,6 +24,7 @@
 			_graph_arr,		// see: http://jsperf.com/for-in-loop-vs-for-with-keys-array
 			_graph_nums,	// performance boost while iterating over object keys array
 			_velocities,
+			_net_forces,
 			_start_time,
 			_end_time,
 			_steps_done;
@@ -76,7 +77,7 @@
 				a, b, c,								// helpers
 				start_time = +new Date();
 
-			for (i = il = _graph_nums.length; i--;) {
+			for (i = 0, il = _graph_nums.length; i < il; ++i) {
 				if (!_mass_centers[i]) {
 					node = _graph_arr[i];
 					pos = node.pos;
@@ -86,7 +87,7 @@
 					nfx = nfy = nfz = 0;
 		
 					// repulsion - 95% of CPU in profiler
-					for (j = il; j--;) {
+					for (j = 0; j < il; ++j) {
 						if (i !== j) {
 							node2 = _graph_arr[j];
 							pos2 = node2.pos;
@@ -146,14 +147,16 @@
 		_graph = graph;
 		_graph_nums = Object.keys(graph).map(function (v) { return +v; });
 		_velocities = [];
+		_net_forces = [];
 		_graph_arr = _graph_nums.map(function (num) {
 			_velocities.push(new T_Vector3());
+			_net_forces.push(new T_Vector3());
 			return _graph[num];
 		});
-		_root = graph[root];
+		_root = _graph[root];
 		_root_index = _graph_nums.indexOf(+root);
 		// switch mass_center to based on grah_nums indexes
-		// for performance reasons
+		// do it for performance reasons
 		_mass_centers = {};
 		Object.keys(mass_centers).forEach(function (v) {
 			_mass_centers[_graph_nums.indexOf(+v)] = true;
