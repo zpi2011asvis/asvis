@@ -61,7 +61,6 @@ function includeTemplates() {
 ?><!DOCTYPE html>
 <html>
 <head>
-	<script>console.log('--------------------------------------------');</script>
 	<meta charset="utf-8">
 	<title>ASvis</title>
 	<link rel="stylesheet" href="<?= Config::get('frontend_base_uri') ?>/css/init.css">
