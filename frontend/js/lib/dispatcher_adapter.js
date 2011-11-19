@@ -5,10 +5,10 @@
 		isFunction = global.es5ext.Function.isFunction;
 	
 	exports.DispatcherAdapter = function DispatcherAdapter(container_el) {
-		// used for fixing the 
-		// difference between Fx and Chrome - Fx does not 
-		// automaticly fire onpopstate on page load
-		var _popped = false;
+			// used for fixing the 
+			// difference between Fx and Chrome - Fx does not 
+			// automaticly fire onpopstate on page load
+		var _parsed = false;
 
 		var _methodedPath = function _methodedPath(method, path) {
 			return method + path;
@@ -29,7 +29,13 @@
 					this.addRoute('get', path, fn);
 				}
 				else  {
-					this.parse('get', this._create(path, fn || {}));
+					path = this._create(path, fn || {});
+					var params = {
+						method: 'get',
+						path: path
+					};
+					global.history.pushState(params, '', path);
+					this.parse(params);
 				}
 			},
 
@@ -37,27 +43,31 @@
 				if (isFunction(obj)) {
 					this.addRoute('post', path, obj);
 				}
+				// obj is post data
 				else {
-					this.parse('post', path, obj);
+					var params = {
+						method: 'post',
+						path: path,
+						post: obj
+					};
+					global.history.pushState(params, '', path);
+					this.parse(params);
 				}
 			},
 
-			parse: function parse(method, path, post_params) {
+			parse: function parse(params) {
+				var path = params.path;
+				_parsed = true;
+
 				global.DEBUG && console.log('Dispatcher parsing: ' + path);
 
-				var request = _methodedPath(method, path),
-					route = this._getMatchedRoute(request),
-					//getParamsArray ommision disables routes rules.normalize option
-					params = {
-						get: route ? route._getParamValuesObject(request) : null,
-						post: post_params || null,
-						method: method
-					};
-
-				global.history.pushState(params, '', path);
+				var request = _methodedPath(params.method, path),
+					route = this._getMatchedRoute(request);
 
 				if (route) {
-					params ? route.matched.dispatch.call(route.matched, params) : route.matched.dispatch();
+					// getParamsArray ommision disables routes rules.normalize option
+					params.get = route._getParamValuesObject(request);
+					route.matched.dispatch(params);
 					this.routed.dispatch(path, route, params);
 				}
 				else {
@@ -95,25 +105,29 @@
 		});
 
 		global.addEventListener('popstate', function onPopstate(event) {
-			var state = event.state,
-				method = state && state.method ? state.method : 'get',
-				location = global.location;
+			var l = global.location,
+				params = event.state || {};
 
-			_popped = true;
+			// if state provided then use it, defaults otherwise
+			params.method = params.method || 'get';
+			params.path = params.path || (l.pathname + l.search + l.hash);
+
+			global.DEBUG2 && console.log('Popped state: ' + params.path);
 		
-			dispatcher[method](location.pathname + location.search + location.hash);
+			dispatcher.parse(params);
 		});
 
 		dispatcher.bypassed.add(function (path, params) {
-			global.history.pushState(params, '', path);
+			// TODO move this to app
 			alert('Błąd. Strona o podanym adresie nie istnieje.');
 		});
 
 		// fixing difference in behaviour on page load
-		// see comment for _popped
+		// see comment for _parsed
 		setTimeout(function() {
-			if (!_popped) {
-				dispatcher.get(location.pathname + location.search + location.hash);
+			var l = global.location;
+			if (!_parsed) {
+				dispatcher.get(l.pathname + l.search + l.hash);
 			}
 		}, 100);
 

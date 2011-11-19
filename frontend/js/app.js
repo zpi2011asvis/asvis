@@ -82,6 +82,10 @@
 			dispatcher.get('/node/{number}/{depth}', function routerNode(request) {
 				var number = request.get.number,
 					depth = request.get.depth;
+	
+				// TODO remove in the future - should modify current graph
+				// and widget should manage what to do with new data
+				that.widgets.destroy();
 
 				that.db.get('structure/graph', {
 					number: number,
