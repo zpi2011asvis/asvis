@@ -74,39 +74,13 @@
 				that.signals.action_performed.dispatch();
 			});
 
-			renderer.setStructure(data['graph'], data['root'], true);
-			//renderer.setStructure(global.data[2], 578, true);
-			//renderer.setStructure(global.data[0], 7345, true);
-			//renderer.setStructure(global.data[1], 7578, true);
-			renderer.start();
-
-			/**
-			var s = { 1: { up: [], down: [] } };
-			for (var i = 2; i < 100; ++i) {
-				if (s < 50) s[1].up.push(i);
-				else s[1].down.push(i);
-				s[i] = { up: [], down: [] };
-			};
-			/**/			
-			/**
-			renderer.setStructure({
-				structure: {
-					1: { up: [2,3,4,5,6], down: [7,8,9] },
-					2: { up: [], down: [] },
-					3: { up: [], down: [] },
-					4: { up: [], down: [] },
-					5: { up: [], down: [] },
-					6: { up: [], down: [] },
-					7: { up: [], down: [] },
-					8: { up: [], down: [] },
-					9: { up: [], down: [] }
-				}
-			}, 1, true);
-			/**
-			renderer.setStructure({
-				structure: s
-			}, 1, true);
-			/**/
+			global.app.signals.graph_rendering.started.dispatch(that);
+			
+			setTimeout(function () {
+				renderer.setStructure(data['graph'], data['root'], true);
+				renderer.start();
+				global.app.signals.graph_rendering.ended.dispatch(that);
+			}, 1);
 
 			this._renderer = renderer;
 		},

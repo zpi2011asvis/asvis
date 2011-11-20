@@ -7,7 +7,8 @@
 		T_Matrix4 = T.Matrix4,
 		FBA = lib.FBA,
 		uniq = global.util.arrayUniq,
-		deg2Rad = global.util.deg2Rad;
+		deg2Rad = global.util.deg2Rad,
+		Signal = global.signals.Signal;
 	
 	var Vizir = function Vizir() {
 		// consts
@@ -15,10 +16,11 @@
 			A360 = Math.PI * 2,
 			AUTO_FBA_MAX_NODES = 4000,
 			AUTO_FBA_WORK_TIME = 5000,
-			AUTO_FBA_DELAY = 1000;
+			AUTO_FBA_DELAY = 500;
 
 		// properties
-		var _root,
+		var that = this,
+			_root,
 			_graph,
 			_distance_order,
 			_order,
@@ -44,6 +46,11 @@
 		/*
 		 * Publics -------------------------------------------------------------
 		 */
+
+		this.signals = {
+			started: new Signal(),
+			ended: new Signal()
+		};
 
 		this.setGraph = function setGraph(graph) {
 			_dirty = true;
@@ -99,7 +106,8 @@
 		_recalculatePositions = function _recalculatePositions() {
 			var d = +new Date(),
 				node,
-				mc = {};
+				mc = {},
+				signal;
 			
 			// set mass centers
 			node = _graph[_order[0]];
@@ -124,6 +132,13 @@
 			_dirty = false;
 
 			_fba = new FBA(_root, _graph, mc);
+
+			// forward signals
+			signal = that.signals.started;
+			_fba.signals.started.add(signal.dispatch, signal);
+			signal = that.signals.ended;
+			_fba.signals.ended.add(signal.dispatch, signal);
+
 			if (_order.length < AUTO_FBA_MAX_NODES) {
 				setTimeout(_fba.run.bind(_fba, AUTO_FBA_WORK_TIME), AUTO_FBA_DELAY);
 			}

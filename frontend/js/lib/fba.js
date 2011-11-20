@@ -3,21 +3,23 @@
 
 	var T = global.THREE,
 		T_Vertex = T.Vertex,
-		T_Vector3 = T.Vector3;
+		T_Vector3 = T.Vector3,
+		Signal = global.signals.Signal;
 
 	/*
 	 * Forced based algorithm for drawing graphs in an aesthetically pleasing way
 	 */
 	var FBA = function FBA(root, graph, mass_centers) {
 		// consts
-		var STEPS_AT_ONCE = 3,
+		var STEPS_AT_ONCE = 2,
 			SPRING_LEN = 50,
 			SPRING_FORCE = 0.025,		// for hook's law
 			CHARGE = 0.05,				// for coulomb's law
 			DAMPING = 0.8;
 
 		// properties
-		var _root,
+		var that = this,
+			_root,
 			_root_index,
 			_graph,
 			_mass_centers,  // nodes that should stay in place
@@ -40,10 +42,18 @@
 		 * Publics -------------------------------------------------------------
 		 */
 
+		this.signals = {
+			started: new Signal(),
+			ended: new Signal()
+		};
+
 		/*
 		 * @param max_times (ms)
 		 */
 		this.run = function run(max_time) {
+			global.app.signals.graph_rendering.started.dispatch(FBA);
+			this.signals.started.dispatch();
+
 			_start_time = +new Date();
 			_end_time = _start_time + max_time;
 			_steps_done = 0;
@@ -68,6 +78,8 @@
 			}
 			else {
 				global.DEBUG && console.log('FBA steps done: ' + _steps_done);
+				global.app.signals.graph_rendering.ended.dispatch(FBA);
+				that.signals.ended.dispatch();
 			}
 		};
 

@@ -10,8 +10,12 @@
 		lib: lib,
 		opts: null,
 		_container_el: null,
-		signals : {
+		signals: {
 			data_loading: {
+				started: new Signal(),
+				ended: new Signal()
+			},
+			graph_rendering: {
 				started: new Signal(),
 				ended: new Signal()
 			},
@@ -57,7 +61,8 @@
 			this._addRoutes();
 
 			lib.Flash.init({
-				data_loading: this.signals.data_loading
+				data_loading: this.signals.data_loading,
+				graph_rendering: this.signals.graph_rendering,
 			}, x('#flash .message'));
 
 			lib.Templates.load(x('script.template'));

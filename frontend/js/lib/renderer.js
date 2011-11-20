@@ -45,6 +45,7 @@
 			// state -----------------------------------------------------------
 			_started = false,
 			_last_action = 0, // last action timestamp
+			_long_delay = 0,
 			_refreshing_interval = null,
 			_camera_man = null;
 
@@ -69,7 +70,8 @@
 
 			if (!_refreshing_interval) {
 				_refreshing_interval = global.setInterval(function () {
-					if (_last_action + REFRESHING_STOP.DELAY < +new Date()) {
+					// if long delay is active - count with it, otherwise with standard one
+					if (_last_action + (_long_delay || REFRESHING_STOP.DELAY) < +new Date()) {
 						that.stop();
 					}					
 				}, REFRESHING_STOP.CHECK_INTERVAL);
@@ -84,8 +86,22 @@
 			_refresh();
 		};
 
+		this.startLong = function startLong(stop_delay) {
+			_long_delay = stop_delay || 1e5; // if delay not given set 1e8 (~1666 minutes)
+			this.start();
+		};
+
+		/*
+		 * Cancel long run state and continue normal one
+		 */
+		this.stopLong = function stopLong() {
+			_long_delay = 0;
+			_last_action = +new Date();
+		};
+
 		this.stop = function stop() {
 			global.DEBUG2 && console.log('Stop rendering');
+			_long_delay = 0;
 			_started = false;
 			global.clearInterval(_refreshing_interval);
 			_refreshing_interval = null;
@@ -98,17 +114,13 @@
 		 * should be rendered (graph is at once a structure)
 		 */
 		this.setStructure = function setStructure(graph, root, as_structure) {
-			var was_started = _started,
-				verts_geometry = new T.Geometry(),
+			var verts_geometry = new T.Geometry(),
 				edges_geometry = new T.Geometry(),
 				psystem = new T.ParticleSystem(verts_geometry, PARTICLE.material),
 				line = new T.Line(edges_geometry, LINE.material),
 				vertices,
 				edges;
 
-			// stop rendering for the time needed to recalculate everything
-			this.stop();
-	
 			// for FBA, TODO - only set by some event fired by FBA
 			verts_geometry.dynamic = true;
 			edges_geometry.dynamic = true;
@@ -139,10 +151,6 @@
 			_graph_object.add(psystem);
 			_graph_object.add(line);
 			_graph_objects.push(psystem, line);
-
-			if (was_started) {
-				this.start();
-			}
 		};
 
 
@@ -255,6 +263,12 @@
 			else {
 				_camera_man.rotate(change);
 			}
+		});
+		_vizir.signals.started.add(function () {
+			that.startLong();
+		});
+		_vizir.signals.ended.add(function () {
+			that.stopLong();
 		});
 	};
 

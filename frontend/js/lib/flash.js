@@ -2,7 +2,8 @@
 	'use strict';
 
 	var MESSAGES = {
-		data_loading: 'Ładowanie...'
+		data_loading: 'Ładowanie...',
+		graph_rendering: 'Renderowanie...',
 	};
 
 	var x = global.x$;
@@ -26,7 +27,7 @@
 		var callers = _waiters[sname],
 			i = callers.indexOf(caller);
 
-		// when caller is different than one started
+		// when caller is different than the one started
 		if (!~i) {
 			throw new Error('Couldn\'t find caller ' + caller.toString());
 		}

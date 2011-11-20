@@ -193,9 +193,6 @@ function includeTemplates() {
 	</aside>
 	
 	<? includeJS(array(
-		'../data/sample_1.js',
-		'../data/sample_2.js',
-		'../data/sample_3.js',
 		'vendor/three.js',
 		'vendor/signals.js',
 		'vendor/crossroads.js',
