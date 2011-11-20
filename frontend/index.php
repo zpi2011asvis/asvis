@@ -61,6 +61,7 @@ function includeTemplates() {
 ?><!DOCTYPE html>
 <html>
 <head>
+	<script>console.log('*********************** RELOAD ****************************');</script>
 	<meta charset="utf-8">
 	<title>ASvis</title>
 	<link rel="stylesheet" href="<?= Config::get('frontend_base_uri') ?>/css/init.css">
@@ -69,7 +70,7 @@ function includeTemplates() {
 </head>
 <body id="container">
 	<header id="top">
-		<h1><a href="/node/3/2"><strong>AS</strong>vis</a></h1>
+		<h1><a href="/"><strong>AS</strong>vis</a></h1>
 	</header>
 	<p id="flash"><span class="message"></span></p>
 	<div id="graph">
@@ -77,7 +78,7 @@ function includeTemplates() {
 	</div>
 	<aside id="sidebar">
 		<section id="node_data" class="section l1">
-			<h1>Node <span class="as_num">#455</span></h1>
+			<h1>Node <a href="/" class="as_num">#455</a></h1>
 			<div class="content with_subs">
 				<div class="padded_content">
 					<p class="name">Nazwa: <span class="as_name">AS455</span></p>
@@ -219,6 +220,7 @@ function includeTemplates() {
 		'lib/widgets/widget.js',
 		'lib/widgets/start_form_widget.js',
 		'lib/widgets/graph_widget.js',
+		'lib/widgets/infobar_widget.js',
 	)) ?>
 	<? includeTemplates() ?>
 	<script>

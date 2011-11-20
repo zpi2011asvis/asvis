@@ -33,6 +33,7 @@ this.app.lib.widgets = {};
 
 		destroy: function destroy() {
 			this._view.destroy();
+			this._view = null;
 			this.signals.destroyed.dispatch();
 		},
 
@@ -93,16 +94,43 @@ this.app.lib.widgets = {};
 		_position: null,
 		// main widget element
 		_el: null,
+		// array of { target: els, type: 'click', callback: fn } for all subscribed events
+		_events: null,
+
 
 		init: function init(container_el, position) {
 			this._cel = container_el;
 			this._position = position;
 			this._tpls = Templates;
+			this._events = [];
 			this._init && this._init();
 		},
 
 		destroy: function destroy() {
+			this._unsubsribeAllEvents();
+
 			this._el && this._el.html('remove');
+			this._el = this._cel = null;
+		},
+
+		_addEvent: function _addEvent(els, type, callback) {
+			// TODO handle custom events (onscroll, ondrag)
+			// these xui's methods should return object with
+			// one method - un()
+			
+			this._events.push({
+				target: els,
+				type: type,
+				callback: callback
+			});
+			els.on(type, callback);
+		},
+
+		_unsubsribeAllEvents: function _unsubsribeAllEvents() {
+			this._events.forEach(function (event) {
+				event.target.un(event.type, event.callback);
+			});
+			this._events = [];
 		}
 	});
 

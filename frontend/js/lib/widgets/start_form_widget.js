@@ -56,6 +56,8 @@
 					number: +that._el.find('input[name=number]').first().value,
 					depth: +that._el.find('input[name=depth]').first().value
 				});
+				event.preventDefault();
+				event.stopPropagation();
 			});
 		},
 	});

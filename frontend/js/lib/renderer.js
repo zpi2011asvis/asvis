@@ -60,6 +60,13 @@
 		 * Publics -------------------------------------------------------------
 		 */
 
+		this.destroy = function destroy() {
+			this.stop();
+			_vizir && _vizir.destroy();
+			_renderer = _scene = _control_object = _graph_object = null
+			_graph_objects = _vizir = _camera_man = widget_view = null;
+		};
+
 		this.getEl = function getEl() {
 			return _renderer.domElement;
 		};
@@ -119,7 +126,8 @@
 				psystem = new T.ParticleSystem(verts_geometry, PARTICLE.material),
 				line = new T.Line(edges_geometry, LINE.material),
 				vertices,
-				edges;
+				edges,
+				i, il;
 
 			// for FBA, TODO - only set by some event fired by FBA
 			verts_geometry.dynamic = true;
@@ -134,12 +142,12 @@
 			_vizir.clear().setGraph(graph).setRoot(root);
 
 			vertices = _vizir.getVertices();
-			for (var i = 0, il = vertices.length; i < il; i++) {
+			for (i = 0, il = vertices.length; i < il; i++) {
 				verts_geometry.vertices.push(vertices[i]);
 			}
 
 			edges = _vizir.getEdges();
-			for (var i = 0, il = edges.length; i < il; i++) {
+			for (i = 0, il = edges.length; i < il; i++) {
 				edges_geometry.vertices.push(edges[i]);
 			}
 
@@ -185,7 +193,9 @@
 				line_geometry = new T.Geometry(),
 				circle_geometry = new T.Geometry(),
 				line = new T.Line(line_geometry, line_material),
-				circle = new T.Line(circle_geometry, line_material);
+				circle = new T.Line(circle_geometry, line_material),
+				control_obj,
+				i, il;
 	
 			// x, y, z axes
 			line_geometry.vertices.push(
@@ -196,7 +206,7 @@
 			line.type = T.Lines;
 	
 			// flat elipse
-			for (var i = 0, l = Math.PI * 2; i < l + 0.1; i += 0.1) {
+			for (i = 0, il = Math.PI * 2 + 0.1; i < il; i += 0.1) {
 				circle_geometry.vertices.push(_nver(
 					Math.sin(i) * 400,
 					0,
@@ -204,12 +214,12 @@
 				));
 			}
 			
-			var obj = new THREE.Object3D();
-			obj.add(line);
-			obj.add(circle);
-			_scene.add(obj);
+			control_obj = new THREE.Object3D();
+			control_obj.add(line);
+			control_obj.add(circle);
+			_scene.add(control_obj);
 			
-			_control_object = obj;
+			_control_object = control_obj;
 		};
 
 		_initGraphObject = function _initGraphObject() {

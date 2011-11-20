@@ -11,17 +11,29 @@
 		},
 
 		delegate: function delegate(type, q, fn) {
-			var that = this;
+			var that = this,
+				current_el,
+				matching_els;
+
 			that.on(type, function delegate_on(event) {
-				// event target matches given selector
-				if (that.find(q).has(event.target).length > 0) {
-					fn(event, event.target);
+				matching_els = [].slice.call(that.find(q));
+				current_el = event.target;
+
+				do {
+					if (matching_els.indexOf(current_el) > -1) {
+						fn(event, current_el, event.target);
+						return;
+					}
+					current_el = current_el.parentNode;
 				}
+				while (current_el);
 			});
 		},
 
 		/*
 		 * @param fn {Function} callback(event, down)
+		 * TODO onscroll and ondrag should return object with metohod un()
+		 * for unsubscribing events
 		 */
 		onscroll: function onscroll(fn) {
 			var that = this;
@@ -33,7 +45,7 @@
 				fn(event, event.detail > 0);
 			});
 
-			// Chrome, Safari, Opera, MS 8,9 (only on document or element)
+			// Chrome, Safari, Opera, MSIE 8,9 (only on document or element)
 			that.on('mousewheel', function (event) {
 				fn(event, event.wheelDeltaY < 0);
 			});

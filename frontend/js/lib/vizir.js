@@ -52,6 +52,10 @@
 			ended: new Signal()
 		};
 
+		this.destroy = function destroy() {
+			_fba && _fba.stop();
+		};
+
 		this.setGraph = function setGraph(graph) {
 			_dirty = true;
 			_graph = graph.structure;

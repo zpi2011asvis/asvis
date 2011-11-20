@@ -11,14 +11,17 @@
 		opts: null,
 		_container_el: null,
 		signals: {
+			// all tasks connected with XHR
 			data_loading: {
 				started: new Signal(),
 				ended: new Signal()
 			},
+			// all tasks connected with recalculating nodes positions
 			graph_rendering: {
 				started: new Signal(),
 				ended: new Signal()
 			},
+			// fired when data on server changed (new import came)
 			data_reseted: new Signal()
 		},
 
@@ -76,10 +79,11 @@
 			dispatcher.get('/', function routerRoot() {
 				var w = widgets.StartFormWidget.new(that._container_el);
 
-				w.signals.submitted.add(function (params) {
+				w.signals.submitted.add(function routerRoot_onSubmit(params) {
 					that.dispatcher.get('/node/{number}/{depth}', params);
 				});
 
+				that.widgets.destroy();
 				that.widgets.add(w);
 				that.render();
 			});
@@ -96,7 +100,7 @@
 					number: number,
 					depth: depth
 				})
-				(function (data) {
+				(function routerNode_promise1(data) {
 					var w = widgets.GraphWidget.new(
 						that._container_el.find('#graph_renderer')
 					);

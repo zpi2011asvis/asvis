@@ -7,10 +7,6 @@
 		x = global.x$;
 
 	var GraphWidget = Widget.create(function GraphWidget() {}, {
-		_init: function _init() {
-			var that = this;
-			global.graph_widget = this;
-		}
 	},
 	{
 		multiple: false
@@ -32,6 +28,12 @@
 			this.signals.dragged = new Signal();
 			this.signals.action_performed = new Signal();
 		},
+
+		destroy: function destroy() {
+			this._sDestroy();
+			this._renderer.destroy();
+			this._renderer = this.signals = null;
+		},
 			
 		getMousePos: function () {
 			return this._mouse_pos;
@@ -52,8 +54,8 @@
 				that._position,
 				that._el.first()
 			);
-
-			window.on('resize', function (event) {
+			
+			that._addEvent(window, 'resize', function (event) {
 				that.signals.resized.dispatch(that._getSize());
 				that.signals.action_performed.dispatch();
 			});
