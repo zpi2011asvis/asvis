@@ -25,3 +25,4 @@ CREATE INDEX ASNode.num unique;
 CREATE INDEX ASNode.num_as_string unique;
 CREATE INDEX ASConn.from notunique;
 CREATE INDEX ASConn.to notunique;
+CREATE INDEX ASConn.status notunique;

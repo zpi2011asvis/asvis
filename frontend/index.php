@@ -77,120 +77,6 @@ function includeTemplates() {
 		<div id="graph_renderer"></div>
 	</div>
 	<aside id="sidebar">
-		<section id="node_data" class="section l1">
-			<h1>Node <a href="/" class="as_num">#455</a></h1>
-			<div class="content with_subs">
-				<div class="padded_content">
-					<p class="name">Nazwa: <span class="as_name">AS455</span></p>
-				</div>
-		
-				<section id="node_data_conns" class="section l2">
-					<h1>Połączenia (<span class="count">235 &ndash; U:123, D:145</span>)</h1>
-					<div class="content scroll">
-						<table class="std">
-							<thead>
-								<tr>
-									<th>U/D</th>
-									<th>Do</th>
-									<th>Stan</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr class="ok up">
-									<td class="as_dir_up">UP</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_ok">OK</td>
-								</tr>
-								<tr class="ok up">
-									<td class="as_dir_up">UP</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_ok">OK</td>
-								</tr>
-								<tr class="ok up">
-									<td class="as_dir_up">UP</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_ok">OK</td>
-								</tr>
-								<tr class="ok up">
-									<td class="as_dir_up">UP</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_ok">OK</td>
-								</tr>
-								<tr class="ok down">
-									<td class="as_dir_down">DOWN</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_ok">OK</td>
-								</tr>
-								<tr class="ok down">
-									<td class="as_dir_down">DOWN</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_ok">OK</td>
-								</tr>
-								<tr class="ok down">
-									<td class="as_dir_down">DOWN</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_ok">OK</td>
-								</tr>
-								<tr class="bad up">
-									<td class="as_dir_up">UP</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_bad with_hint" title="Brak połączenia w węźle docelowym">BAD</td>
-								</tr>
-								<tr class="bad up">
-									<td class="as_dir_up">UP</td>
-									<td><span class="as_num">#348543</span></td>
-									<td class="as_conn_bad with_hint" title="Brak połączenia w węźle docelowym">BAD</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</section>
-
-				<section id="node_data_pools" class="section l2">
-					<h1>Pule adresów (<span class="count">23</span>)</h1>
-					<div class="content scroll">
-						<table class="std">
-							<thead>
-								<tr>
-									<th>IP</th>
-									<th>CIDR</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><span class="aspool_ip">134.35.53.34</span></td>
-									<td><span class="aspool_cidr">4</span></td>
-								</tr>
-								<tr>
-									<td><span class="aspool_ip">134.35.53.34</span></td>
-									<td><span class="aspool_cidr">4</span></td>
-								</tr>
-								<tr>
-									<td><span class="aspool_ip">134.35.53.34</span></td>
-									<td><span class="aspool_cidr">4</span></td>
-								</tr>
-								<tr>
-									<td><span class="aspool_ip">134.35.53.34</span></td>
-									<td><span class="aspool_cidr">4</span></td>
-								</tr>
-								<tr>
-									<td><span class="aspool_ip">134.35.53.34</span></td>
-									<td><span class="aspool_cidr">4</span></td>
-								</tr>
-								<tr>
-									<td><span class="aspool_ip">134.35.53.34</span></td>
-									<td><span class="aspool_cidr">4</span></td>
-								</tr>
-								<tr>
-									<td><span class="aspool_ip">134.35.53.34</span></td>
-									<td><span class="aspool_cidr">4</span></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</section>
-			</div>
-		</section>
 	</aside>
 	
 	<? includeJS(array(
@@ -216,6 +102,7 @@ function includeTemplates() {
 		'lib/stores/remote_store.js',
 		'lib/resources/resource.js',
 		'lib/resources/nodes_resource.js',
+		'lib/resources/connections_resource.js',
 		'lib/resources/structures_resource.js',
 		'lib/widgets/widget.js',
 		'lib/widgets/start_form_widget.js',

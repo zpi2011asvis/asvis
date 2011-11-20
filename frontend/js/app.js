@@ -103,17 +103,6 @@
 					depth: depth
 				})
 				(function routerNode_promise1(graph_data) {
-					return deferred.all(
-						graph_data,
-						that.db.get('nodes/meta', {
-							numbers: graph_data.weight_order
-						})
-					);
-				})
-				(function routerNode_promise2(data) {
-					var graph_data = data[0],
-						nodes_meta = data[1];
-
 					var w = widgets.GraphWidget.new(
 						that._container_el.find('#graph_renderer')
 					);
@@ -122,6 +111,29 @@
 
 					that.widgets.add(w);
 					that.render();
+
+					return deferred.all(
+						that.db.get('nodes/meta', {
+							numbers: graph_data.weight_order
+						}),
+						that.db.get('connections/meta', {
+							for_node: number
+						})
+					);
+				})
+				(function routerNode_promise2(data) {
+					var nodes_meta = data[0],
+						conns_meta = data[1];
+
+					var w = widgets.InfobarWidget.new(
+						that._container_el.find('#sidebar')					
+					);
+					w.set('node_meta', nodes_meta);
+					w.set('connections_meta', conns_meta);
+					
+					that.widgets.add(w);
+					that.render();
+
 				}).end(that.err);
 			});
 		},
@@ -135,6 +147,7 @@
 			], [
 				resources.nodes.NodesFindResource.new(),
 				resources.nodes.NodesMetaResource.new(),
+				resources.connections.ConnectionsMetaResource.new(),
 				resources.structures.StructureGraphResource.new()
 			]);
 		},

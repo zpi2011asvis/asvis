@@ -15,15 +15,19 @@ interface Engine {
 	public function nodesFind($num);
 	
 	/**
-	 * Returns array of meta data for given nodes.
-	 * $nodes param should be formatted:
-	 * "[num1,num2,num3]"
-	 * i.e.:
-	 * "[1234,2345,52345,234523]"
+	 * Returns array of meta data for given nodes numbers.
 	 * 
-	 * @param string $nodes
+	 * @param Array $number e.g. array(1234,2345,52345,234523)
 	 */
-	public function nodesMeta($nodes);
+	public function nodesMeta($numbers);
+
+	/**
+	 * Returns an array of meta data for connections
+	 * taken from in and out fields of given node.
+	 * 
+	 * @param int $for_number
+	 */
+	public function connectionsMeta($for_node);
 	
 	/**
 	 * Returns array of nodes and their connections for given

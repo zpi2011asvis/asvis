@@ -23,16 +23,13 @@
 		render: function render(data) {
 			if (this._el) return;
 
-			var that = this,
-				window = x$(global.window);
+			var that = this;
 				
-			that._el = x$(renderer.getEl());
-
 			that._cel.html(
 				that._position,
-				that._el.first()
+				that._tpls.render('infobar', data)
 			);
-
+			that._el = that._cel.find('#node_data');
 		},
 	});
 

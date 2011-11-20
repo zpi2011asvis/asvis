@@ -101,6 +101,40 @@ class OrientEngine implements Engine {
 
 		return $nodes;
 	}
+
+
+	/**
+	 * (non-PHPdoc)
+	 * @see asvis\lib.Engine::connectionsMeta()
+	 */
+	public function connectionsMeta($for_node) {
+		$conns = array();
+
+		$query = "SELECT FROM ASNode WHERE num = {$for_node}";
+		$json = $this->_orient->query($query);	
+		$result = json_decode($json->getBody())->result;
+
+		if (!count($result)) {
+			return null;
+		}
+
+		$query = "SELECT FROM ASConn WHERE from = " . $result[0]->{'@rid'};
+		$fetchplan = "*:2 from:0";
+		
+		$json = $this->_orient->query($query, null, -1, $fetchplan);	
+		$result = json_decode($json->getBody())->result;
+
+		foreach ($result as $conn) {
+			$status = $conn->status;
+			$node_to = $conn->to;
+
+			$conns[] = array('to' => $node_to->num, 'status' => $status); 
+		}
+			
+		usort($conns, array('asvis\lib\orient\OrientEngine', 'compareConnections'));
+
+		return $conns;
+	}
 	
 	/**
 	 * (non-PHPdoc)
@@ -200,5 +234,14 @@ class OrientEngine implements Engine {
 		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
 		
 		return $graphAlgorithms->getShortestPath($num_start, $num_end);
+	}
+
+	private function compareConnections($conn1, $conn2) {
+		if ($conn1['status'] === $conn2['status']) {
+			return $conn1['to'] - $conn2['to'];
+		}
+		else {
+			return $conn1['status'] - $conn2['status'];
+		}
 	}
 }
