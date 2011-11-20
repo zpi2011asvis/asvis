@@ -108,8 +108,6 @@ class OrientEngine implements Engine {
 	 * @see asvis\lib.Engine::connectionsMeta()
 	 */
 	public function connectionsMeta($for_node) {
-		$conns = array();
-
 		$query = "SELECT FROM ASNode WHERE num = {$for_node}";
 		$json = $this->_orient->query($query);	
 		$result = json_decode($json->getBody())->result;
@@ -118,22 +116,7 @@ class OrientEngine implements Engine {
 			return null;
 		}
 
-		$query = "SELECT FROM ASConn WHERE from = " . $result[0]->{'@rid'};
-		$fetchplan = "*:2 from:0";
-		
-		$json = $this->_orient->query($query, null, -1, $fetchplan);	
-		$result = json_decode($json->getBody())->result;
-
-		foreach ($result as $conn) {
-			$status = $conn->status;
-			$node_to = $conn->to;
-
-			$conns[] = array('to' => $node_to->num, 'status' => $status); 
-		}
-			
-		usort($conns, array('asvis\lib\orient\OrientEngine', 'compareConnections'));
-
-		return $conns;
+		return $this->getConnectionMetaFor($result[0]->{'@rid'});
 	}
 	
 	/**
@@ -236,12 +219,66 @@ class OrientEngine implements Engine {
 		return $graphAlgorithms->getShortestPath($num_start, $num_end);
 	}
 
-	private function compareConnections($conn1, $conn2) {
-		if ($conn1['status'] === $conn2['status']) {
-			return $conn1['to'] - $conn2['to'];
+	protected function getConnectionMetaFor($rid) {
+		$conns_up = $this->getConnectionMetaForDir($rid, 'up');
+		$conns_down = $this->getConnectionMetaForDir($rid, 'down');
+		$conns = array();
+
+		// merge connections
+		foreach ($conns_up as $with => $conn) {
+			if (array_key_exists($with, $conns_down)) {
+				$conn['dir'] = 'both';
+			}
+			$conns[] = $conn;
 		}
-		else {
+		foreach ($conns_down as $with => $conn) {
+			if (!array_key_exists($with, $conns_up)) {
+				$conns[] = $conn;
+			}
+		}
+		
+		usort($conns, array('asvis\lib\orient\OrientEngine', 'compareConnections'));
+
+		return $conns;		
+	}
+
+	protected function getConnectionMetaForDir($rid, $dir) {
+		$conns = array();
+		$field = ($dir === 'up' ? 'from' : 'to');
+		$field2 = ($dir === 'up' ? 'to' : 'from');
+
+		$query = "SELECT FROM ASConn WHERE {$field} = " . $rid;
+		$fetchplan = "*:2 {$field}:0";
+		
+		$json = $this->_orient->query($query, null, -1, $fetchplan);	
+		$result = json_decode($json->getBody())->result;
+
+		foreach ($result as $conn) {
+			$status = $conn->status;
+			$with = $conn->{$field2};
+
+			$conns[$with->num] = array('with' => $with->num, 'status' => $status, 'dir' => $dir); 
+		}
+
+		return $conns;
+	}
+
+	private function compareConnections($conn1, $conn2) {
+		if (
+			$conn1['status'] !== $conn2['status'] &&
+			($conn1['status'] === 0 || $conn2['status'] === 0)
+		) {
+			// sort by status only if pairs: (0,1) (0,2) (1,0) (2,0)
 			return $conn1['status'] - $conn2['status'];
 		}
+
+		if ($conn1['dir'] !== $conn2['dir']) {
+			if ($conn1['dir'] === 'both') return -1;
+			if ($conn2['dir'] === 'both') return 1;
+			if ($conn1['dir'] === 'up') return -1;
+			return 1;
+		}
+
+		return $conn1['with'] - $conn2['with'];
 	}
 }
