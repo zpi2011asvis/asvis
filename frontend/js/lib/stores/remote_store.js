@@ -25,7 +25,6 @@
 				params = clone(opts.params);
 
 			global.app.signals.data_loading.started.dispatch(that);
-
 			return that._xhr_adapter(
 				that._absoluteURL(opts.url, params),
 				{
@@ -47,10 +46,16 @@
 		},
 
 		_absoluteURL: function _absoluteURL(resource_url, params) {
-			for (var p in params) {
+			var pattern;
+
+			for (var param in params) {
+				pattern = ':' + param;
+
+				if (resource_url.indexOf(pattern) > -1) {
+					resource_url = resource_url.replace(pattern, params[param]);
+					delete params[param];
+				}
 				//TODO url encoding
-				resource_url = resource_url.replace(':' + p, params[p]);
-				delete params[p];
 			}
 			return this._url + '/' + resource_url;
 		}

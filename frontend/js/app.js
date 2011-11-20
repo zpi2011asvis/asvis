@@ -4,7 +4,8 @@
 	var lib = {},
 		x = global.x$,
 		invoke = global.es5ext.Function.invoke,
-		Signal = global.signals.Signal;
+		Signal = global.signals.Signal,
+		deffered = global.deferred;
 
 	var app = exports.app = {
 		lib: lib,
@@ -95,16 +96,28 @@
 				// TODO remove in the future - should modify current graph
 				// and widget should manage what to do with new data
 				that.widgets.destroy();
+	
 
 				that.db.get('structure/graph', {
 					number: number,
 					depth: depth
 				})
-				(function routerNode_promise1(data) {
+				(function routerNode_promise1(graph_data) {
+					return deferred.all(
+						graph_data,
+						that.db.get('nodes/meta', {
+							numbers: graph_data.weight_order
+						})
+					);
+				})
+				(function routerNode_promise2(data) {
+					var graph_data = data[0],
+						nodes_meta = data[1];
+
 					var w = widgets.GraphWidget.new(
 						that._container_el.find('#graph_renderer')
 					);
-					w.set('graph', data);
+					w.set('graph', graph_data);
 					w.set('root', number);
 
 					that.widgets.add(w);
@@ -121,6 +134,7 @@
 				stores.RemoteStore.new('/backend', app.lib.XHRAdapterXUI)
 			], [
 				resources.nodes.NodesFindResource.new(),
+				resources.nodes.NodesMetaResource.new(),
 				resources.structures.StructureGraphResource.new()
 			]);
 		},

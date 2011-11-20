@@ -6,8 +6,7 @@ use \Resource as TonicResource;
 use asvis\lib\orient\OrientEngine as Engine;
 
 class Resource extends TonicResource {
-	protected $_get = null;
-	protected $_post = null;
+	protected $_request = null;
 
 	/**
 	 * @var Engine
@@ -23,7 +22,7 @@ class Resource extends TonicResource {
 	
 	protected function getParam($paramName, $default = null) {
 		if (array_key_exists($paramName, $this->_request)) {
-			return $this->_post[$paramName];
+			return $this->_request[$paramName];
 		}
 		else {
 			return $default;

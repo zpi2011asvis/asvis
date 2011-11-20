@@ -69,8 +69,37 @@ class OrientEngine implements Engine {
 	 * (non-PHPdoc)
 	 * @see asvis\lib.Engine::nodesMeta()
 	 */
-	public function nodesMeta($nodes) {
+	public function nodesMeta($numbers) {
+		$nodes = array();
 
+		$query = "SELECT FROM ASNode WHERE num IN [" . implode(',', $numbers) . "]";
+		$fetchplan = "*:2 out:0 in:0";
+		
+		$json = $this->_orient->query($query, null, -1, $fetchplan);	
+		$result = json_decode($json->getBody())->result;
+
+		// return null for all if one of numbers is wrong
+		if (count($result) < count($numbers)) {
+			return null;
+		}
+
+		foreach ($result as $node) {
+			$num = $node->num;
+			$name = $node->name;
+
+			$pools = array();
+
+			foreach ($node->pools as $pool) {
+				$network = $pool->network;
+				$netmask = $pool->netmask;
+
+				$pools[] = array('network' => $network, 'netmask' => $netmask);	
+			}
+
+			$nodes[$num] = array('name' => $name, 'pools' => $pools); 
+		}	
+
+		return $nodes;
 	}
 	
 	/**

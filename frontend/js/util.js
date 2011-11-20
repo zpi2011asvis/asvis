@@ -7,7 +7,8 @@ this.util = {};
 		classy,
 		rad2Deg,
 		deg2Rad,
-		arrayUniq;
+		arrayUniq,
+		toQueryString;
 
 	(function () {
 		var superMerge = function superMerge(parent, child) {
@@ -102,10 +103,38 @@ this.util = {};
 		return a;
 	};
 
+	(function () {
+		var toQueryPair = function toQueryPair(key, value) {
+			if (typeof value === 'undefined')
+				return key;
+			return key + '=' + global.encodeURIComponent(value);
+		};
+
+		toQueryString = function toQueryString(obj) {
+			var value;
+
+			return Object.keys(obj).reduce(function (acc, key) {
+				if (obj.hasOwnProperty(key)) {
+					value = obj[key];
+
+					// is object (true for objects, function and arrays)
+					if (value === Object(value)) {
+						value = JSON.stringify(value);
+					}
+				
+					acc.push(toQueryPair(encodeURIComponent(key), value));
+				}
+
+				return acc;
+			}, []).join('&');
+		};
+	}());
+
 	exports.classy = classy;
 	exports.requestAnimationFrame = requestAnimationFrame;
 	exports.rad2Deg = rad2Deg;
 	exports.deg2Rad = deg2Rad;
 	exports.arrayUniq = arrayUniq;
+	exports.toQueryString = toQueryString;
 
 }.call({}, this.util, this));

@@ -13,9 +13,10 @@
 		// consts
 		var STEPS_AT_ONCE = 2,
 			SPRING_LEN = 50,
-			SPRING_FORCE = 0.025,		// for hook's law
-			CHARGE = 0.05,				// for coulomb's law
-			DAMPING = 0.8;
+			SPRING_FORCE = 0.1,			// for hook's law
+			CHARGE = 0.5,				// for coulomb's law
+			DAMPING = 0.8,
+			VMAX = 2.5;
 
 		// properties
 		var that = this,
@@ -144,9 +145,16 @@
 					}
 		
 					k = 3 * i;
-					_velocities[k] = DAMPING * (_velocities[k++] + nfx / weight);
-					_velocities[k] = DAMPING * (_velocities[k++] + nfy / weight);
-					_velocities[k] = DAMPING * (_velocities[k] + nfz / weight);
+					a = DAMPING * (_velocities[k] + nfx / weight);
+					_velocities[k++] = a > 0 ? Math.min(VMAX, a) : Math.max(-VMAX, a);
+
+					a = DAMPING * (_velocities[k] + nfy / weight);
+					_velocities[k++] = a > 0 ? Math.min(VMAX, a) : Math.max(-VMAX, a);
+
+					a = DAMPING * (_velocities[k] + nfz / weight);
+					_velocities[k] = a > 0 ? Math.min(VMAX, a) : Math.max(-VMAX, a);
+
+
 					k = 3 * i;
 					_net_forces[k++] = 0;
 					_net_forces[k++] = 0;
