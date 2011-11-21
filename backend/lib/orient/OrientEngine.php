@@ -261,14 +261,18 @@ class OrientEngine implements Engine {
 		$query = "SELECT FROM ASConn WHERE {$field} = " . $rid;
 		$fetchplan = "*:1 ASConn.{$field}:0 ASNode.in:0 ASNode.out:0 ASNode.pools:0";
 		
-		$json = $this->_orient->query($query, null, -1, $fetchplan)->getBody();
+		$response = $this->_orient->query($query, null, -1, $fetchplan);
+		$json = $response->getBody();
 		$result = json_decode($json);
 		
 		if (!isset($result->result)) {
-// 			$result = $result->result;
-			
+			echo('Congow - RESPONSE -----------------'. PHP_EOL);
+			var_dump($GLOBALS['congow_response']);
+			echo('RESPONSE -----------------'. PHP_EOL);
+			var_dump($response);
+			echo('JSON     -----------------'. PHP_EOL);
 			var_dump($json);
-			echo('JSON -- RESULT -- SPACING -----------------'. PHP_EOL);
+			echo('RESULT   -----------------'. PHP_EOL);
 			var_dump($result);
 			die(1);
 		} else {
