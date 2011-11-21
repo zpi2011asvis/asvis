@@ -15,11 +15,11 @@ class GraphAlgorithms {
 	}
 	
 	public function getShortestPath($num_start, $num_stop, $dir=null) {
-		$path = array();
+		$structure = null;
 		
 		$nodes = array(); 
 		$conn = array();
-		if(array_key_exists($num_start, $this->_structure) && array_key_exists($num_stop, $this->_structure)) {
+		if(array_key_exists($num_stop, $this->_structure)) {
 			$nodes[$num_start] = $this->_createNode($num_start, $dir, 1);
 			$nodes[$num_stop] = $this->_createNode($num_stop, $dir);
 		
@@ -30,11 +30,11 @@ class GraphAlgorithms {
 			}
 
 			$nodes = $this->_breadthFirstSearch($nodes);
-		
 			$path =	$this->_resolvePath($num_start, $num_stop, $nodes);
+			$structure = $this->_rebuildStructure($path);
 		}	
 		
-		return $this->_rebuildStructure($path);
+		return $structure;
 	}
 	
 	private function _createNode($num, $dir, $color=0) {
@@ -76,11 +76,14 @@ class GraphAlgorithms {
 		
 		$parent = $num_stop;
 		
+		//print_r($nodes); die;
+		
 		while($parent !== $num_start) {
 			$parent = $nodes[$parent]['parent'];
-			$path[] = $parent;
+			echo $parent.' | ';
+			//$path[] = $parent;
 		}
-		
+		die;
 		return $path;
 	}
 	
@@ -136,6 +139,8 @@ class GraphAlgorithms {
 	
 	private function _rebuildStructure($conns, $difference = false) {
 		$structure = array();
+		$weight_order = array();
+		$distance_order = array();
 		
 		foreach($this->_structure as $num=>$node) {
 			$difference ? $add = !in_array($num, $conns) : $add = in_array($num, $conns);
@@ -177,11 +182,7 @@ class GraphAlgorithms {
 		
 		foreach($this->_distance_order as $num) {
 			$difference ? $add = !in_array($num, $conns) : $add = in_array($num, $conns);
-			
-			if($difference) {
-				$add = !$add;
-			}
-			
+
 			if($add) {
 				$distance_order[] = $num;
 			}

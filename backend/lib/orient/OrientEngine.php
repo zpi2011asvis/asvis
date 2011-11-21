@@ -197,26 +197,33 @@ class OrientEngine implements Engine {
 		if ($num_start < 0 || $num_end < 0) {
 			return null;
 		}
-		
-		// nie wiem jeszcze jak powinien wygladac fetchplan dla tego zapytania
-		$fp = Config::get('orient_max_fetch_depth');
-		
-		$query = "SELECT FROM ASNode WHERE num = {$num_start}";
-		$fetchplan = "*:{$fp} ASNode.pools:0";
-		
-		$json = $this->_orient->query($query, null, 1, $fetchplan);		
-		$result = json_decode($json->getBody())->result;
 
-		if (!count($result)) {
-			return null;
+		$fp = 1;
+		$structure = null;
+		
+		while(!isset($structure) && $fp <= Config::get('orient_max_fetch_depth')) {
+		
+			$query = "SELECT FROM ASNode WHERE num = {$num_start}";
+			$fetchplan = "*:{$fp} ASNode.pools:0";
+		
+			$json = $this->_orient->query($query, null, 1, $fetchplan);		
+			$result = json_decode($json->getBody())->result;
+
+			if (!count($result)) {
+				return null;
+			}
+		
+			$objectMapper = new ObjectsMapper($result[0], $num_start);		
+			$graph = $objectMapper->parse();
+		
+			$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
+		
+			$structure = $graphAlgorithms->getShortestPath($num_start, $num_end);
+			
+			$fp++;
 		}
 		
-		$objectMapper = new ObjectsMapper($result[0], $num_start);		
-		$graph = $objectMapper->parse();
-		
-		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
-		
-		return $graphAlgorithms->getShortestPath($num_start, $num_end);
+		return $structure;
 	}
 
 	protected function getConnectionMetaFor($rid) {
