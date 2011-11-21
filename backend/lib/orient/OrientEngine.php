@@ -38,7 +38,7 @@ class OrientEngine implements Engine {
 	private $_client;
 	
 	public function __construct() {
-		$this->_client   = new Curl(true, self::CURL_TIMEOUT); // 1 minute - timeout
+		$this->_client   = new Curl(false, self::CURL_TIMEOUT); // 1 minute - timeout
 		$this->_orient   = new Binding(
 			$this->_client,
 			Config::get('orient_db_host'),
