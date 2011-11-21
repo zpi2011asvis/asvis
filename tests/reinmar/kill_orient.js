@@ -3,14 +3,16 @@
 var http = require('http'),
 	escape = require('querystring').escape;
 
+http.globalAgent.maxSockets = 1;
+
 var nums1 = [],
 	nums2 = [];
 for (var i = 0; i < 10000;) {
-	i += ~~(Math.random() * 50);
+	i += ~~(Math.random() * 500);
 	nums1.push(i);
 }
 for (var i = 0; i < 10000;) {
-	i += ~~(Math.random() * 100);
+	i += ~~(Math.random() * 1000);
 	nums2.push(i);
 }
 
