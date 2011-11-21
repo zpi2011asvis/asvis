@@ -218,7 +218,7 @@ class OrientEngine implements Engine {
 		
 			$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
 		
-			$structure = $graphAlgorithms->getShortestPath($num_start, $num_end);
+			$structure = $graphAlgorithms->getShortestPath($num_end);
 			
 			$fp++;
 		}

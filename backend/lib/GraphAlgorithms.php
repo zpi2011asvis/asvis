@@ -14,77 +14,59 @@ class GraphAlgorithms {
 		$this->_distance_order = $graph['distance_order'];
 	}
 	
-	public function getShortestPath($num_start, $num_stop, $dir=null) {
+	public function getShortestPath($num_end, $dir=null) {
 		$structure = null;
 		
-		$nodes = array(); 
-		$conn = array();
-		if(array_key_exists($num_stop, $this->_structure)) {
-			$nodes[$num_start] = $this->_createNode($num_start, $dir, 1);
-			$nodes[$num_stop] = $this->_createNode($num_stop, $dir);
-		
-			foreach($this->_structure as $num=>$node) {
-				if($num !== $num_start && $num !== $num_stop) {
-					$nodes[$num] = $this->_createNode($num, $dir);
+		if(array_key_exists($num_end, $this->_structure)) {
+			$distance = $this->_structure[$num_end]->distance;
+			$paths = $this->_findPaths(array($num_end), $distance, $dir);
+			
+			
+			$structure = array();
+			
+			foreach($paths as $path) {
+				if(count($path) === ($distance+1)) {
+					$structure[] = $this->_rebuildStructure($path);
 				}
 			}
-
-			$nodes = $this->_breadthFirstSearch($nodes);
-			$path =	$this->_resolvePath($num_start, $num_stop, $nodes);
-			$structure = $this->_rebuildStructure($path);
 		}	
 		
 		return $structure;
 	}
 	
-	private function _createNode($num, $dir, $color=0) {
-		if(!isset($dir)) {
-			$conn = array_merge($this->_structure[$num]->in, $this->_structure[$num]->out);
-		}
-		else {
-			$conn = $this->_structure[$num]->$dir;
-		}
+	private function _findPaths($nodes, $distance, $dir) {
+		$paths = array();
 		
-		$node = array(
-			'color' => $color,
-			'distance' => 0,
-			'parent' => null,
-			'conn' => $conn,
-		);
-		
-		return $node;
-	}
-	
-	private function _breadthFirstSearch($nodes) {
-		foreach($nodes as $num=>$node) {
-			foreach($node['conn'] as $num_conn) {
-				if($nodes[$num_conn]['color'] === 0) {
-					$nodes[$num_conn]['color'] = 1;
-					$nodes[$num_conn]['distance']++;
-					$nodes[$num_conn]['parent'] = $num;
+		if($distance > 0) {
+			foreach($nodes as $num) {
+				if($this->_structure[$num]->distance === $distance) {
+					
+					if(!isset($dir)) {
+						$conns = array_merge($this->_structure[$num]->in, $this->_structure[$num]->out);
+						$conns = array_unique($conns);
+					}
+					else {
+						$conns = $this->_structure[$num]->$dir;
+					}
+					
+					foreach($this->_findPaths($conns, ($distance-1), $dir) as $path) {
+						$path[] = $num;
+					 	$paths[] = $path; 
+					}
 				}
 			}
-		
-			$nodes['num']['color'] = 2;
+		}
+		else {
+			$path = array();
+			foreach($nodes as $num) {
+				if($this->_structure[$num]->distance === 0) {
+					$path[] = $num;
+				}
+			}
+			$paths[] = $path;
 		}
 		
-		return $nodes;
-	}
-	
-	private function _resolvePath($num_start, $num_stop, $nodes) {
-		$path = array($num_stop);
-		
-		$parent = $num_stop;
-		
-		//print_r($nodes); die;
-		
-		while($parent !== $num_start) {
-			$parent = $nodes[$parent]['parent'];
-			echo $parent.' | ';
-			//$path[] = $parent;
-		}
-		die;
-		return $path;
+		return $paths;
 	}
 	
 	public function getTree($height, $dir = null) {
