@@ -8,7 +8,7 @@
                 <parameter name="network.multicast.address" value="235.1.1.1"/>
                 <parameter name="network.multicast.port" value="2424"/>
                 <parameter name="network.multicast.heartbeat" value="10"/>
-                <parameter name="security.key" value="YzPbVcHWCzoZdCZm"/>
+                <parameter name="security.key" value="0nQG1gUkgKHRZpjR"/>
             </parameters>
         </handler>
         <handler class="com.orientechnologies.orient.server.handler.OAutomaticBackup">
@@ -30,7 +30,7 @@
         </protocols>
         <listeners>
             <listener ip-address="0.0.0.0" port-range="2424-2430" protocol="distributed"/>
-            <listener ip-address="127.0.0.1" port-range="2480-2490" protocol="http">
+            <listener ip-address="0.0.0.0" port-range="2480-2490" protocol="http">
                 <commands>
                     <command pattern="GET|www GET|studio/ GET| GET|*.htm GET|*.html GET|*.xml GET|*.jpeg GET|*.jpg GET|*.png GET|*.gif GET|*.js GET|*.css GET|*.swf GET|*.ico GET|*.txt" implementation="com.orientechnologies.orient.server.network.protocol.http.command.get.OServerCommandGetStaticContent">
                         <parameters>
@@ -51,11 +51,10 @@
     <users>
         <user name="root" password="root" resources="*"/>
         <user name="guest" password="guest" resources="connect,server.listDatabases"/>
-        <user name="replicator" password="0B3C59E1E9243A10A2A0CCC65B75E514FBE4119640D7153A9CBBB28BEB049309" resources="database.passthrough"/>
+        <user name="replicator" password="4E86A93041A79A0040D001CCFA35F8D320D80E50ABEA4CB9332D5EC0BED1D54B" resources="database.passthrough"/>
     </users>
     <properties>
         <entry name="server.cache.file.static" value="false"/>
-        <entry name="network.http.sessionExpireTimeout" value="300"/>
         <entry name="log.console.level" value="info"/>
         <entry name="log.file.level" value="fine"/>
     </properties>

@@ -46,7 +46,7 @@
 				renderer = new Renderer(this, {
 					size: this._getSize()
 				}),
-				window = x$(global.window);
+				window_el = x$(global.window);
 				
 			that._el = x$(renderer.getEl());
 
@@ -55,7 +55,7 @@
 				that._el.first()
 			);
 			
-			that._addEvent(window, 'resize', function (event) {
+			that._addEvent(window_el, 'resize', function (event) {
 				that.signals.resized.dispatch(that._getSize());
 				that.signals.action_performed.dispatch();
 			});

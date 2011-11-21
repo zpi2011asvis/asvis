@@ -25,6 +25,7 @@
 			if (this._el) return;
 
 			var that = this,
+				window_el = x$(global.window),
 				root = data.root,
 				root_meta = data.nodes_meta[root];
 
@@ -44,12 +45,18 @@
 					connection_statuses: [
 						'Połączenie prawidłowe',
 						// TODO update %1 and %2 while templating
-						'Brak połączenia w węźle %1',
-						'Brak połączenia w węźle %2'
+						'Brak połączenia w węźle :1',
+						'Brak połączenia w węźle :2'
 					]
 				})
 			);
 			that._el = that._cel.find('#node_data');
+
+
+			that._addEvent(window_el, 'resize', function (event) {
+				that.signals.resized.dispatch(that._getSize());
+				that.signals.action_performed.dispatch();
+			});			
 		},
 	});
 

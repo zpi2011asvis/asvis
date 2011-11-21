@@ -15,7 +15,7 @@
 		var BASE = 50,				// base length
 			A360 = Math.PI * 2,
 			AUTO_FBA_MAX_NODES = 4000,
-			AUTO_FBA_WORK_TIME = 5000,
+			AUTO_FBA_WORK_TIME = 10000,
 			AUTO_FBA_DELAY = 500;
 
 		// properties

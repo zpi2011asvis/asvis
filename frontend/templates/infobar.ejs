@@ -44,14 +44,14 @@
 					<thead>
 						<tr>
 							<th>IP</th>
-							<th>CIDR</th>
+							<th>Maska</th>
 						</tr>
 					</thead>
 					<tbody>
 						<% root_pools.forEach(function (pool) { %>
 							<tr>
-								<td><span class="aspool_ip"><%= pool.network %></span></td>
-								<td><span class="aspool_cidr"><%= pool.netmask %></span></td>
+								<td><span class="aspool_net"><%= pool.network %></span></td>
+								<td><span class="aspool_mask"><%= pool.netmask %></span></td>
 							</tr>
 						<% }) %>
 					</tbody>

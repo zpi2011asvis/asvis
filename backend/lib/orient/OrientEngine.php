@@ -23,6 +23,9 @@ use asvis\lib\H as H;
 
 class OrientEngine implements Engine {
 	
+	const MAX_WHEREIN_SIZE = 500;
+
+
 	/**
 	* @var Congow\Orient\Foundation\Binding
 	*/
@@ -34,7 +37,7 @@ class OrientEngine implements Engine {
 	private $_client;
 	
 	public function __construct() {
-		$this->_client   = new Curl(true, 100); // 100s - timeout
+		$this->_client   = new Curl(true, 60); // 1 minute - timeout
 		$this->_orient   = new Binding(
 			$this->_client,
 			Config::get('orient_db_host'),

@@ -55,9 +55,9 @@
 	text-shadow: 0 1px 0 #000;
 	font-size: 14px;
 	background-color: #A60;
-	background-image: linear-gradient(bottom, #498ebc 0%, #9ce5ff 100%);
-	background-image: -webkit-linear-gradient(bottom, #498ebc 0%, #9ce5ff 100%);
-	background-image: -moz-linear-gradient(bottom, #498ebc 0%, #9ce5ff 100%);
+	background-image: linear-gradient(bottom, #498EBC 0%, #9CE5FF 100%);
+	background-image: -webkit-linear-gradient(bottom, #498EBC 0%, #9CE5FF 100%);
+	background-image: -moz-linear-gradient(bottom, #498EBC 0%, #9CE5FF 100%);
 }
 .section.l2 > h1 {
 	font-size: 12px;
@@ -72,7 +72,6 @@
 	padding: 5px 10px;
 }
 .section .scroll {
-	max-height: 200px;
 	overflow: auto;
 }
 
