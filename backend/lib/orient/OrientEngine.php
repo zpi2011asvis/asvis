@@ -24,6 +24,7 @@ use asvis\lib\H as H;
 class OrientEngine implements Engine {
 	
 	const MAX_WHEREIN_SIZE = 500;
+	const CURL_TIMEOUT = 60; // secons
 
 
 	/**
@@ -37,7 +38,7 @@ class OrientEngine implements Engine {
 	private $_client;
 	
 	public function __construct() {
-		$this->_client   = new Curl(true, 60); // 1 minute - timeout
+		$this->_client   = new Curl(true, self::CURL_TIMEOUT); // 1 minute - timeout
 		$this->_orient   = new Binding(
 			$this->_client,
 			Config::get('orient_db_host'),
@@ -75,7 +76,7 @@ class OrientEngine implements Engine {
 	public function nodesMeta($numbers) {
 		$nodes = array();
 
-		$query = "SELECT FROM ASNode WHERE num IN [" . implode(',', $numbers) . "]";
+		$query = "SELECT num, name, pools FROM ASNode WHERE num IN [" . implode(',', $numbers) . "]";
 		$fetchplan = "*:2 out:0 in:0";
 		
 		$json = $this->_orient->query($query, null, -1, $fetchplan);	
@@ -96,7 +97,7 @@ class OrientEngine implements Engine {
 				$network = $pool->network_as_string;
 				$netmask = $pool->netmask;
 
-				$pools[] = array('network' => $network, 'netmask' => $netmask);	
+				$pools[] = array('ip' => $network, 'mask' => $netmask);	
 			}
 
 			$nodes[$num] = array('name' => $name, 'pools' => $pools); 

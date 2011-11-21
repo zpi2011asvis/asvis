@@ -7,8 +7,8 @@
 	
 	var RemoteStore = Store.create(function RemoteStore(url, xhr_adapter, opts) {}, {
 		default_opts: merge(clone(Store.prototype.default_opts), {
-			buffer: true,		//merge array and object resources queries
-			buffer_delay: 10,	//ms
+			buffer: true,		// merge array and object resources queries
+			buffer_delay: 10,	// ms
 		}),
 		_url: null,
 		_xhr_adapter: null,

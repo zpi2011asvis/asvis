@@ -23,10 +23,13 @@
 		_mouse_pos: { x: 0, y: 0 }, //axis - x right, y down
 
 		_init: function _init() {
-			this.signals.resized = new Signal();
-			this.signals.scrolled = new Signal();
-			this.signals.dragged = new Signal();
-			this.signals.action_performed = new Signal();
+			this.signals = {
+				resized: new Signal(),
+				scrolled: new Signal(),
+				dragged: new Signal(),
+				action_performed: new Signal()
+			};
+			this._mouse_pos = { x: 0, y: 0 };
 		},
 
 		destroy: function destroy() {

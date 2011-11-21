@@ -17,8 +17,12 @@
 	InfobarWidget.View = Widget.View.create(function InfobarWidgetView() {}, {
 		signals: {
 		},
+		_els: null,
 
 		_init: function _init() {
+			this.signals = {
+			};
+			this._els = {};
 		},
 			
 		render: function render(data) {
@@ -51,13 +55,16 @@
 				})
 			);
 			that._el = that._cel.find('#node_data');
+	//		that._els.
 
 
 			that._addEvent(window_el, 'resize', function (event) {
-				that.signals.resized.dispatch(that._getSize());
-				that.signals.action_performed.dispatch();
+				that._resize();
 			});			
 		},
+
+		_resize: function _resize() {
+		}
 	});
 
 	exports.InfobarWidget = InfobarWidget;
