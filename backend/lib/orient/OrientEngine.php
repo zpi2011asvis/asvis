@@ -38,7 +38,7 @@ class OrientEngine implements Engine {
 	private $_client;
 	
 	public function __construct() {
-		$this->_client   = new Curl(false, self::CURL_TIMEOUT); // 1 minute - timeout
+		$this->_client   = new Curl(true, self::CURL_TIMEOUT); // 1 minute - timeout
 		$this->_orient   = new Binding(
 			$this->_client,
 			Config::get('orient_db_host'),
@@ -261,8 +261,8 @@ class OrientEngine implements Engine {
 		$query = "SELECT FROM ASConn WHERE {$field} = " . $rid;
 		$fetchplan = "*:1 ASConn.{$field}:0 ASNode.in:0 ASNode.out:0 ASNode.pools:0";
 		
-		$json = $this->_orient->query($query, null, -1, $fetchplan);
-		$result = json_decode($json->getBody());
+		$json = $this->_orient->query($query, null, -1, $fetchplan)->getBody();
+		$result = json_decode($json);
 		
 		if (!isset($result->result)) {
 // 			$result = $result->result;
