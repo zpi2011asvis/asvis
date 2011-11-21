@@ -6,13 +6,13 @@ use asvis\lib\Resource as Resource;
 use asvis\lib\Engine as Engine;
 
 /**
- * @uri /connections/meta
+ * @uri /connections/meta/{num_for}
  */
 class ConnectionsMetaResource extends Resource {
-	function post($request) {
+	function get($request, $num_for) {
 		$response = new Response($request);
 
-		$for_node = (int) $this->getParam('for_node');
+		$for_node = (int) $num_for;
 		$response->s404Unless($for_node, 'a');
 
 		$forJSON = $this->_engine->connectionsMeta($for_node);
