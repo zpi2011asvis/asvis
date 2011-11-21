@@ -3,7 +3,8 @@
 
 	var Widget = lib.widgets.Widget,
 		Signal = global.signals.Signal,
-		x = global.x$;
+		x = global.x$,
+		objectValues = global.es5ext.Object.plain.values.call;
 
 	var InfobarWidget = Widget.create(function InfobarWidget() {}, {
 		_init: function _init() {
@@ -23,11 +24,30 @@
 		render: function render(data) {
 			if (this._el) return;
 
-			var that = this;
-				
+			var that = this,
+				root = data.root,
+				root_meta = data.nodes_meta[root];
+
 			that._cel.html(
 				that._position,
-				that._tpls.render('infobar', data)
+				that._tpls.render('infobar', {
+					root: root,
+					depth: data.depth,
+					root_name: root_meta.name,
+					root_pools: root_meta.pools,
+					connections_count: {
+						both: 0,
+						up: 0,
+						down: 0
+					},
+					connections: data.connections_meta,
+					connection_statuses: [
+						'Połączenie prawidłowe',
+						// TODO update %1 and %2 while templating
+						'Brak połączenia w węźle %1',
+						'Brak połączenia w węźle %2'
+					]
+				})
 			);
 			that._el = that._cel.find('#node_data');
 		},

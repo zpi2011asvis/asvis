@@ -90,7 +90,7 @@ class OrientEngine implements Engine {
 			$pools = array();
 
 			foreach ($node->pools as $pool) {
-				$network = $pool->network;
+				$network = $pool->network_as_string;
 				$netmask = $pool->netmask;
 
 				$pools[] = array('network' => $network, 'netmask' => $netmask);	
@@ -194,7 +194,7 @@ class OrientEngine implements Engine {
 		$num_start = (int) $num_start;
 		$num_end = (int) $num_end;
 		
-		if($num_start < 0 || $num_end < 0) {
+		if ($num_start < 0 || $num_end < 0) {
 			return null;
 		}
 		
@@ -248,7 +248,7 @@ class OrientEngine implements Engine {
 		$field2 = ($dir === 'up' ? 'to' : 'from');
 
 		$query = "SELECT FROM ASConn WHERE {$field} = " . $rid;
-		$fetchplan = "*:2 {$field}:0";
+		$fetchplan = "*:1 ASConn.{$field}:0 ASNode.in:0 ASNode.out:0 ASNode.pools:0";
 		
 		$json = $this->_orient->query($query, null, -1, $fetchplan);	
 		$result = json_decode($json->getBody())->result;

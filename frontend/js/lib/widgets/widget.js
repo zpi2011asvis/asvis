@@ -108,7 +108,7 @@ this.app.lib.widgets = {};
 
 		destroy: function destroy() {
 			this._unsubsribeAllEvents();
-
+			
 			this._el && this._el.html('remove');
 			this._el = this._cel = null;
 		},

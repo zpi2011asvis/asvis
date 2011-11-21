@@ -38,6 +38,13 @@
 		if (_callers_number === 0) {
 			_hide();
 		}
+		else {
+			// if some is still waiting update label
+			// to the first one
+			i = 0;
+			while (Object.keys(_waiters)[i].length === 0) { i++ };
+			_el.html(MESSAGES[Object.keys(_waiters)[i]]);
+		}
 	};
 
 	var _open = function _open(sname) {

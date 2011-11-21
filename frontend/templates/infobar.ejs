@@ -1,8 +1,8 @@
 <section id="node_data" class="section l1">
-	<h1>Node <a href="/" class="as_num">#455</a></h1>
+	<h1>Node <a href="/node/<%= root %>/<%= depth %>" class="as_num">#<%= root %></a></h1>
 	<div class="content with_subs">
 		<div class="padded_content">
-			<p class="name">Nazwa: <span class="as_name">AS455</span></p>
+			<p class="name">Nazwa: <span class="as_name"><%= root_name %></span></p>
 		</div>
 
 		<section id="node_data_conns" class="section l2">
@@ -17,58 +17,28 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr class="ok up">
-							<td class="as_dir_up">UP</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_ok">OK</td>
-						</tr>
-						<tr class="ok up">
-							<td class="as_dir_up">UP</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_ok">OK</td>
-						</tr>
-						<tr class="ok up">
-							<td class="as_dir_up">UP</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_ok">OK</td>
-						</tr>
-						<tr class="ok up">
-							<td class="as_dir_up">UP</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_ok">OK</td>
-						</tr>
-						<tr class="ok down">
-							<td class="as_dir_down">DOWN</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_ok">OK</td>
-						</tr>
-						<tr class="ok down">
-							<td class="as_dir_down">DOWN</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_ok">OK</td>
-						</tr>
-						<tr class="ok down">
-							<td class="as_dir_down">DOWN</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_ok">OK</td>
-						</tr>
-						<tr class="bad up">
-							<td class="as_dir_up">UP</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_bad with_hint" title="Brak połączenia w węźle docelowym">BAD</td>
-						</tr>
-						<tr class="bad up">
-							<td class="as_dir_up">UP</td>
-							<td><span class="as_num">#348543</span></td>
-							<td class="as_conn_bad with_hint" title="Brak połączenia w węźle docelowym">BAD</td>
-						</tr>
+						<% connections.forEach(function (conn) { %>
+							<tr class="<%= conn.status === 0 ? 'ok' : 'bad' %> <%= conn.dir %>">
+								<td class="as_dir_<%= conn.dir %>"><%= conn.dir %></td>
+								<td>
+									<a href="/node/<%= conn.with %>/<%= depth %>" class="as_num">
+										#<%= conn.with %>
+									</a>
+								</td>
+								<td
+									class="as_conn_<%= conn.status === 0 ? 'ok' : 'bad' %>"
+									title="<%= connection_statuses[conn.status] %>">
+									<%= conn.status === 0 ? 'ok' : 'bad' %>
+								</td>
+							</tr>
+						<% }) %>
 					</tbody>
 				</table>
 			</div>
 		</section>
 
 		<section id="node_data_pools" class="section l2">
-			<h1>Pule adresów (<span class="count">23</span>)</h1>
+			<h1>Pule adresów (<span class="count"><%= root_pools.length %></span>)</h1>
 			<div class="content scroll">
 				<table class="std">
 					<thead>
@@ -78,34 +48,12 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td><span class="aspool_ip">134.35.53.34</span></td>
-							<td><span class="aspool_cidr">4</span></td>
-						</tr>
-						<tr>
-							<td><span class="aspool_ip">134.35.53.34</span></td>
-							<td><span class="aspool_cidr">4</span></td>
-						</tr>
-						<tr>
-							<td><span class="aspool_ip">134.35.53.34</span></td>
-							<td><span class="aspool_cidr">4</span></td>
-						</tr>
-						<tr>
-							<td><span class="aspool_ip">134.35.53.34</span></td>
-							<td><span class="aspool_cidr">4</span></td>
-						</tr>
-						<tr>
-							<td><span class="aspool_ip">134.35.53.34</span></td>
-							<td><span class="aspool_cidr">4</span></td>
-						</tr>
-						<tr>
-							<td><span class="aspool_ip">134.35.53.34</span></td>
-							<td><span class="aspool_cidr">4</span></td>
-						</tr>
-						<tr>
-							<td><span class="aspool_ip">134.35.53.34</span></td>
-							<td><span class="aspool_cidr">4</span></td>
-						</tr>
+						<% root_pools.forEach(function (pool) { %>
+							<tr>
+								<td><span class="aspool_ip"><%= pool.network %></span></td>
+								<td><span class="aspool_cidr"><%= pool.netmask %></span></td>
+							</tr>
+						<% }) %>
 					</tbody>
 				</table>
 			</div>

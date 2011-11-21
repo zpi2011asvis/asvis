@@ -39,7 +39,9 @@
 			},
 
 			destroy: function destroy() {
-				this._widgets.forEach(invoke('destroy'));
+				// with cloning because of splicing in _remove()
+				// which is done together with this
+				this._widgets.slice().forEach(invoke('destroy'));
 				this._widgets = [];
 			},
 
@@ -113,23 +115,26 @@
 					that.render();
 
 					return deferred.all(
-						that.db.get('nodes/meta', {
-							numbers: graph_data.weight_order
-						}),
 						that.db.get('connections/meta', {
 							for_node: number
+						}),
+						that.db.get('nodes/meta', {
+							numbers: graph_data.weight_order
 						})
 					);
 				})
 				(function routerNode_promise2(data) {
-					var nodes_meta = data[0],
-						conns_meta = data[1];
+					var conns_meta = data[0],
+						nodes_meta = data[1];
 
 					var w = widgets.InfobarWidget.new(
 						that._container_el.find('#sidebar')					
 					);
-					w.set('node_meta', nodes_meta);
+					// TODO add batch set (with object)
+					w.set('nodes_meta', nodes_meta);
 					w.set('connections_meta', conns_meta);
+					w.set('root', number);
+					w.set('depth', depth);
 					
 					that.widgets.add(w);
 					that.render();
