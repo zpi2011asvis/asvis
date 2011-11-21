@@ -1,16 +1,25 @@
 (function (exports, global, lib) {
 	'use strict';
 
-	var XHRAdapterXUI = function XHRAdapterXUI(url, opts) {
-		var d = global.deferred();
+	var toQueryString = global.util.toQueryString;
 
-		//TODO data object to query params
+	var XHRAdapterXUI = function XHRAdapterXUI(url, opts) {
+		var d = global.deferred(),
+			data;
+	
+		// is object
+		if (opts.params === Object(opts.params)) {
+			data = toQueryString(opts.params);
+		}
+		else {
+			data = opts.params;
+		}
 	
 		global.x$().xhr(url, {
 			async: true,
 			headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
 			method: opts.method,
-			data: opts.params,
+			data: data,
 			callback: function callback() {
 				d.resolve(this.responseText);
 			},

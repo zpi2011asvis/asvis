@@ -14,7 +14,7 @@ class StructureGraphResource extends Resource {
 		
 		$response = new Response($request);
 		
-		$response->s404Unless(!is_null($forJSON));
+		$response->s404If(is_null($forJSON), 'a');
 		$response->json($forJSON);
 		return $response;
 	}
@@ -29,7 +29,7 @@ class StructureTreeResource extends Resource {
 		
 		$response = new Response($request);
 		
-		$response->s404Unless(!is_null($forJSON));
+		$response->s404If(is_null($forJSON), 'a');
 		$response->json($forJSON);
 		return $response;
 	}
@@ -44,7 +44,7 @@ class StructurePathResource extends Resource {
 		
 		$response = new Response($request);
 		
-		$response->s404Unless(!is_null($forJSON));
+		$response->s404If(is_null($forJSON), 'a');
 		$response->json($forJSON);
 		return $response;
 	}

@@ -15,7 +15,7 @@
 					var sprite = T.ImageUtils.loadTexture(app.opts.root + 'img/square_1.png'),
 						material = new T.ParticleBasicMaterial({
 							color: 0x77FF77,
-							size: 8,
+							size: 6,
 							sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
 							map: sprite
 						});
@@ -45,6 +45,7 @@
 			// state -----------------------------------------------------------
 			_started = false,
 			_last_action = 0, // last action timestamp
+			_long_delay = 0,
 			_refreshing_interval = null,
 			_camera_man = null;
 
@@ -59,6 +60,13 @@
 		 * Publics -------------------------------------------------------------
 		 */
 
+		this.destroy = function destroy() {
+			this.stop();
+			_vizir && _vizir.destroy();
+			_renderer = _scene = _control_object = _graph_object = null
+			_graph_objects = _vizir = _camera_man = widget_view = null;
+		};
+
 		this.getEl = function getEl() {
 			return _renderer.domElement;
 		};
@@ -69,7 +77,8 @@
 
 			if (!_refreshing_interval) {
 				_refreshing_interval = global.setInterval(function () {
-					if (_last_action + REFRESHING_STOP.DELAY < +new Date()) {
+					// if long delay is active - count with it, otherwise with standard one
+					if (_last_action + (_long_delay || REFRESHING_STOP.DELAY) < +new Date()) {
 						that.stop();
 					}					
 				}, REFRESHING_STOP.CHECK_INTERVAL);
@@ -84,8 +93,22 @@
 			_refresh();
 		};
 
+		this.startLong = function startLong(stop_delay) {
+			_long_delay = stop_delay || 1e5; // if delay not given set 1e8 (~1666 minutes)
+			this.start();
+		};
+
+		/*
+		 * Cancel long run state and continue normal one
+		 */
+		this.stopLong = function stopLong() {
+			_long_delay = 0;
+			_last_action = +new Date();
+		};
+
 		this.stop = function stop() {
 			global.DEBUG2 && console.log('Stop rendering');
+			_long_delay = 0;
 			_started = false;
 			global.clearInterval(_refreshing_interval);
 			_refreshing_interval = null;
@@ -98,17 +121,14 @@
 		 * should be rendered (graph is at once a structure)
 		 */
 		this.setStructure = function setStructure(graph, root, as_structure) {
-			var was_started = _started,
-				verts_geometry = new T.Geometry(),
+			var verts_geometry = new T.Geometry(),
 				edges_geometry = new T.Geometry(),
 				psystem = new T.ParticleSystem(verts_geometry, PARTICLE.material),
 				line = new T.Line(edges_geometry, LINE.material),
 				vertices,
-				edges;
+				edges,
+				i, il;
 
-			// stop rendering for the time needed to recalculate everything
-			this.stop();
-	
 			// for FBA, TODO - only set by some event fired by FBA
 			verts_geometry.dynamic = true;
 			edges_geometry.dynamic = true;
@@ -122,12 +142,12 @@
 			_vizir.clear().setGraph(graph).setRoot(root);
 
 			vertices = _vizir.getVertices();
-			for (var i = 0, il = vertices.length; i < il; i++) {
+			for (i = 0, il = vertices.length; i < il; i++) {
 				verts_geometry.vertices.push(vertices[i]);
 			}
 
 			edges = _vizir.getEdges();
-			for (var i = 0, il = edges.length; i < il; i++) {
+			for (i = 0, il = edges.length; i < il; i++) {
 				edges_geometry.vertices.push(edges[i]);
 			}
 
@@ -139,10 +159,6 @@
 			_graph_object.add(psystem);
 			_graph_object.add(line);
 			_graph_objects.push(psystem, line);
-
-			if (was_started) {
-				this.start();
-			}
 		};
 
 
@@ -177,7 +193,9 @@
 				line_geometry = new T.Geometry(),
 				circle_geometry = new T.Geometry(),
 				line = new T.Line(line_geometry, line_material),
-				circle = new T.Line(circle_geometry, line_material);
+				circle = new T.Line(circle_geometry, line_material),
+				control_obj,
+				i, il;
 	
 			// x, y, z axes
 			line_geometry.vertices.push(
@@ -188,7 +206,7 @@
 			line.type = T.Lines;
 	
 			// flat elipse
-			for (var i = 0, l = Math.PI * 2; i < l + 0.1; i += 0.1) {
+			for (i = 0, il = Math.PI * 2 + 0.1; i < il; i += 0.1) {
 				circle_geometry.vertices.push(_nver(
 					Math.sin(i) * 400,
 					0,
@@ -196,12 +214,12 @@
 				));
 			}
 			
-			var obj = new THREE.Object3D();
-			obj.add(line);
-			obj.add(circle);
-			_scene.add(obj);
+			control_obj = new THREE.Object3D();
+			control_obj.add(line);
+			control_obj.add(circle);
+			_scene.add(control_obj);
 			
-			_control_object = obj;
+			_control_object = control_obj;
 		};
 
 		_initGraphObject = function _initGraphObject() {
@@ -255,6 +273,12 @@
 			else {
 				_camera_man.rotate(change);
 			}
+		});
+		_vizir.signals.started.add(function () {
+			that.startLong();
+		});
+		_vizir.signals.ended.add(function () {
+			that.stopLong();
 		});
 	};
 

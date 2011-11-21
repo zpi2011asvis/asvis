@@ -10,8 +10,16 @@
 		_method: 'get',
 	});
 
+	var NodesMetaResource = Resource.create(function NodesMetaResource() {}, {
+		name: 'nodes/meta',
+		_url: 'nodes/meta',
+		_cache: true,
+		_method: 'post'
+	});
+
 	exports.nodes = {
-		NodesFindResource: NodesFindResource
+		NodesFindResource: NodesFindResource,
+		NodesMetaResource: NodesMetaResource
 	};
 
 }.call({}, this.app.lib.resources, this, this.app.lib));

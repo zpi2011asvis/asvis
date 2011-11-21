@@ -25,9 +25,13 @@ class NodesMetaResource extends Resource {
 	function post($request) {
 		$response = new Response($request);
 
-		$numbers = json_decode($this->getParam('numbers', '[]'));
-		$response->json($this->_engine->nodesMeta($numbers));
-		
+		$numbers = json_decode($this->getParam('numbers'));
+		$response->s404Unless($numbers, 'a');
+
+		$forJSON = $this->_engine->nodesMeta($numbers);
+		$response->s404If(is_null($forJSON), 'a');
+
+		$response->json($forJSON);
 		return $response;
 	}
 }

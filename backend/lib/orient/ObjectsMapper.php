@@ -28,11 +28,13 @@ class ObjectsMapper {
 		
 // 		$m = microtime(true);
 		$this->_parseNode($this->_json);
-// 		echo (microtime(true) - $m) ."\n";
+// 		echo (microtime(true) - $m) ." - parseNode time\n";
+// 		$m = microtime(true);
 		$this->_resolveNodes();		
-// 		echo (microtime(true) - $m) ."\n";
+// 		echo (microtime(true) - $m) ." - resolveNodes time\n";
+// 		$m = microtime(true);
 		$this->_calculateDistances();
-// 		echo (microtime(true) - $m) ."\n";
+// 		echo (microtime(true) - $m) ." - calculateDistances time\n";
 		
 		$this->_isParsed = true;
 		

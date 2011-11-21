@@ -23,7 +23,7 @@
 			_view_height,
 			_lat = 0,			// (-MAX_LAT, MAX_LAT)
 			_lng = 0,			// (0, PI*2)
-			_distance = 500,	// distance from _target to _eye
+			_distance = 750,	// distance from _target to _eye
 			// cache -----------------------------------------------------------
 			_eye;				// cached eye position on sphere
 

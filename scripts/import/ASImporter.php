@@ -284,7 +284,7 @@ class ASImporter {
 		$outList	= implode(',', $out);
 		$poolList	= implode(',', $pools);
 	
-		$query = "UPDATE {$asNodeRID} SET in = [{$inList}], out = [{$outList}] pools = [{$poolList}]";
+		$query = "UPDATE {$asNodeRID} SET in = [{$inList}], out = [{$outList}], pools = [{$poolList}]";
 // 		echo PHP_EOL.$query;
 	
 		try {

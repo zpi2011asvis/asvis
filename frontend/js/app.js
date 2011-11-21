@@ -4,17 +4,25 @@
 	var lib = {},
 		x = global.x$,
 		invoke = global.es5ext.Function.invoke,
-		Signal = global.signals.Signal;
+		Signal = global.signals.Signal,
+		deffered = global.deferred;
 
 	var app = exports.app = {
 		lib: lib,
 		opts: null,
 		_container_el: null,
-		signals : {
+		signals: {
+			// all tasks connected with XHR
 			data_loading: {
 				started: new Signal(),
 				ended: new Signal()
 			},
+			// all tasks connected with recalculating nodes positions
+			graph_rendering: {
+				started: new Signal(),
+				ended: new Signal()
+			},
+			// fired when data on server changed (new import came)
 			data_reseted: new Signal()
 		},
 
@@ -57,7 +65,8 @@
 			this._addRoutes();
 
 			lib.Flash.init({
-				data_loading: this.signals.data_loading
+				data_loading: this.signals.data_loading,
+				graph_rendering: this.signals.graph_rendering,
 			}, x('#flash .message'));
 
 			lib.Templates.load(x('script.template'));
@@ -71,10 +80,11 @@
 			dispatcher.get('/', function routerRoot() {
 				var w = widgets.StartFormWidget.new(that._container_el);
 
-				w.signals.submitted.add(function (params) {
+				w.signals.submitted.add(function routerRoot_onSubmit(params) {
 					that.dispatcher.get('/node/{number}/{depth}', params);
 				});
 
+				that.widgets.destroy();
 				that.widgets.add(w);
 				that.render();
 			});
@@ -82,20 +92,48 @@
 			dispatcher.get('/node/{number}/{depth}', function routerNode(request) {
 				var number = request.get.number,
 					depth = request.get.depth;
+	
+				// TODO remove in the future - should modify current graph
+				// and widget should manage what to do with new data
+				that.widgets.destroy();
+	
 
 				that.db.get('structure/graph', {
 					number: number,
 					depth: depth
 				})
-				(function (data) {
+				(function routerNode_promise1(graph_data) {
 					var w = widgets.GraphWidget.new(
 						that._container_el.find('#graph_renderer')
 					);
-					w.set('graph', data);
+					w.set('graph', graph_data);
 					w.set('root', number);
 
 					that.widgets.add(w);
 					that.render();
+
+					return deferred.all(
+						that.db.get('nodes/meta', {
+							numbers: graph_data.weight_order
+						}),
+						that.db.get('connections/meta', {
+							for_node: number
+						})
+					);
+				})
+				(function routerNode_promise2(data) {
+					var nodes_meta = data[0],
+						conns_meta = data[1];
+
+					var w = widgets.InfobarWidget.new(
+						that._container_el.find('#sidebar')					
+					);
+					w.set('node_meta', nodes_meta);
+					w.set('connections_meta', conns_meta);
+					
+					that.widgets.add(w);
+					that.render();
+
 				}).end(that.err);
 			});
 		},
@@ -108,6 +146,8 @@
 				stores.RemoteStore.new('/backend', app.lib.XHRAdapterXUI)
 			], [
 				resources.nodes.NodesFindResource.new(),
+				resources.nodes.NodesMetaResource.new(),
+				resources.connections.ConnectionsMetaResource.new(),
 				resources.structures.StructureGraphResource.new()
 			]);
 		},
