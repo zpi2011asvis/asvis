@@ -6,11 +6,11 @@ var http = require('http'),
 var nums1 = [],
 	nums2 = [];
 for (var i = 0; i < 10000;) {
-	i += ~~(Math.random() * 5);
+	i += ~~(Math.random() * 50);
 	nums1.push(i);
 }
 for (var i = 0; i < 10000;) {
-	i += ~~(Math.random() * 10);
+	i += ~~(Math.random() * 100);
 	nums2.push(i);
 }
 
@@ -18,7 +18,7 @@ var queries = [
 	{
 		sql: 'SELECT FROM ASNode WHERE num = 6',
 		limit: -1,
-		fp: '*:4 ASNode.pools:0',
+		fp: '*:2 ASNode.pools:0',
 	},
 	{
 		sql: 'SELECT FROM ASConn WHERE to = #5:1',
@@ -28,7 +28,7 @@ var queries = [
 	{
 		sql: 'SELECT FROM ASNode WHERE num = 3',
 		limit: -1,
-		fp: '*:4 ASNode.pools:0',
+		fp: '*:2 ASNode.pools:0',
 	},
 	{
 		sql: 'SELECT FROM ASNode WHERE num IN [' + nums2.join(',') + ']',
@@ -37,12 +37,12 @@ var queries = [
 	{
 		sql: 'SELECT FROM ASNode WHERE num = 1456',
 		limit: -1,
-		fp: '*:5 ASNode.pools:0',
+		fp: '*:2 ASNode.pools:0',
 	},
 	{
 		sql: 'SELECT FROM ASNode WHERE num = 699',
 		limit: -1,
-		fp: '*:5 ASNode.pools:0',
+		fp: '*:2 ASNode.pools:0',
 	},
 	{
 		sql: 'SELECT FROM ASNode WHERE num IN [' + nums1.join(',') + ']',
@@ -100,6 +100,7 @@ var query = function query() {
 					console.log('ERROR while parsing JSON: ' + e.message);
 				}
 				console.log('TIME: ' + (new Date() - start));
+				console.log(body);
 			});
 		}
 	);
@@ -107,6 +108,7 @@ var query = function query() {
 	req.on('error', function (e) {
 		console.log('ERROR: ' + e.message);
 	});
+	req.setSocketKeepAlive(true);
 
 	req.end();
 };
