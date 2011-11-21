@@ -6,7 +6,7 @@ object(Congow\Orient\Http\Response)#11 (5) {
     ["Pragma"]=>
     string(8) "no-cache"
     ["Date"]=>
-    string(28) "Mon Nov 21 13:36:13 CET 2011"
+    string(28) "Mon Nov 21 13:39:52 CET 2011"
     ["Content-Type"]=>
     string(31) "application/json; charset=utf-8"
     ["Server"]=>
@@ -14,12 +14,12 @@ object(Congow\Orient\Http\Response)#11 (5) {
     ["Connection"]=>
     string(10) "Keep-Alive"
     ["Set-Cookie"]=>
-    string(64) "OSESSIONID=OS1321878973740-6302230524215616937; Path=/; HttpOnly"
+    string(63) "OSESSIONID=OS13218791929492127772639681550716; Path=/; HttpOnly"
     ["Content-Length"]=>
     string(4) "2318"
   }
   ["raw_headers":protected]=>
-  string(36429) "{ "schema": {
+  string(36428) "{ "schema": {
     "name": "ASNode", 
     "properties":{
       "num":{
@@ -88,11 +88,11 @@ object(Congow\Orient\Http\Response)#11 (5) {
 }HTTP/1.1 200 OK
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
-Date: Mon Nov 21 13:36:13 CET 2011
+Date: Mon Nov 21 13:39:52 CET 2011
 Content-Type: application/json; charset=utf-8
 Server: OrientDB Server v.1.0rc7-SNAPSHOT (build @BUILD@)
 Connection: Keep-Alive
-Set-Cookie: OSESSIONID=OS1321878973740-6302230524215616937; Path=/; HttpOnly
+Set-Cookie: OSESSIONID=OS13218791929492127772639681550716; Path=/; HttpOnly
 Content-Length: 2318"
   ["status_code":protected]=>
   int(0)
@@ -275,4 +275,5 @@ Content-Length: 2318"
   ["protocol":protected]=>
   string(1) "{"
 }
+JSON -- RESULT -- SPACING -----------------
 NULL

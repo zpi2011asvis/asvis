@@ -268,6 +268,7 @@ class OrientEngine implements Engine {
 // 			$result = $result->result;
 			
 			var_dump($json);
+			echo('JSON -- RESULT -- SPACING -----------------'. PHP_EOL);
 			var_dump($result);
 			die(1);
 		} else {
