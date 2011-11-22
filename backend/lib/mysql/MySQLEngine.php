@@ -74,11 +74,11 @@ class MySQLEngine implements Engine {
 		);
 	}
 	
-	public function structureTree($nodeNum, $depth) {
+	public function structureTree($nodeNum, $depth, $dir) {
 		
 	}
 	
-	public function structurePath($num_start, $num_end) {
+	public function structurePath($num_start, $num_end, $dir) {
 	
 	}
 	

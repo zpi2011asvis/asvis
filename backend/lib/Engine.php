@@ -48,7 +48,7 @@ interface Engine {
 	 * @param int $nodeNum
 	 * @param int $height
 	 */
-	public function structureTree($nodeNum, $height);
+	public function structureTree($nodeNum, $height, $dir);
 	
 	/**
 	 * Returns array of nodes and their connections representing 
@@ -57,6 +57,6 @@ interface Engine {
 	 * @param int $num_start
 	 * @param int $num_end
 	 */
-	public function structurePath($num_start, $num_end);
+	public function structurePath($num_start, $num_end, $dir);
 	
 }
