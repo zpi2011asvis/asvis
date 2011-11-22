@@ -54,7 +54,7 @@ class OrientEngine implements Engine {
 	 * @see asvis\lib.Engine::nodesFind()
 	 */
 	public function nodesFind($num) {
-		$result = $this->_orient->query("SELECT FROM ASNode WHERE num_as_string LIKE '{$num}'")->getBody();
+		$result = $this->_orient->query("SELECT FROM ASNode WHERE num_as_string LIKE '{$num}%'")->getBody();
 		$result = json_decode($result);
 		$result = $result->result;
 		
@@ -163,10 +163,14 @@ class OrientEngine implements Engine {
 	 * (non-PHPdoc)
 	 * @see asvis\lib.Engine::structureTree()
 	 */
-	public function structureTree($nodeNum, $height) {
+	public function structureTree($nodeNum, $height, $dir) {
 	
 		$nodeNum = (int) $nodeNum;
 		$height = (int) $height;
+		
+		if($dir !== 'in' && $dir !== 'out' && $dir !== 'both') {
+			return null;
+		} 
 		
 		if($nodeNum < 0 || $height < 0 || $height > Config::get('orient_max_fetch_depth')) {
 			return null;
@@ -190,13 +194,17 @@ class OrientEngine implements Engine {
 		
 		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
 		
-		return $graphAlgorithms->getTree($height);
+		return $graphAlgorithms->getTree($height, $dir);
 	}
 	
-	public function structurePath($num_start, $num_end) {
+	public function structurePath($num_start, $num_end, $dir) {
 	
 		$num_start = (int) $num_start;
 		$num_end = (int) $num_end;
+		
+		if($dir !== 'in' && $dir !== 'out' && $dir !== 'both') {
+			return null;
+		} 
 		
 		if ($num_start < 0 || $num_end < 0) {
 			return null;
@@ -222,7 +230,7 @@ class OrientEngine implements Engine {
 		
 			$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
 		
-			$structure = $graphAlgorithms->getShortestPath($num_end);
+			$structure = $graphAlgorithms->getShortestPath($num_end, $dir);
 			
 			$fp++;
 		}

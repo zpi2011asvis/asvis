@@ -21,11 +21,11 @@ class StructureGraphResource extends Resource {
 }
 
 /**
- * @uri /structure/tree/{number}/{height}
+ * @uri /structure/tree/{number}/{height}/{dir}
  */
 class StructureTreeResource extends Resource {
-	function get($request, $number, $height) {		
-		$forJSON = $this->_engine->structureTree((int) $number, (int) $height);
+	function get($request, $number, $height, $dir) {		
+		$forJSON = $this->_engine->structureTree((int) $number, (int) $height, $dir);
 		
 		$response = new Response($request);
 		
@@ -36,11 +36,11 @@ class StructureTreeResource extends Resource {
 }
 
 /**
- * @uri /structure/path/{num_start}/{num_end}
+ * @uri /structure/path/{num_start}/{num_end}/{dir}
  */
 class StructurePathResource extends Resource {
-	function get($request, $num_start, $num_end) {		
-		$forJSON = $this->_engine->structurePath((int) $num_start, (int) $num_end);
+	function get($request, $num_start, $num_end, $dir) {		
+		$forJSON = $this->_engine->structurePath((int) $num_start, (int) $num_end, $dir);
 		
 		$response = new Response($request);
 		
