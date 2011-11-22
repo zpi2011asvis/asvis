@@ -1,3 +1,50 @@
+$response = $this->_orient->query($query, null, -1, $fetchplan);
+$json = $response->getBody();
+$result = json_decode($json);
+
+if (!isset($result->result)) {
+	echo('Congow - RESPONSE -----------------'. PHP_EOL);
+	var_dump($GLOBALS['congow_response']);
+	echo('RESPONSE -----------------'. PHP_EOL);
+	var_dump($response);
+	echo('JSON     -----------------'. PHP_EOL);
+	var_dump($json);
+	echo('RESULT   -----------------'. PHP_EOL);
+	var_dump($result);
+	die(1);
+} else {
+	$result = $result->result;
+}
+
+
+ /**
+     * Executes a Curl.
+     *
+     * @param   String $method
+     * @param   String $location
+     * @return  Response
+     * @throws  Inconsistent
+     */
+    public function execute($method, $location)
+    {
+        curl_setopt($this->client, CURLOPT_URL, $location);
+
+        $response = curl_exec($this->client);
+        
+		$GLOBALS['congow_response'] = $response;
+
+        if (!$this->reuseHandle) {
+            $this->restart();
+        }
+
+        if (!$response) {
+            throw new VoidResponse(__CLASS__, $location);
+        }
+
+        return new Response($response);
+    }
+
+
 Congow - RESPONSE -----------------
 string(41068) "{ "schema": {
     "name": "ASNode", 

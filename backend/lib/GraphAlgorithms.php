@@ -14,7 +14,7 @@ class GraphAlgorithms {
 		$this->_distance_order = $graph['distance_order'];
 	}
 	
-	public function getShortestPath($num_end, $dir=null) {
+	public function getShortestPath($num_end, $dir) {
 		$structure = null;
 		
 		if(array_key_exists($num_end, $this->_structure)) {
@@ -41,7 +41,7 @@ class GraphAlgorithms {
 			foreach($nodes as $num) {
 				if($this->_structure[$num]->distance === $distance) {
 					
-					if(!isset($dir)) {
+					if($dir === 'both') {
 						$conns = array_merge($this->_structure[$num]->in, $this->_structure[$num]->out);
 						$conns = array_unique($conns);
 					}
@@ -69,7 +69,7 @@ class GraphAlgorithms {
 		return $paths;
 	}
 	
-	public function getTree($height, $dir = null) {
+	public function getTree($height, $dir) {
 		$leafs = $this->_findLeafs($height+1);
 		$conns = $this->_findConnected($leafs, $dir);
 		
@@ -98,7 +98,7 @@ class GraphAlgorithms {
 				$conns_up = array();
 				$nums_up = array();
 				
-				if(!isset($dir)) {
+				if($dir === 'both') {
 					$nums_up = array_merge($this->_structure[$num]->in, $this->_structure[$num]->out);
 				}
 				else {

@@ -6,12 +6,16 @@
 		</div>
 
 		<section id="node_data_conns" class="section l2">
-			<h1>Połączenia (<span class="count">235 &ndash; U:123, D:145</span>)</h1>
+			<h1>Połączenia 
+				(<span class="count"><%= connections_count.total %> &ndash;
+					B:<%= connections_count.both %>,
+					U:<%= connections_count.up %>,
+					D:<%= connections_count.down %></span>)</h1>
 			<div class="content scroll">
 				<table class="std">
 					<thead>
 						<tr>
-							<th>U/D</th>
+							<th>B/U/D</th>
 							<th>Do</th>
 							<th>Stan</th>
 						</tr>

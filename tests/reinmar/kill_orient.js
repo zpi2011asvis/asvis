@@ -3,14 +3,16 @@
 var http = require('http'),
 	escape = require('querystring').escape;
 
+http.globalAgent.maxSockets = 1;
+
 var nums1 = [],
 	nums2 = [];
 for (var i = 0; i < 10000;) {
-	i += ~~(Math.random() * 5);
+	i += ~~(Math.random() * 500);
 	nums1.push(i);
 }
 for (var i = 0; i < 10000;) {
-	i += ~~(Math.random() * 10);
+	i += ~~(Math.random() * 1000);
 	nums2.push(i);
 }
 
@@ -18,7 +20,7 @@ var queries = [
 	{
 		sql: 'SELECT FROM ASNode WHERE num = 6',
 		limit: -1,
-		fp: '*:4 ASNode.pools:0',
+		fp: '*:2 ASNode.pools:0',
 	},
 	{
 		sql: 'SELECT FROM ASConn WHERE to = #5:1',
@@ -28,7 +30,7 @@ var queries = [
 	{
 		sql: 'SELECT FROM ASNode WHERE num = 3',
 		limit: -1,
-		fp: '*:4 ASNode.pools:0',
+		fp: '*:2 ASNode.pools:0',
 	},
 	{
 		sql: 'SELECT FROM ASNode WHERE num IN [' + nums2.join(',') + ']',
@@ -37,12 +39,12 @@ var queries = [
 	{
 		sql: 'SELECT FROM ASNode WHERE num = 1456',
 		limit: -1,
-		fp: '*:5 ASNode.pools:0',
+		fp: '*:2 ASNode.pools:0',
 	},
 	{
 		sql: 'SELECT FROM ASNode WHERE num = 699',
 		limit: -1,
-		fp: '*:5 ASNode.pools:0',
+		fp: '*:2 ASNode.pools:0',
 	},
 	{
 		sql: 'SELECT FROM ASNode WHERE num IN [' + nums1.join(',') + ']',
@@ -59,50 +61,59 @@ var makePath = function (query) {
 	return path;
 };
 
-for (var i = 0; i < queries.length; ++i) {
-	(function () {
-		var path = makePath(queries[i]);
-		//var path = makePath(queries[~~(Math.random() * queries.length)]);
-		var start = +new Date();
+var i = 0;
 
-		var req = http.request(
-			{
-				host:		'localhost',
-				port:		2480,
-				method:		'GET',
-				path:		path,
-				auth:		'admin:admin'
-			},
-			function (res) {
-				var body = '';
+var query = function query() {
+	var path = makePath(queries[i]);
+	//var path = makePath(queries[~~(Math.random() * queries.length)]);
+	var start = +new Date();
 
-				res.setEncoding('utf8');
-				res.on('data', function (chunk) {
-					body += chunk;
-				});
-				res.on('end', function () {
-					console.log('----------------------------------------------');
-					console.log('QUERY: ' + path.slice(0, 150));
-					console.log('STATUS: ' + res.statusCode);
-					//console.log('HEADERS: ' + JSON.stringify(res.headers));
-					console.log('BODY.LENGTH: ' + body.length);
-					try {
-						JSON.parse(body);
-						console.log('JSON: properly formatted');
-					}
-					catch (e) {
-						console.log('ERROR while parsing JSON: ' + e.message);
-					}
-					console.log('TIME: ' + (new Date() - start));
-				});
+	var req = http.request(
+		{
+			host:		'localhost',
+			port:		2480,
+			method:		'GET',
+			path:		path,
+			auth:		'admin:admin',
+			headers: {
+				connection: 'keep-alive'
 			}
-		);
+		},
+		function (res) {
+			var body = '';
 
-		req.on('error', function (e) {
-			console.log('ERROR: ' + e.message);
-		});
+			res.setEncoding('utf8');
+			res.on('data', function (chunk) {
+				body += chunk;
+			});
+			res.on('end', function () {
+				if (++i < queries.length) query();
 
-		req.end();
-	}());
-}
+				console.log('----------------------------------------------');
+				console.log('QUERY: ' + path.slice(0, 150));
+				console.log('STATUS: ' + res.statusCode);
+				console.log('HEADERS: ' + JSON.stringify(res.headers));
+				console.log('BODY.LENGTH: ' + body.length);
+				try {
+					JSON.parse(body);
+					console.log('JSON: properly formatted');
+				}
+				catch (e) {
+					console.log('ERROR while parsing JSON: ' + e.message);
+				}
+				console.log('TIME: ' + (new Date() - start));
+				console.log(body);
+			});
+		}
+	);
+
+	req.on('error', function (e) {
+		console.log('ERROR: ' + e.message);
+	});
+	req.setSocketKeepAlive(true);
+
+	req.end();
+};
+
+query();
 
