@@ -6,20 +6,20 @@ class Config {
 	private static $opts = array(
 		'env'					=> 'dev', //or 'prod'
 
-		'frontend_base_uri'		=> '/frontend',
-		'backend_base_uri'		=> '/backend',
+		'frontend_base_uri'			=> '/frontend',
+		'backend_base_uri'			=> '/backend',
 		
-		'mysql_db_host'			=> 'localhost',
-		'mysql_db_name'			=> 'database_name',
-		'mysql_db_user'			=> 'username',
-		'mysql_db_pass'			=> 'password',
+		'mysql_db_host'				=> 'localhost',
+		'mysql_db_name'				=> 'database_name',
+		'mysql_db_user'				=> 'username',
+		'mysql_db_pass'				=> 'password',
 
-		'orient_db_host'		=> 'localhost',
-		'orient_db_name'		=> 'asvis',
-		'orient_db_user'		=> 'admin',
-		'orient_db_pass'		=> 'admin',
+		'orient_db_host'			=> 'localhost',
+		'orient_db_name'			=> 'asvis',
+		'orient_db_user'			=> 'admin',
+		'orient_db_pass'			=> 'admin',
 
-		'orient_max_fetch_depth'=> 15,
+		'orient_max_fetch_depth'	=> 8,
 	);
 
 	public static function get($name) {

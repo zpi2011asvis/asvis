@@ -27,7 +27,7 @@
 				material: new THREE.LineBasicMaterial({
 					color: 0xFFFFFF,
 					lineWidth: 1,
-					opacity: 0.25
+					opacity: 0.15
 				})
 			},
 			REFRESHING_STOP = {

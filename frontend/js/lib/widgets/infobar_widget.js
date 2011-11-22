@@ -31,7 +31,11 @@
 			var that = this,
 				window_el = x$(global.window),
 				root = data.root,
-				root_meta = data.nodes_meta[root];
+				root_meta = data.nodes_meta[root],
+				connections = data.connections_meta,
+				count_fn = function (dir) {
+					return function (acc, curr) { return curr.dir === dir ? acc + 1 : acc; };
+				};
 
 			that._cel.html(
 				that._position,
@@ -41,11 +45,12 @@
 					root_name: root_meta.name,
 					root_pools: root_meta.pools,
 					connections_count: {
-						both: 0,
-						up: 0,
-						down: 0
+						total: connections.length,
+						both: connections.reduce(count_fn('both'), 0),
+						up: connections.reduce(count_fn('up'), 0),
+						down: connections.reduce(count_fn('down'), 0)
 					},
-					connections: data.connections_meta,
+					connections: connections,
 					connection_statuses: [
 						'Połączenie prawidłowe',
 						// TODO update %1 and %2 while templating
