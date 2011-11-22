@@ -87,23 +87,37 @@ class ASImporter {
 		$this->_loadConnsUp();
 		$this->_loadConnsDown();
 		
-		
-		
 		foreach ($this->_connectionsUp as $fromNum => $to) {
 			foreach ($to as $toNum => $bool) {
-				if( !in_array($toNum, $this->_asrids[$fromNum]['out'])) {
-					$this->_asrids[$fromNum]['out'][]	= $this->_asrids[$toNum]['rid'];
-					$this->_asrids[$toNum]['in'][]		= $this->_asrids[$fromNum]['rid'];
+				$this->_connections[$fromNum][$toNum] = 2;
+			}
+		}
+		
+		foreach ($this->_connectionsDown as $fromNum => $to) {
+			foreach ($to as $toNum => $bool) {
+				if(isset($this->_connections[$fromNum][$toNum])) {
+					$this->_connections[$fromNum][$toNum] = 0;
+				} else {
+					$this->_connections[$fromNum][$toNum] = 1;
 				}
 			}
 		}
 		
-		foreach ($this->_connectionsDown as $toNum => $from) {
-			foreach ($from as $fromNum => $bool) {
-				if( !in_array($fromNum, $this->_asrids[$toNum]['in'])) {
-					$this->_asrids[$fromNum]['out'][]	= $this->_asrids[$toNum]['rid'];
-					$this->_asrids[$toNum]['in'][]		= $this->_asrids[$fromNum]['rid'];
+		// wypełnij asconny
+		foreach ($this->_connections as $fromNum => $to) {
+			foreach ($to as $toNum => $status) {
+				
+				$fromRid = $this->_asrids[$fromNum]['rid'];
+				$toRid = $this->_asrids[$toNum]['rid'];
+				
+				if (!in_array($toRid, $this->_asrids[$fromNum]['out'])) {
+					$this->_asrids[$fromNum]['out'][] = $toRid;
 				}
+				
+				if (!in_array($fromRid, $this->_asrids[$toNum]['in'])) {
+					$this->_asrids[$toNum]['in'][] = $fromRid;
+				}
+				
 			}
 		}
 		
@@ -144,7 +158,7 @@ class ASImporter {
 	}
 	
 	protected function _insertASConns() {
-		$this->_calculateStatuses();
+// 		$this->_calculateStatuses();
 		
 		echo PHP_EOL . 'Beginning ASConn INSERT(s).' . PHP_EOL;
 		$timeBegin = microtime(true);
