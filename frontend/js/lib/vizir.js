@@ -207,6 +207,7 @@
 			// -- do this after upper returns
 			conns = node.conns = uniq(conns);
 			connsl = conns.length;
+			// TODO for calculating angles use number of nodes already not done
 			incl_angle = _calculateInclinationAngle(connsl, node.out, node.in);
 			rot_angle = _calculateRotationAngle(incl_angle);
 
