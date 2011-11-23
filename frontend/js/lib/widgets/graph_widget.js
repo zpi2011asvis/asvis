@@ -7,12 +7,27 @@
 		x = global.x$;
 
 	var GraphWidget = Widget.create(function GraphWidget() {}, {
+		_connection_mark_id: null,
+
 		markConnectionTo: function markConnectionTo(from, to) {
-			//this._view._renderer.markConnectionTo(from, to);
+			this._connection_mark_id = this._view._renderer.addComponents([
+				{
+					class: 'line',
+					type: 'marking',
+					fromNode: from,
+					toNode: to
+				},
+				{
+					class: 'node',
+					type: 'marking',
+					forNode: to
+				}
+			]);
 		},
 		
 		unmarkConnection: function unmarkConnection() {
-			//this._view._renderer.unmarkConnection();
+			this._view._renderer.removeComponent(this._connection_mark_id);
+			this._connection_mark_id = null;
 		}
 	},
 	{
