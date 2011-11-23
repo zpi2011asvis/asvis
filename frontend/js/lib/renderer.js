@@ -9,29 +9,30 @@
 	var Renderer = function Renderer(widget_view, opts) {
 		// consts
 		var that = this,
-			FOG = { color: 0x000000, density: 0.002 },
-			PARTICLE = {
-				material: (function () {
-					var sprite = T.ImageUtils.loadTexture(app.opts.root + 'img/square_1.png'),
-						material = new T.ParticleBasicMaterial({
-							color: 0x77FF77,
-							size: 5,
-							sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
-							map: sprite
-						});
-
-					return material;
-				}())
+			SPRITE = {
+				NODE: T.ImageUtils.loadTexture(app.opts.root + 'img/square_1.png')
 			},
-			LINE = {
-				material: new THREE.LineBasicMaterial({
+			MATERIAL = {
+				NODE: new T.ParticleBasicMaterial({
+					color: 0x77FF77,
+					size: 5,
+					sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
+					map: SPRITE.NODE
+				}),
+				ROOT: new T.ParticleBasicMaterial({
+					color: 0xFF6666,
+					size: 12,
+					sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
+					map: SPRITE.NODE
+				}),
+				LINE: new THREE.LineBasicMaterial({
 					color: 0xFFFFFF,
 					lineWidth: 1,
-					opacity: 0.15
+					opacity: 0.2
 				})
 			},
 			REFRESHING_STOP = {
-				DELAY: 2000, // how long after any action performed should rendering go on
+				DELAY: 1000, // how long after any action performed should rendering go on
 				CHECK_INTERVAL: 500 // how often check if any action was performed
 			}; 
 
@@ -123,15 +124,11 @@
 		this.setStructure = function setStructure(graph, root, as_structure) {
 			var verts_geometry = new T.Geometry(),
 				edges_geometry = new T.Geometry(),
-				psystem = new T.ParticleSystem(verts_geometry, PARTICLE.material),
-				line = new T.Line(edges_geometry, LINE.material),
+				psystem = new T.ParticleSystem(verts_geometry, MATERIAL.NODE),
+				line = new T.Line(edges_geometry, MATERIAL.LINE),
 				vertices,
 				edges,
 				i, il;
-
-			// for FBA, TODO - only set by some event fired by FBA
-			verts_geometry.dynamic = true;
-			edges_geometry.dynamic = true;
 
 			// clear graph object3d
 			_graph_objects.forEach(function (obj) {
@@ -139,14 +136,15 @@
 			});
 			_graph_objects = [];
 
-			_vizir.clear().setGraph(graph).setRoot(root);
+			_vizir.clear().setGraph(graph).setRoot(root).recalculate();
 
 			vertices = _vizir.getVertices();
+			edges = _vizir.getEdges();
+
 			for (i = 0, il = vertices.length; i < il; i++) {
 				verts_geometry.vertices.push(vertices[i]);
 			}
 
-			edges = _vizir.getEdges();
 			for (i = 0, il = edges.length; i < il; i++) {
 				edges_geometry.vertices.push(edges[i]);
 			}
@@ -159,6 +157,20 @@
 			_graph_object.add(psystem);
 			_graph_object.add(line);
 			_graph_objects.push(psystem, line);
+
+
+			
+			var root_geometry = new T.Geometry();
+			var psystem_root = new T.ParticleSystem(root_geometry, MATERIAL.ROOT);
+			root_geometry.vertices.push(new T.Vertex(graph.structure[root].pos));
+
+			root_geometry = new T.SphereGeometry(4, 10, 10);
+			psystem_root = new T.Mesh(root_geometry, new T.MeshBasicMaterial({ color: 0xFF2222 }));
+			psystem_root.position = graph.structure[root].pos;
+
+			_graph_object.add(psystem_root);
+			_graph_objects.push(psystem_root);
+
 		};
 
 
@@ -188,7 +200,7 @@
 			 var line_material = new THREE.LineBasicMaterial({
 					color: 0x4444AA,
 					lineWidth: 1,
-					opacity: 0.75
+					opacity: 0.5
 				}),
 				line_geometry = new T.Geometry(),
 				circle_geometry = new T.Geometry(),
@@ -199,9 +211,9 @@
 	
 			// x, y, z axes
 			line_geometry.vertices.push(
-				_nver(-1000, 0, 0), _nver(1000, 0, 0),
-				_nver(0, -1000, 0), _nver(0, 1000, 0),
-				_nver(0, 0, -1000), _nver(0, 0, 1000)
+				_nver(-2000, 0, 0), _nver(2000, 0, 0),
+				_nver(0, -2000, 0), _nver(0, 2000, 0),
+				_nver(0, 0, -2000), _nver(0, 0, 2000)
 			);
 			line.type = T.Lines;
 	

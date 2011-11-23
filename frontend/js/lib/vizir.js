@@ -26,6 +26,7 @@
 			_distance_order,
 			_order,
 			_nodes_done = [],	// indexes of recalculated vertices
+			_nodes_queued = [], // nodes that were (anytime) in queue
 			_edges_done = {},	// 'num1_num2': true for recalculated edge
 			_vertices = [],		// ordered as in _order
 			_edges = [],
@@ -96,6 +97,11 @@
 			return this;
 		};
 
+		this.recalculate = function recalculate() {
+			_recalculatePositions();
+			return this;
+		};
+
 		/*
 		 * Privates ------------------------------------------------------------
 		 */
@@ -129,6 +135,12 @@
 				node = _graph[_order[2]];
 				node.pos = _nvec(0, -mc_base, 0);
 				mc[_order[2]] = true;
+			}
+			
+			// set root at the top if not already set somewhere else
+			node = _graph[_root];
+			if (!node.pos) {
+				node.pos = _nvec(0, mc_base * 1.5, 0);
 			}
 			
 			_runRecursiveVertexPos([_order[0]]);
@@ -181,7 +193,8 @@
 				todo = [],						// queue for _runRecursiveVertexPos
 				rotated = 0,					// already rotated in current surface 
 				incl_angle, rot_angle,
-				m_incl, m_rot;
+				m_incl, m_rot,
+				node_was_queued;
 
 			// this is done twice (also before node was added to the queue)
 			// because of order in BFS
@@ -194,7 +207,7 @@
 			if (node.pos) {
 				pos = node.pos.clone();
 				current_pos = node.pos;
-				vector = node.pos.clone().multiplyScalar(1 / MASS_CENTER_BASE_FACTOR);
+				vector = node.pos.clone().setLength(BASE);
 			}
 			else {
 				current_pos = pos.clone();
@@ -238,16 +251,22 @@
 						new_pos = pos.clone().addSelf(vector);
 						
 						// add child to queue
-						todo.push([conns[i], new_pos, vector.clone()]);
+						todo.push([new_num, new_pos, vector.clone()]);
+						node_was_queued = _nodes_queued.indexOf(new_num);
+						_nodes_queued.push(new_num);
 
 						_pushEdge(num, new_num);
-				
-						// calculate new position on sphere
-						m_rot.multiplyVector3(vector);
-						rotated += rot_angle;
-						if (rotated >= A360) {
-							m_incl.multiplyVector3(vector);
-							rotated = 0;
+					
+						// if node was already queued (will be done not as this node's neighbour,
+						// but someone else) then don't need to rotate
+						if (node_was_queued === -1) {
+							// calculate new position on sphere
+							m_rot.multiplyVector3(vector);
+							rotated += rot_angle;
+							if (rotated >= A360) {
+								m_incl.multiplyVector3(vector);
+								rotated = 0;
+							}
 						}
 					}
 					// traversing this vertex again (push only edge)
@@ -269,11 +288,7 @@
 		};
 
 		_hasEdge = function _hasEdge(num1, num2) {
-			// TODO maybe _edges_done search will be faster?
-			return (
-				_nodes_done.indexOf(num1) > -1 &&
-				_nodes_done.indexOf(num2) > -1
-			);
+			return _edges_done[num1 + '_' + num2];
 		};
 
 		_generateVEObjects = function _generateVEObjects() {
