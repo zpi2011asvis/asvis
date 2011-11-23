@@ -35,8 +35,10 @@ this.app.lib.stores = {};
 			// 'object' keys are keys, etc.
 			//
 			// opts:
+			// * resource_name
 			// * cache - resource value should be cached
-			// * type - 'plain', 'array', 'object' 
+			// * type - 'plain', 'array', 'object' (results type)
+			// * key_field (field params[key_field] has to be an array of some type)
 			// * url
 			// * name
 			// * method

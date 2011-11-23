@@ -13,6 +13,8 @@ this.app.lib.resources = {};
 		_url: null,
 		_cache: false,
 		_method: null,
+		_type: 'plain',
+		_key_field: null,
 
 		init: function init(opts) {
 			this._store = null;
@@ -22,9 +24,12 @@ this.app.lib.resources = {};
 		get: function get(params) {
 			return this._prepareData(
 				this._store.get({
+					resource_name: this.name,
 					url: this._url,
 					method: this._method,
 					cache: this._cache,
+					type: this._type,
+					key_field: this._key_field,
 					params: params
 				})
 			);

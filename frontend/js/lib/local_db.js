@@ -5,6 +5,9 @@
 
 	var LocalDB = classy(function LocalDB() {},
 		{
+			_stores: null,
+			_resources: null,
+
 			init: function init(stores, resources) {
 				var that = this;
 

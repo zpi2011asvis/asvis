@@ -99,6 +99,7 @@ function includeTemplates() {
 		'lib/camera_man.js',
 		'lib/renderer.js',
 		'lib/stores/store.js',
+		'lib/stores/memory_store.js',
 		'lib/stores/remote_store.js',
 		'lib/resources/resource.js',
 		'lib/resources/nodes_resource.js',

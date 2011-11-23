@@ -6,8 +6,8 @@
 	var ConnectionsMetaResource = Resource.create(function ConnectionsMetaResource() {}, {
 		name: 'connections/meta',
 		_url: 'connections/meta/:for_node',
-		_cache: true,
 		_method: 'get',
+		_cache: true,
 	});
 
 	exports.connections = {

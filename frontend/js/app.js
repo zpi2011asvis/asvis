@@ -119,7 +119,8 @@
 							for_node: number
 						}),
 						that.db.get('nodes/meta', {
-							numbers: graph_data.weight_order
+							// don't ask for more than 5000 nodes - get the closest
+							numbers: graph_data.distance_order.slice(0, 5000)
 						})
 					);
 				})
@@ -148,6 +149,7 @@
 				stores = lib.stores;
 
 			this.db = app.lib.LocalDB.new([
+				stores.MemoryStore.new(),
 				stores.RemoteStore.new('/backend', app.lib.XHRAdapterXUI)
 			], [
 				resources.nodes.NodesFindResource.new(),
