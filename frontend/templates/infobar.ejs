@@ -6,12 +6,13 @@
 		</div>
 
 		<section id="node_data_conns" class="section l2">
-			<h1>Połączenia 
+			<h1 class="header">Połączenia 
 				(<span class="count"><%= connections_count.total %> &ndash;
 					B:<%= connections_count.both %>,
 					U:<%= connections_count.up %>,
-					D:<%= connections_count.down %></span>)</h1>
-			<div class="content scroll">
+					D:<%= connections_count.down %></span>)
+			</h1>
+			<div class="scrolled">
 				<table class="std">
 					<thead>
 						<tr>
@@ -42,8 +43,10 @@
 		</section>
 
 		<section id="node_data_pools" class="section l2">
-			<h1>Pule adresów (<span class="count"><%= root_pools.length %></span>)</h1>
-			<div class="content scroll">
+			<h1 class="header">
+				Pule adresów (<span class="count"><%= root_pools.length %></span>)
+			</h1>
+			<div class="scrolled">
 				<table class="std">
 					<thead>
 						<tr>

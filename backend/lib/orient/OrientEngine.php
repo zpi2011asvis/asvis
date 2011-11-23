@@ -38,7 +38,7 @@ class OrientEngine implements Engine {
 	private $_client;
 	
 	public function __construct() {
-		$this->_client   = new Curl(true, self::CURL_TIMEOUT); // 1 minute - timeout
+		$this->_client   = new Curl(false, self::CURL_TIMEOUT); // 1 minute - timeout
 		$this->_orient   = new Binding(
 			$this->_client,
 			Config::get('orient_db_host'),
@@ -142,12 +142,8 @@ class OrientEngine implements Engine {
 		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
 		$fetchplan = "*:{$fp} ASNode.pools:0";
 		
-// 		$m = microtime(true);
 		$json = $this->_orient->query($query, null, 1, $fetchplan);	
-// 		echo (microtime(true) - $m) ." - Orient query time\n";
-// 		$m = microtime(true);
 		$result = json_decode($json->getBody())->result;
-// 		echo (microtime(true) - $m) ." - json decode time\n";
 
 		if (!count($result)) {
 			return null;
@@ -271,21 +267,7 @@ class OrientEngine implements Engine {
 		
 		$response = $this->_orient->query($query, null, -1, $fetchplan);
 		$json = $response->getBody();
-		$result = json_decode($json);
-		
-		if (!isset($result->result)) {
-			echo('Congow - RESPONSE -----------------'. PHP_EOL);
-			var_dump($GLOBALS['congow_response']);
-			echo('RESPONSE -----------------'. PHP_EOL);
-			var_dump($response);
-			echo('JSON     -----------------'. PHP_EOL);
-			var_dump($json);
-			echo('RESULT   -----------------'. PHP_EOL);
-			var_dump($result);
-			die(1);
-		} else {
-			$result = $result->result;
-		}
+		$result = json_decode($json)->result;
 
 		foreach ($result as $conn) {
 			$status = $conn->status;

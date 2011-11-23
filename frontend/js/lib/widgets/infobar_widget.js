@@ -29,6 +29,7 @@
 			if (this._el) return;
 
 			var that = this,
+				cel = that._cel,
 				window_el = x$(global.window),
 				root = data.root,
 				root_meta = data.nodes_meta[root],
@@ -37,7 +38,7 @@
 					return function (acc, curr) { return curr.dir === dir ? acc + 1 : acc; };
 				};
 
-			that._cel.html(
+			cel.html(
 				that._position,
 				that._tpls.render('infobar', {
 					root: root,
@@ -59,16 +60,65 @@
 					]
 				})
 			);
-			that._el = that._cel.find('#node_data');
-	//		that._els.
+			that._el = cel.find('#node_data');
+			that._els.lists_scrolls = {
+				conns: cel.find('#node_data_conns .scrolled'),
+				pools: cel.find('#node_data_pools .scrolled')
+			};
+
+			that._resize();
 
 
 			that._addEvent(window_el, 'resize', function (event) {
 				that._resize();
-			});			
+			});
 		},
 
 		_resize: function _resize() {
+			var	heights = this._getListsAutoHeights(),
+				diff = heights.conns + heights.pools - this._getSpaceForLists(),
+				ratio = heights.conns / heights.pools,
+				lists = this._els.lists_scrolls,
+				conns_el = lists.conns.first(),
+				pools_el = lists.pools.first(),
+				newh_c, newh_p;
+
+			newh_c = heights.conns - ratio * ratio * diff;
+			newh_p = heights.pools - (1 - ratio * ratio) * diff;
+			
+			console.log(newh_c, newh_p);
+
+
+			lists.conns.setStyle('height', newh_c + 'px');
+			lists.pools.setStyle('height', newh_p + 'px');
+		},
+
+		_getSize: function _getSize() {
+			return {
+				width: this._cel.first().clientWidth,
+				height: this._cel.first().clientHeight
+			};
+		},
+		
+		_getListsAutoHeights: function _getListsAutoHeights() {
+			var lists = this._els.lists_scrolls;
+
+			lists.conns.setStyle('height', 'auto');
+			lists.pools.setStyle('height', 'auto');
+
+			return {
+				conns: lists.conns.first().clientHeight,
+				pools: lists.pools.first().clientHeight
+			};
+		},
+
+		_getSpaceForLists: function _getSpaceForLists() {
+			return (
+				this._getSize().height -
+				this._cel.find('#node_data_conns .header').first().offsetHeight -
+				this._cel.find('#node_data_pools .header').first().offsetHeight -
+				this._els.lists_scrolls.conns.first().parentNode.offsetTop
+			);
 		}
 	});
 

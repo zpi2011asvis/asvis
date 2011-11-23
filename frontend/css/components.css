@@ -71,7 +71,7 @@
 .section .padded_content {
 	padding: 5px 10px;
 }
-.section .scroll {
+.section .scrolled {
 	overflow: auto;
 }
 
