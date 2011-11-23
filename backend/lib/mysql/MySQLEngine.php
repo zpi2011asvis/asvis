@@ -1,9 +1,9 @@
 <?php
 
-namespace asvis\lib\orient;
+namespace asvis\lib\mysql;
 
-require_once 'Engine.php';
-require_once 'H.php';
+require_once __DIR__.'/../Engine.php';
+require_once __DIR__.'/../H.php';
 require_once __DIR__.'/../../../config.php';
 require_once __DIR__.'/../../vendor/SplClassLoader.php';
 
@@ -43,7 +43,7 @@ class MySQLEngine implements Engine {
 		
 		$ret = array();		
 		while ( ($as = mysql_fetch_assoc($result)) ) {
-			$ret[] = $as;
+			$ret[$as['asnum']] = array('name'=>$as['asname']);
 		}
 		
 		return $ret;
@@ -79,6 +79,10 @@ class MySQLEngine implements Engine {
 	}
 	
 	public function structurePath($num_start, $num_end, $dir) {
+	
+	}
+	
+	public function connectionsMeta($for_node) {
 	
 	}
 	

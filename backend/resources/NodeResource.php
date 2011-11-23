@@ -1,9 +1,11 @@
 <?php
 
 namespace asvis\resources;
+require_once __DIR__.'/../lib/mysql/MySQLEngine.php';
 use asvis\lib\Response as Response;
 use asvis\lib\Resource as Resource;
 use asvis\lib\Engine as Engine;
+use asvis\lib\mysql\MySQLEngine as MySQLEngine;
 
 /**
  * @uri /nodes/find/{number}
@@ -12,6 +14,7 @@ class NodesFindResource extends Resource {
 	function get($request, $number) {
 		$response = new Response($request);
 		
+		$this->_engine = new MySQLEngine();
 		$response->json($this->_engine->nodesFind((int) $number));
 		
 		return $response;
