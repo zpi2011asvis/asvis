@@ -12,11 +12,12 @@
 	
 	var Vizir = function Vizir() {
 		// consts
-		var BASE = 60,				// base length
+		var BASE = 75,				// base length
 			A360 = Math.PI * 2,
 			AUTO_FBA_MAX_NODES = 3000,
 			AUTO_FBA_WORK_TIME = 5000,
-			AUTO_FBA_DELAY = 250;
+			AUTO_FBA_DELAY = 250,
+			MASS_CENTER_BASE_FACTOR = 1.5;
 
 		// properties
 		var that = this,
@@ -111,21 +112,22 @@
 			var d = +new Date(),
 				node,
 				mc = {},
-				signal;
+				signal,
+				mc_base = BASE * MASS_CENTER_BASE_FACTOR;
 			
 			// set mass centers
 			node = _graph[_order[0]];
-			node.pos = _nvec(-BASE, 0, 0);
+			node.pos = _nvec(mc_base, mc_base / 2, 0);
 			mc[_order[0]] = true;
 
 			if (_order.length > 1) {
 				node = _graph[_order[1]];
-				node.pos = _nvec(BASE, 0, 0);
+				node.pos = _nvec(-mc_base, mc_base / 2, 0);
 				mc[_order[1]] = true;
 			}
 			if (_order.length > 2) {
 				node = _graph[_order[2]];
-				node.pos = _nvec(0, -BASE, 0);
+				node.pos = _nvec(0, -mc_base, 0);
 				mc[_order[2]] = true;
 			}
 			
@@ -187,12 +189,12 @@
 				return;
 			}
 
-			// position already set (for the mass center)
+			// position already set (for the mass centers)
 			// so use it
 			if (node.pos) {
 				pos = node.pos.clone();
 				current_pos = node.pos;
-				vector = node.pos.clone();
+				vector = node.pos.clone().multiplyScalar(1 / MASS_CENTER_BASE_FACTOR);
 			}
 			else {
 				current_pos = pos.clone();

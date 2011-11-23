@@ -12,9 +12,9 @@
 	var FBA = function FBA(root, graph, mass_centers) {
 		// consts
 		var STEPS_AT_ONCE = 2,
-			SPRING_LEN = 60,
-			SPRING_FORCE = 0.1,			// for hook's law
-			CHARGE = 0.75,				// for coulomb's law
+			SPRING_LEN = 75,
+			SPRING_FORCE = 0.01,			// for hook's law
+			CHARGE = 1.5,						// for coulomb's law
 			DAMPING = 0.9,
 			VMAX = 3.0;
 
