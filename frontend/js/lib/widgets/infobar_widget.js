@@ -75,19 +75,32 @@
 		},
 
 		_resize: function _resize() {
+			// argh............................. i'm sooo stupid
+			// my worst method ever
 			var	heights = this._getListsAutoHeights(),
 				diff = heights.conns + heights.pools - this._getSpaceForLists(),
+				min_height = this._getSpaceForLists() * 0.3,
 				ratio = heights.conns / heights.pools,
 				lists = this._els.lists_scrolls,
 				conns_el = lists.conns.first(),
 				pools_el = lists.pools.first(),
 				newh_c, newh_p;
 
-			newh_c = heights.conns - ratio * ratio * diff;
-			newh_p = heights.pools - (1 - ratio * ratio) * diff;
-			
-			console.log(newh_c, newh_p);
+			newh_c = heights.conns - ratio / (1 + ratio) * diff;
+			newh_p = heights.pools - 1 / (1 + ratio) * diff;
 
+			if (newh_c < min_height) {
+				newh_p -= (min_height - newh_c);
+				newh_c = min_height;
+			}
+			if (newh_p < min_height) {
+				newh_c -= (min_height - newh_p);
+				newh_p = min_height;
+			}
+			if (newh_c > heights.conns) {
+				newh_p += (newh_c - heights.conns);
+				newh_c = heights.conns;
+			}
 
 			lists.conns.setStyle('height', newh_c + 'px');
 			lists.pools.setStyle('height', newh_p + 'px');

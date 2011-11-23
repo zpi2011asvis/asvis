@@ -43,7 +43,7 @@
 				key_values = params[key_field];
 				cached_results = type_array ? [] : {};
 				not_found_keys_indexes = [];
-				not_found_items_ids = [];
+				not_found_items_ids = type_array ? [] : {};
 
 				not_found_keys = key_values.reduce(function (acc, key_value, key_index) {
 					params[key_field] = key_value;
@@ -55,7 +55,7 @@
 					else {
 						acc.push(key_value);
 						not_found_keys_indexes.push(key_index);
-						not_found_items_ids.push(item_id);
+						not_found_items_ids[type_array ? key_index : key_value] = item_id;
 					}
 
 					return acc;
@@ -100,13 +100,10 @@
 					}
 				}
 				else if (type_object) {
-					ur_i = 0;
-
 					// merge uncached_results into cached_results using proper keys
 					for (key in uncached_results) {
 						cached_results[key] = uncached_results[key];
-						that._cacheItem(resource_name, not_found_items_ids[ur_i], uncached_results[key]);
-						ur_i += 1;
+						that._cacheItem(resource_name, not_found_items_ids[key], uncached_results[key]);
 					}
 				}				
 				// plain type
