@@ -55,7 +55,8 @@
 			_initControlObject,
 			_initGraphObject,
 			_nver,
-			_nvec;
+			_nvec,
+			_markAsRoot;
 
 		/*
 		 * Publics -------------------------------------------------------------
@@ -95,7 +96,7 @@
 		};
 
 		this.startLong = function startLong(stop_delay) {
-			_long_delay = stop_delay || 1e5; // if delay not given set 1e8 (~1666 minutes)
+			_long_delay = stop_delay || 1e8; // if delay not given set 1e8 (~1666 minutes)
 			this.start();
 		};
 
@@ -149,28 +150,12 @@
 				edges_geometry.vertices.push(edges[i]);
 			}
 
-			// needed when point's texture has opacity
-			// veeerryyy heavy
-			//psystem.sortParticles = true;
-
 			line.type = T.Lines;
 			_graph_object.add(psystem);
 			_graph_object.add(line);
 			_graph_objects.push(psystem, line);
-
-
-			
-			var root_geometry = new T.Geometry();
-			var psystem_root = new T.ParticleSystem(root_geometry, MATERIAL.ROOT);
-			root_geometry.vertices.push(new T.Vertex(graph.structure[root].pos));
-
-			root_geometry = new T.SphereGeometry(4, 10, 10);
-			psystem_root = new T.Mesh(root_geometry, new T.MeshBasicMaterial({ color: 0xFF2222 }));
-			psystem_root.position = graph.structure[root].pos;
-
-			_graph_object.add(psystem_root);
-			_graph_objects.push(psystem_root);
-
+	
+			_markAsRoot(graph.structure[root].pos);	
 		};
 
 
@@ -189,6 +174,7 @@
 		_refresh = function _refresh() {
 			if (_started) {
 				_graph_objects.forEach(function (obj) {
+					// TODO maybe do this only between vizir start end signals?
 					obj.geometry.__dirtyVertices = true;
 				});
 				_renderer.render(_scene, _camera_man.camera);
@@ -240,6 +226,16 @@
 			_scene.add(_graph_object);
 		};
 
+		_markAsRoot = function _markAsRoot(root_pos) {
+			var root_geometry = new T.SphereGeometry(4, 10, 10),
+				root_mesh = new T.Mesh(root_geometry, new T.MeshBasicMaterial({ color: 0xFF2222 }));
+
+			root_mesh.position = root_pos;
+
+			_graph_object.add(root_mesh);
+			_graph_objects.push(root_mesh);
+		};
+
 		/*
 		 * Init ----------------------------------------------------------------
 		 */
@@ -255,10 +251,10 @@
 				antialias: false,
 				clearAlpha: 0
 			});
-			/*alert(
+			alert(
 				'Your browser doesn\'t support WebGL. ' +
 				'Visualization\'s going to burn your CPU!'
-			);*/
+			);
 		}
 		_scene = new T.Scene();
 		_vizir = new Vizir();

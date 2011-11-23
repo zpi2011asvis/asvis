@@ -219,10 +219,12 @@
 			
 			// remove duplicated connections (bidirectional)
 			// here (not before) because of performance
-			// -- do this after upper returns
+			// -- do this after upper return
 			conns = node.conns = uniq(conns);
 			connsl = conns.length;
 			// TODO for calculating angles use number of nodes already not done
+			// TODO calculate rot_angle knowing how far vector is inclined from 
+			// the tree generation direction
 			incl_angle = _calculateInclinationAngle(connsl, node.out, node.in);
 			rot_angle = _calculateRotationAngle(incl_angle);
 
