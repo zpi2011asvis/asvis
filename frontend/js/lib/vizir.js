@@ -14,7 +14,7 @@
 		// consts
 		var BASE = 75,				// base length
 			A360 = Math.PI * 2,
-			AUTO_FBA_MAX_NODES = 3000,
+			AUTO_FBA_MAX_NODES = 2000,
 			AUTO_FBA_WORK_TIME = 5000,
 			AUTO_FBA_DELAY = 250,
 			MASS_CENTER_BASE_FACTOR = 1.5;
