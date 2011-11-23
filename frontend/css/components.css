@@ -9,7 +9,7 @@
 	bottom: 0;
 	right: 0;
 	z-index: 100;
-	background: rgba(0, 0, 0, 0.2);
+	background: rgba(0, 0, 0, 0.4);
 }
 
 .popup {
@@ -98,4 +98,8 @@ table.std tr:nth-child(odd) td {
 }
 table.std tr:nth-child(even) td {
 	background-color: rgba(0, 0, 0, 0.05);
+}
+
+table.std.hoverable tr:hover td {
+	background-color: rgba(0, 110, 150, 0.2);
 }

@@ -28,6 +28,8 @@
 				}
 				while (current_el);
 			});
+
+			return that;
 		},
 
 		/*

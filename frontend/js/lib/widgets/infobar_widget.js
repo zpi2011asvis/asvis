@@ -7,7 +7,34 @@
 		objectValues = global.es5ext.Object.plain.values.call;
 
 	var InfobarWidget = Widget.create(function InfobarWidget() {}, {
+		signals: {
+			destroyed: null,
+			connection_hovered: null,
+			connection_unhovered: null
+		},
+
+		_hovered_conn_with: null,
+
 		_init: function _init() {
+			var that = this;
+
+			that.signals.connection_hovered = new Signal();
+			that.signals.connection_unhovered = new Signal();
+
+			that._view.signals.connection_mouseover.add(function (event, el) {
+				var conn_with = el.dataset.with;
+				if (conn_with === that._hovered_conn_with) return;
+
+				that._hovered_conn_with = +conn_with;
+				that.signals.connection_hovered.dispatch(that._data.root, conn_with);
+			});
+			that._view.signals.connection_mouseout.add(function (event, el) {
+				var conn_with = el.dataset.with;
+				if (conn_with === that._hovered_conn_with) return;
+
+				that._hovered_conn_with = +conn_with;
+				that.signals.connection_unhovered.dispatch(that._data.root, conn_with);
+			});
 		}
 	},
 	{
@@ -16,11 +43,15 @@
 
 	InfobarWidget.View = Widget.View.create(function InfobarWidgetView() {}, {
 		signals: {
-		},
+			connection_mouseover: null,
+			connection_mouseout: null
+		}, 
 		_els: null,
 
 		_init: function _init() {
 			this.signals = {
+				connection_mouseover: new Signal(),
+				connection_mouseout: new Signal()
 			};
 			this._els = {};
 		},
@@ -36,7 +67,8 @@
 				connections = data.connections_meta,
 				count_fn = function (dir) {
 					return function (acc, curr) { return curr.dir === dir ? acc + 1 : acc; };
-				};
+				},
+				hovered_row;
 
 			cel.html(
 				that._position,
@@ -71,6 +103,13 @@
 
 			that._addEvent(window_el, 'resize', function (event) {
 				that._resize();
+			});
+
+			cel.find('#node_data_conns table').delegate('mouseover', 'tr', function (event, el) {
+				that.signals.connection_mouseover.dispatch(event, el);
+			});
+			cel.find('#node_data_conns table').delegate('mouseout', 'tr', function (event, el) {
+				that.signals.connection_mouseout.dispatch(event, el);
 			});
 		},
 

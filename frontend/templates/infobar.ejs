@@ -13,7 +13,7 @@
 					D:<%= connections_count.down %></span>)
 			</h1>
 			<div class="scrolled">
-				<table class="std">
+				<table class="std hoverable">
 					<thead>
 						<tr>
 							<th>B/U/D</th>
@@ -23,7 +23,7 @@
 					</thead>
 					<tbody>
 						<% connections.forEach(function (conn) { %>
-							<tr class="<%= conn.status === 0 ? 'ok' : 'bad' %> <%= conn.dir %>">
+							<tr data-with="<%= conn.with %>" class="<%= conn.status === 0 ? 'ok' : 'bad' %> <%= conn.dir %>">
 								<td class="as_dir_<%= conn.dir %>"><%= conn.dir %></td>
 								<td>
 									<a href="/node/<%= conn.with %>/<%= depth %>" class="as_num">

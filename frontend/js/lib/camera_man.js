@@ -7,12 +7,12 @@
 
 	var CameraMan = function CameraMan(renderer, moving_objects, width, height) {
 		// consts
-		var	TARGET = new T.Vector3(0, 0, 0), // probably redundant
+		var	TARGET = new T.Vector3(0, 0, 0),	// probably redundant
 			NORMAL = new T.Vector3(0, 0, 1),
 			UP = new T.Vector3(0, 1, 0),
 			RIGHT = new T.Vector3(1, 0, 0),
-			NEAR = 50,	// for camera
-			FAR = 5000; // for camera
+			NEAR = 50,							// for camera
+			FAR = 5000;							// for camera
 
 		var that = this,
 			_renderer,
@@ -49,10 +49,10 @@
 
 		// settings
 		this.ZOOMING_STEP = 20;
-		this.ROTATING_FACTOR = deg2Rad(120); // rotation for half of a view size drag
-		this.MOVING_FACTOR = 1;
+		this.ROTATING_FACTOR = deg2Rad(120);	// rotation for half of a view size drag
 		this.MAX_LAT = deg2Rad(60);
 		this.MIN_DISTANCE = 100;
+		this.DISTANCE_MOVING_FACTOR = 500;		// for this distance 1px mouse move is 1px objects move
 
 		// fast getter
 		this.camera = null;
@@ -90,6 +90,8 @@
 			top.multiplyScalar(-change.y);
 			right.multiplyScalar(change.x);
 			mvec = top.add(top, right);
+
+			mvec.multiplyScalar(_distance / this.DISTANCE_MOVING_FACTOR);
 
 			_moving_objects.forEach(function (obj) {
 				obj.position.addSelf(mvec);

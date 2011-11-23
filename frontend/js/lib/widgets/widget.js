@@ -114,7 +114,7 @@ this.app.lib.widgets = {};
 		},
 
 		_addEvent: function _addEvent(els, type, callback) {
-			// TODO handle custom events (onscroll, ondrag)
+			// TODO handle custom events (onscroll, ondrag, delegate)
 			// these xui's methods should return object with
 			// one method - un()
 			

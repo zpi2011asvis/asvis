@@ -7,6 +7,13 @@
 		x = global.x$;
 
 	var GraphWidget = Widget.create(function GraphWidget() {}, {
+		markConnectionTo: function markConnectionTo(from, to) {
+			//this._view._renderer.markConnectionTo(from, to);
+		},
+		
+		unmarkConnection: function unmarkConnection() {
+			//this._view._renderer.unmarkConnection();
+		}
 	},
 	{
 		multiple: false

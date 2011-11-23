@@ -93,7 +93,8 @@
 		
 			dispatcher.get('/node/{number}/{depth}', function routerNode(request) {
 				var number = request.get.number,
-					depth = request.get.depth;
+					depth = request.get.depth,
+					graph_w, info_w;
 	
 				// TODO remove in the future - should modify current graph
 				// and widget should manage what to do with new data
@@ -105,13 +106,13 @@
 					depth: depth
 				})
 				(function routerNode_promise1(graph_data) {
-					var w = widgets.GraphWidget.new(
+					graph_w = widgets.GraphWidget.new(
 						that._container_el.find('#graph_renderer')
 					);
-					w.set('graph', graph_data);
-					w.set('root', number);
+					graph_w.set('graph', graph_data);
+					graph_w.set('root', number);
 
-					that.widgets.add(w);
+					that.widgets.add(graph_w);
 					that.render();
 
 					return deferred.all(
@@ -128,18 +129,24 @@
 					var conns_meta = data[0],
 						nodes_meta = data[1];
 
-					var w = widgets.InfobarWidget.new(
+					info_w = widgets.InfobarWidget.new(
 						that._container_el.find('#sidebar')					
 					);
 					// TODO add batch set (with object)
-					w.set('nodes_meta', nodes_meta);
-					w.set('connections_meta', conns_meta);
-					w.set('root', number);
-					w.set('depth', depth);
+					info_w.set('nodes_meta', nodes_meta);
+					info_w.set('connections_meta', conns_meta);
+					info_w.set('root', number);
+					info_w.set('depth', depth);
 					
-					that.widgets.add(w);
+					that.widgets.add(info_w);
 					that.render();
 
+					info_w.signals.connection_hovered.add(function (from, to) {
+						graph_w.markConnectionTo(from, to);
+					});
+					info_w.signals.connection_unhovered.add(function () {
+						graph_w.unmarkConnection();
+					});
 				}).end(that.err);
 			});
 		},
