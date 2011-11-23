@@ -349,7 +349,7 @@
 			// TODO refactor with params.type usage
 			// TODO why position does not change while fba works?
 			
-			var geometry = new T.SphereGeometry(2, 10, 10),
+			var geometry = new T.SphereGeometry(3, 10, 10),
 				mesh = new T.Mesh(geometry, new T.MeshBasicMaterial({ color: 0xFF2222 }));
 
 			mesh.position = graph[params.forNode].pos;
