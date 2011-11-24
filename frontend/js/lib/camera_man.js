@@ -62,6 +62,12 @@
 		// fast getter
 		this.camera = null;
 
+		this.destroy = function destroy() {
+			// TODO refuck
+			global.x$('#graph_settings .fog_near').un('change');
+			global.x$('#graph_settings .fog_far').un('change');
+		};
+
 		this.zoom = function zoom(is_forward, pointed_at) {
 			_distance += (is_forward ? -1 : 1) * this.ZOOMING_STEP;
 

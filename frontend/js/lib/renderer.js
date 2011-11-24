@@ -67,6 +67,7 @@
 		this.destroy = function destroy() {
 			this.stop();
 			_vizir && _vizir.destroy();
+			_camera_man && _camera_man.destroy();
 			_renderer = _scene = _control_object = _graph_object = null
 			_graph_objects = _vizir = _camera_man = widget_view = null;
 		};
