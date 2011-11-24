@@ -105,10 +105,10 @@
 				that._resize();
 			});
 
-			cel.find('#node_data_conns table').delegate('mouseover', 'tr', function (event, el) {
+			cel.find('#node_data_conns table').delegate('mouseover', 'tbody > tr', function (event, el) {
 				that.signals.connection_mouseover.dispatch(event, el);
 			});
-			cel.find('#node_data_conns table').delegate('mouseout', 'tr', function (event, el) {
+			cel.find('#node_data_conns table').delegate('mouseout', 'tbody > tr', function (event, el) {
 				that.signals.connection_mouseout.dispatch(event, el);
 			});
 		},

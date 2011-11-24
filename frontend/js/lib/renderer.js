@@ -25,9 +25,8 @@
 					sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
 					map: SPRITE.NODE
 				}),
-				LINE: new THREE.LineBasicMaterial({
+				LINE: new T.LineBasicMaterial({
 					color: 0xFFFFFF,
-					lineWidth: 1,
 					opacity: 0.2
 				})
 			},
@@ -43,6 +42,9 @@
 			_graph_object,
 			_graph_objects,
 			_vizir,
+			_components = [],
+			_next_component_id = 0,
+			_graph,
 			// state -----------------------------------------------------------
 			_started = false,
 			_last_action = 0, // last action timestamp
@@ -115,14 +117,23 @@
 			global.clearInterval(_refreshing_interval);
 			_refreshing_interval = null;
 		};
+	
+		/*
+		 * Refresh only once
+		 */
+		this.refresh = function refresh() {
+			if (_started) return;
+
+			_started = true;
+			_refresh();
+			_started = false;
+		};
 
 		/*
 		 * @param graph {Object} result of /structure/graph
 		 * @param root {Integer} root vertex number
-		 * @param as_structure {Boolean} if true this is the part of graph that
-		 * should be rendered (graph is at once a structure)
 		 */
-		this.setStructure = function setStructure(graph, root, as_structure) {
+		this.setStructure = function setStructure(graph, root) {
 			var verts_geometry = new T.Geometry(),
 				edges_geometry = new T.Geometry(),
 				psystem = new T.ParticleSystem(verts_geometry, MATERIAL.NODE),
@@ -130,6 +141,8 @@
 				vertices,
 				edges,
 				i, il;
+
+			_graph = graph.structure;
 
 			// clear graph object3d
 			_graph_objects.forEach(function (obj) {
@@ -158,6 +171,30 @@
 			_markAsRoot(graph.structure[root].pos);	
 		};
 
+		this.addComponents = function (components) {
+			var components_object = new T.Object3D();
+
+			components.forEach(function (params) {
+				components_object.add(Components[params.class](_graph, params));
+			});
+			
+			_graph_object.add(components_object);
+			_components[_next_component_id] = components_object;
+			this.refresh();
+
+			return _next_component_id++;
+		};
+
+		this.removeComponent = function (id) {
+			var components_object = _components[id];
+
+			if (!components_object) {
+				return console.log(new Error('Kompoment o podanym ID nie istnieje'));
+			}
+			
+			_graph_object.remove(components_object);
+			this.refresh();
+		};
 
 		/*
 		 * Privates ------------------------------------------------------------
@@ -183,9 +220,8 @@
 		};
 
 		_initControlObject = function _initControlObject() {
-			 var line_material = new THREE.LineBasicMaterial({
+			 var line_material = new T.LineBasicMaterial({
 					color: 0x4444AA,
-					lineWidth: 1,
 					opacity: 0.5
 				}),
 				line_geometry = new T.Geometry(),
@@ -212,7 +248,7 @@
 				));
 			}
 			
-			control_obj = new THREE.Object3D();
+			control_obj = new T.Object3D();
 			control_obj.add(line);
 			control_obj.add(circle);
 			_scene.add(control_obj);
@@ -262,7 +298,7 @@
 		_initGraphObject()
 		_initControlObject();
 
-		_camera_man = new CameraMan(_renderer, [ _graph_object ], opts.size.width, opts.size.height);
+		_camera_man = new CameraMan(that, _renderer, _scene, [ _graph_object ], opts.size.width, opts.size.height);
 		
 
 		widget_view.signals.resized.add(function (size) {
@@ -290,6 +326,37 @@
 		});
 	};
 
+	var Components = {
+		line: function line(graph, params) {
+			// TODO refactor with params.type usage
+
+			var line_material = new T.LineBasicMaterial({
+					color: 0xFF2222,
+					linewidth: 2,
+				}),
+				line_geometry = new T.Geometry(),
+				line = new T.Line(line_geometry, line_material);
+
+			line_geometry.vertices.push(
+				new T.Vertex(graph[params.fromNode].pos), new T.Vertex(graph[params.toNode].pos)
+			);
+			line.type = T.Lines;
+
+			return line;
+		},
+
+		node: function node(graph, params) {
+			// TODO refactor with params.type usage
+			// TODO why position does not change while fba works?
+			
+			var geometry = new T.SphereGeometry(3, 10, 10),
+				mesh = new T.Mesh(geometry, new T.MeshBasicMaterial({ color: 0xFF2222 }));
+
+			mesh.position = graph[params.forNode].pos;
+			
+			return mesh;
+		}
+	};
 
 	exports.Renderer = Renderer;
 
