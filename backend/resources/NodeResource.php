@@ -20,8 +20,8 @@ class NodesFindResource extends Resource {
 		if($response->code === 200) {
 			$this->_engine = new MySQLEngine();
 			$forJSON = $this->_engine->nodesFind($number);
-			$response->s500If(is_null($forJSON), 'Błąd pobierania danych z bazy.');
 			$response->s404If(empty($forJSON), 'Nie istnieje AS o podanym numerze.');
+			$response->s500If(is_null($forJSON), 'Błąd pobierania danych z bazy.');
 		
 			$response->json($forJSON);
 		}

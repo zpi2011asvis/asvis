@@ -24,7 +24,7 @@ class StructureGraphResource extends Resource {
 		$response->s404If($depth < 0 || $depth > Config::get('orient_max_fetch_depth'), 'Przekazany parametr wysokości jest spoza zakresu.');
 
 		if($response->code === 200) {
-			$forJSON = $this->_engine->structureTree($number, $depth);
+			$forJSON = $this->_engine->structureGraph($number, $depth);
 			$response->s404If(is_null($forJSON), 'Nie istnieje AS o podanym numerze.');
 		
 			$response->json($forJSON);
@@ -68,10 +68,10 @@ class StructurePathResource extends Resource {
 	function get($request, $num_start, $num_end, $dir) {
 		$response = new Response($request);
 		
-		$number = (int) $num_start;
+		$num_start = (int) $num_start;
 		$response->s404Unless($num_start, 'Nie przekazano prawidłowego początkowego numeru AS.');
 		
-		$number = (int) $num_end;
+		$num_end = (int) $num_end;
 		$response->s404Unless($num_end, 'Nie przekazano prawidłowego końcowego numeru AS.');
 		
 		$response->s404If($dir !== 'in' && $dir !== 'out' && $dir !== 'both', 'Nie przekazano prawidłowego parametru kierunku.');
