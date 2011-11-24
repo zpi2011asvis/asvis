@@ -158,7 +158,7 @@ function f($c) {
 			<li class="slide">pierwszy importer &ndash; przewidywany czas 8 dni (less than 50k nodes!)</li>
 			<li class="slide">pierwszy kontakt z autorami bazy &ndash; odpowiadają! <span class="slide">i poprawiają dokumentację</span></li>
 			<li class="slide">pierwszy schemat
-				<img src="imgs/asvis_schema_old_final.svg" width="800" alt="MySLQ schema" class="current-only">
+				<img src="imgs/asvis_schema_old_final.svg" width="800" alt="Schema old" class="current-only">
 			</li>
 			<li class="slide">próba pobrania danych &ndash; fetch plan</li>
 		</ol>
@@ -166,7 +166,7 @@ function f($c) {
 
 	<section class="slide">
 		<h2>Backend &ndash; historia</h2>
-		<p><img src="imgs/graph_fetchplan_final.svg" width="600" alt="MySLQ schema"></p>
+		<p><img src="imgs/graph_fetchplan_final.svg" width="600" alt="Fetch plans"></p>
 	</section>
 
 	<section class="slide">
@@ -178,20 +178,86 @@ function f($c) {
 			<li>pierwszy schemat</li>
 			<li>próba pobrania danych &ndash; fetch plan</li>
 			<li class="slide">kolejny kontakt &ndash; błędy w bazie i dokumentacji &ndash; poprawiają!</li>
+			<li class="slide">przepisanie do drivera REST-owego, 30x zysk wzg. "binarnego"</li>
 			<li class="slide">kolejny kontakt &ndash; błąd krytyczny w bazie &ndash; błędne wyniki &ndash; poprawiają!</li>
 		</ol>
 	</section>
 
 	<section class="slide">
 		<h2>Backend &ndash; historia</h2>
-		<ol start="7">
-			<li>kolejny kontakt &ndash; błąd krytyczny w bazie &ndash; błędne wyniki &ndash; poprawiają!</li>
-			<li class="slide">inwigilacja</li>
+		<ol start="8">
+			<li>inwigilacja :)</li>
+			<li class="slide">zmiana interpretacji bazy MySQL &ndash; zmiana schematu
+				<img src="imgs/asvis_schema_current_final.svg" width="600" alt="Schema final" class="current-only">
+			</li>
 			<li class="slide">kolejny kontakt &ndash; jednak im się nie udało &ndash; poprawiają!</li>
 			<li class="slide">kolejny kontakt &ndash; wydajność spadła &gt;10x &ndash; poprawiają!</li>
 			<li class="slide">kolejny kontakt (tym razem również z twórcą drivera)</li>
 			<li class="slide">...dzisiaj</li>
+			<li class="slide">wnioski</li>
 		</ol>
+	</section>
+
+	<section class="slide">
+		<h2>Ups...</h2>
+		<img src="imgs/screen2.png" alt="Google" width="500">
+	</section>
+
+	<section class="slide">
+		<h2>Frontend</h2>
+		<ul>
+			<li>niemal statyczny index.php</li>
+			<li>vendors &ndash; Three.js, xuijs, es5-ext, deferred, modules-webmake, Signals, Crossroads</li>
+			<li>app + dispatcher + HTML5 history &ndash; SPA w praktyce</li>
+			<li>resources + stores &ndash; abstrakcja dla REST-owego API, złożony cache</li>
+			<li>widgets &ndash; bez separacji M-C</li>
+			<li>vizir + camera_man + renderer</li>
+			<li>fba &ndash; forced based algorithm &ndash; JIT daje radę</li>
+			<li class="slide"><strong>100% bezproblemowo</strong> &ndash; nie zgłosiłem żadnego błędu</li>
+		</ul>
+	</section>
+
+	<section class="slide">
+		<h2>Frontend</h2>
+		<ul>
+			<li>Zaimplementowane funkcjonalności:
+				<ul>
+					<li>pobieranie danych, cache</li>
+					<li>rysowanie grafu</li>
+					<li>obliczanie pozycji według FBA</li>
+					<li>nawigacja 3D &ndash; obrót, zoom, przesuwanie</li>
+					<li>zarządzanie "mgłą"</li>
+					<li>wyświetlanie danych wierzchołka, połączeń i puli adresów</li>
+					<li>zaznaczanie na grafie najechanego wierzchołka i krawędzi z listy połączeń</li>
+				</ul>
+			</li>
+		</ul>
+	</section>
+
+	<section class="slide">
+		<h2>Pokaz</h2>
+		<img src="imgs/live.png" alt="Live!" width="700">
+	</section>
+
+	<section class="slide">
+		<h2>AS WASK &ndash; 8970</h2>
+		<img src="imgs/cidr_8970_wask.png" alt="CIDR: WASK" width="800">
+	</section>
+
+	<section class="slide">
+		<h2>AS Pionier &ndash; 8501</h2>
+		<img src="imgs/cidr_8501_pionier.png" alt="CIDR: Pionier" width="800">
+	</section>
+
+	<section class="slide">
+		<h2>Co dalej?</h2>
+		<ul>
+			<li>interaktywne węzły na wizualizacji</li>
+			<li>wyświetlanie wyszukanych struktur</li>
+			<li>wyszukiwanie ASów</li>
+			<li>więcej kontroli nad wizualizacją</li>
+			<li>płynne przechodzenie pomiędzy wierzchołkami</li>
+		</ul>
 	</section>
 
 	<!--
