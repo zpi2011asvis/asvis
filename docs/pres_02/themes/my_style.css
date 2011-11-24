@@ -122,6 +122,9 @@
 	list-style-type: none;
 	font-size: 30px;
 }
+.deck-container ol > li {
+	font-size: 30px;
+}
 .deck-container ul > li:before {
 	content: '';
 	background: #d90d19;
@@ -165,4 +168,11 @@
 
 .deck-container ul ul {
 	margin-bottom: 0;
+}
+
+img.current-only {
+	display: none;
+}
+.deck-current img.current-only {
+	display: block;
 }

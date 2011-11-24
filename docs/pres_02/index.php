@@ -149,6 +149,51 @@ function f($c) {
 		</ul>
 	</section>
 
+	<section class="slide">
+		<h2>Backend &ndash; historia</h2>
+		<ol>
+			<li class="slide">baza MySQL &ndash; niepełna, niejasna
+				<img src="imgs/mysql_schema.png" width="600" alt="MySLQ schema" class="current-only">
+			</li>
+			<li class="slide">pierwszy importer &ndash; przewidywany czas 8 dni (less than 50k nodes!)</li>
+			<li class="slide">pierwszy kontakt z autorami bazy &ndash; odpowiadają! <span class="slide">i poprawiają dokumentację</span></li>
+			<li class="slide">pierwszy schemat
+				<img src="imgs/asvis_schema_old_final.svg" width="800" alt="MySLQ schema" class="current-only">
+			</li>
+			<li class="slide">próba pobrania danych &ndash; fetch plan</li>
+		</ol>
+	</section>
+
+	<section class="slide">
+		<h2>Backend &ndash; historia</h2>
+		<p><img src="imgs/graph_fetchplan_final.svg" width="600" alt="MySLQ schema"></p>
+	</section>
+
+	<section class="slide">
+		<h2>Backend &ndash; historia</h2>
+		<ol>
+			<li>baza MySQL &ndash; niepełna, niejasna</li>
+			<li>pierwszy importer &ndash; przewidywany czas 8 dni (less than 50k nodes!)</li>
+			<li>pierwszy kontakt z autorami bazy &ndash; odpowiadają!</li>
+			<li>pierwszy schemat</li>
+			<li>próba pobrania danych &ndash; fetch plan</li>
+			<li class="slide">kolejny kontakt &ndash; błędy w bazie i dokumentacji &ndash; poprawiają!</li>
+			<li class="slide">kolejny kontakt &ndash; błąd krytyczny w bazie &ndash; błędne wyniki &ndash; poprawiają!</li>
+		</ol>
+	</section>
+
+	<section class="slide">
+		<h2>Backend &ndash; historia</h2>
+		<ol start="7">
+			<li>kolejny kontakt &ndash; błąd krytyczny w bazie &ndash; błędne wyniki &ndash; poprawiają!</li>
+			<li class="slide">inwigilacja</li>
+			<li class="slide">kolejny kontakt &ndash; jednak im się nie udało &ndash; poprawiają!</li>
+			<li class="slide">kolejny kontakt &ndash; wydajność spadła &gt;10x &ndash; poprawiają!</li>
+			<li class="slide">kolejny kontakt (tym razem również z twórcą drivera)</li>
+			<li class="slide">...dzisiaj</li>
+		</ol>
+	</section>
+
 	<!--
 	<section class="slide">
 		<h2></h2>
