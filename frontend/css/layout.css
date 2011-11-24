@@ -44,6 +44,17 @@ body {
 	height: 100%;
 	overflow: hidden;
 }
+#graph_settings {
+	position: absolute;
+	right: 10px;
+	top: 0;
+	z-index: 10;
+}
+#graph_settings input[type=range] {
+	-webkit-appearance: slider-vertical;
+	height: 100px;
+	width: 20px;
+}
 
 #sidebar {
 	position: absolute;

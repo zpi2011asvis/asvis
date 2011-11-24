@@ -298,7 +298,7 @@
 		_initGraphObject()
 		_initControlObject();
 
-		_camera_man = new CameraMan(_renderer, [ _graph_object ], opts.size.width, opts.size.height);
+		_camera_man = new CameraMan(that, _renderer, _scene, [ _graph_object ], opts.size.width, opts.size.height);
 		
 
 		widget_view.signals.resized.add(function (size) {

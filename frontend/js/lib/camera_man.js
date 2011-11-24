@@ -5,7 +5,8 @@
 		deg2Rad = global.util.deg2Rad,
 		rad2Deg = global.util.rad2Deg;
 
-	var CameraMan = function CameraMan(renderer, moving_objects, width, height) {
+	// TODO remove asvis_renderer after refactoring this crap
+	var CameraMan = function CameraMan(asvis_renderer, renderer, scene, moving_objects, width, height) {
 		// consts
 		var	TARGET = new T.Vector3(0, 0, 0),	// probably redundant
 			NORMAL = new T.Vector3(0, 0, 1),
@@ -18,12 +19,15 @@
 			_renderer,
 			_camera,
 			_moving_objects,
+			_fog,
 			// state -----------------------------------------------------------
 			_view_width,
 			_view_height,
 			_lat = 0,			// (-MAX_LAT, MAX_LAT)
 			_lng = 0,			// (0, PI*2)
 			_distance = 750,	// distance from _target to _eye
+			_fog_near = 50,		// 0-100
+			_fog_far = 50,		// 0-100
 			// cache -----------------------------------------------------------
 			_eye;				// cached eye position on sphere
 
@@ -41,7 +45,8 @@
 			_updateEye,
 			_viewAbs2Rel,
 			_viewCentered2Rel,
-			_normalizeLatLng;
+			_normalizeLatLng,
+			_recalculateFog;
 
 		/*
 		 * Publics -------------------------------------------------------------
@@ -65,6 +70,7 @@
 			}
 
 			_updateEye();
+			_recalculateFog();
 		};
 
 		this.rotate = function rotate(change) {
@@ -178,12 +184,38 @@
 			}
 		};
 
+		_recalculateFog = function _recalculateFog() {
+			_fog.near = _distance - 750 + (_fog_near - 50) * 10 + 500;
+			_fog.far =  _distance - 750 + (_fog_far - 50) * 15 + 1100;
+
+			if (_fog.near < 1) _fog.near = 1;
+			if (_fog.far < 200) _fog.far = 200;
+			if (_fog.near > _fog.far) _fog.near = _fog.far;
+		};
+
 		/*
 		 * Init ----------------------------------------------------------------
 		 */
 
 		_renderer = renderer;
 		_moving_objects = moving_objects;
+
+		_fog = scene.fog = new THREE.Fog(0x111111, 1, 1000);
+		renderer.setClearColor(_fog.color, 1);
+
+		//TODO move to proper place
+		global.x$('#graph_settings .fog_near').on('change', function (event) {
+			_fog_near = +this.value;
+			_recalculateFog();
+			asvis_renderer.refresh();
+		});
+		global.x$('#graph_settings .fog_far').on('change', function (event) {
+			_fog_far = +this.value;
+			_recalculateFog();
+			asvis_renderer.refresh();
+		});
+		_recalculateFog();
+	
 		this.resize(width, height);
 	};
 
