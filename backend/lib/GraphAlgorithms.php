@@ -15,14 +15,11 @@ class GraphAlgorithms {
 	}
 	
 	public function getShortestPath($num_end, $dir) {
-		$structure = null;
+		$structure = array();
 		
 		if(array_key_exists($num_end, $this->_structure)) {
 			$distance = $this->_structure[$num_end]->distance;
 			$paths = $this->_findPaths(array($num_end), $distance, $dir);
-			
-			
-			$structure = array();
 			
 			foreach($paths as $path) {
 				if(count($path) === ($distance+1)) {

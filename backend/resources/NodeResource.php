@@ -14,8 +14,17 @@ class NodesFindResource extends Resource {
 	function get($request, $number) {
 		$response = new Response($request);
 		
-		$this->_engine = new MySQLEngine();
-		$response->json($this->_engine->nodesFind((int) $number));
+		$number = (int) $number;
+		$response->s404Unless($number, 'Nie przekazano prawidłowego numeru AS.');
+		
+		if($response->code === 200) {
+			$this->_engine = new MySQLEngine();
+			$forJSON = $this->_engine->nodesFind($number);
+			$response->s500If(is_null($forJSON), 'Błąd pobierania danych z bazy.');
+			$response->s404If(empty($forJSON), 'Nie istnieje AS o podanym numerze.');
+		
+			$response->json($forJSON);
+		}
 		
 		return $response;
 	}
@@ -29,12 +38,15 @@ class NodesMetaResource extends Resource {
 		$response = new Response($request);
 
 		$numbers = json_decode($this->getParam('numbers'));
-		$response->s404Unless($numbers, 'a');
+		$response->s404If(empty($numbers), 'Nie przekazano żadnych numerów AS.');
 
-		$forJSON = $this->_engine->nodesMeta($numbers);
-		$response->s404If(is_null($forJSON), 'a');
-
-		$response->json($forJSON);
+		if($response->code === 200) {
+			$forJSON = $this->_engine->nodesMeta($numbers);
+			$response->s404If(is_null($forJSON), 'Nie znaleziono informacji na temat wszystkich AS o przekazanych numerach.');
+		
+			$response->json($forJSON);
+		}
+		
 		return $response;
 	}
 }

@@ -12,13 +12,16 @@ class ConnectionsMetaResource extends Resource {
 	function get($request, $num_for) {
 		$response = new Response($request);
 
-		$for_node = (int) $num_for;
-		$response->s404Unless($for_node, 'a');
+		$num_for = (int) $num_for;
+		$response->s404Unless($num_for, 'Nie przekazano prawidłowego numeru AS.');
+		
+		if($response->code === 200) {
+			$forJSON = $this->_engine->connectionsMeta($num_for);
+			$response->s404If(is_null($forJSON), 'Nie istnieje AS o podanym numerze.');
 
-		$forJSON = $this->_engine->connectionsMeta($for_node);
-		$response->s404If(is_null($forJSON), 'a');
-
-		$response->json($forJSON);
+			$response->json($forJSON);
+		}
+		
 		return $response;
 	}
 }

@@ -1,6 +1,10 @@
 <?php
 
 namespace asvis\resources;
+
+require_once __DIR__.'/../../config.php';
+
+use asvis\Config as Config;
 use asvis\lib\Engine;
 use asvis\lib\Response as Response;
 use asvis\lib\Resource as Resource;
@@ -10,12 +14,22 @@ use asvis\lib\Resource as Resource;
  */
 class StructureGraphResource extends Resource {
 	function get($request, $number, $depth) {
-		$forJSON = $this->_engine->structureGraph((int) $number, (int) $depth);
-		
 		$response = new Response($request);
 		
-		$response->s404If(is_null($forJSON), 'a');
-		$response->json($forJSON);
+		$number = (int) $number;
+		$response->s404Unless($number, 'Nie przekazano prawidłowego numeru AS.');
+		
+		$depth = (int) $depth;
+		$response->s404Unless($depth, 'Nie przekazano prawidłowego parametru głębokości.');
+		$response->s404If($depth < 0 || $depth > Config::get('orient_max_fetch_depth'), 'Przekazany parametr wysokości jest spoza zakresu.');
+
+		if($response->code === 200) {
+			$forJSON = $this->_engine->structureTree($number, $depth);
+			$response->s404If(is_null($forJSON), 'Nie istnieje AS o podanym numerze.');
+		
+			$response->json($forJSON);
+		}
+		
 		return $response;
 	}
 }
@@ -25,12 +39,24 @@ class StructureGraphResource extends Resource {
  */
 class StructureTreeResource extends Resource {
 	function get($request, $number, $height, $dir) {		
-		$forJSON = $this->_engine->structureTree((int) $number, (int) $height, $dir);
-		
 		$response = new Response($request);
 		
-		$response->s404If(is_null($forJSON), 'a');
-		$response->json($forJSON);
+		$number = (int) $number;
+		$response->s404Unless($number, 'Nie przekazano prawidłowego numeru AS.');
+		
+		$height = (int) $height;
+		$response->s404Unless($height, 'Nie przekazano prawidłowego parametru głębokości.');
+		$response->s404If($height < 0 || $height > Config::get('orient_max_fetch_depth'), 'Przekazany parametr głębokości jest spoza zakresu.');
+		
+		$response->s404If($dir !== 'in' && $dir !== 'out' && $dir !== 'both', 'Nie przekazano prawidłowego parametru kierunku.');
+
+		if($response->code === 200) {
+			$forJSON = $this->_engine->structureTree($number, $height, $dir);
+			$response->s404If(is_null($forJSON), 'Nie istnieje AS o podanym numerze.');
+		
+			$response->json($forJSON);
+		}
+		
 		return $response;
 	}
 }
@@ -39,13 +65,25 @@ class StructureTreeResource extends Resource {
  * @uri /structure/path/{num_start}/{num_end}/{dir}
  */
 class StructurePathResource extends Resource {
-	function get($request, $num_start, $num_end, $dir) {		
-		$forJSON = $this->_engine->structurePath((int) $num_start, (int) $num_end, $dir);
-		
+	function get($request, $num_start, $num_end, $dir) {
 		$response = new Response($request);
 		
-		$response->s404If(is_null($forJSON), 'a');
-		$response->json($forJSON);
+		$number = (int) $num_start;
+		$response->s404Unless($num_start, 'Nie przekazano prawidłowego początkowego numeru AS.');
+		
+		$number = (int) $num_end;
+		$response->s404Unless($num_end, 'Nie przekazano prawidłowego końcowego numeru AS.');
+		
+		$response->s404If($dir !== 'in' && $dir !== 'out' && $dir !== 'both', 'Nie przekazano prawidłowego parametru kierunku.');
+
+		if($response->code === 200) {
+			$forJSON = $this->_engine->structurePath($num_start, $num_end, $dir);
+			$response->s404If(empty($forJSON), 'Nie znaleziono żadnej istniejącej ścieżki w badanym zakresie.');
+			$response->s404If(is_null($forJSON), 'Nie istnieje AS o podanym numerze początkowym.');
+		
+			$response->json($forJSON);
+		}
+			
 		return $response;
 	}
 }

@@ -127,15 +127,8 @@ class OrientEngine implements Engine {
 	 * (non-PHPdoc)
 	 * @see asvis\lib.Engine::structureGraph()
 	 */
-	public function structureGraph($nodeNum, $depth) {	
-		
-		$nodeNum = (int)$nodeNum;
-		$depth   = (int)$depth;
-		
-		if($nodeNum < 0 || $depth < 0 || $depth > Config::get('orient_max_fetch_depth')) {
-			return null;
-		}
-		
+	public function structureGraph($nodeNum, $depth) {
+				
 		// +1 because we want maximum distance to be equal with $depth
 		$fp = $depth + 1;
 		
@@ -160,17 +153,6 @@ class OrientEngine implements Engine {
 	 * @see asvis\lib.Engine::structureTree()
 	 */
 	public function structureTree($nodeNum, $height, $dir) {
-	
-		$nodeNum = (int) $nodeNum;
-		$height = (int) $height;
-		
-		if($dir !== 'in' && $dir !== 'out' && $dir !== 'both') {
-			return null;
-		} 
-		
-		if($nodeNum < 0 || $height < 0 || $height > Config::get('orient_max_fetch_depth')) {
-			return null;
-		}
 		
 		// +2 because we want maximum distance to be equal with $height+1
 		$fp = $height + 2;
@@ -194,22 +176,11 @@ class OrientEngine implements Engine {
 	}
 	
 	public function structurePath($num_start, $num_end, $dir) {
-	
-		$num_start = (int) $num_start;
-		$num_end = (int) $num_end;
-		
-		if($dir !== 'in' && $dir !== 'out' && $dir !== 'both') {
-			return null;
-		} 
-		
-		if ($num_start < 0 || $num_end < 0) {
-			return null;
-		}
 
 		$fp = 1;
-		$structure = null;
+		$structure = array();
 		
-		while(!isset($structure) && $fp <= Config::get('orient_max_fetch_depth')) {
+		while(empty($structure) && $fp <= Config::get('orient_max_fetch_depth')) {
 		
 			$query = "SELECT FROM ASNode WHERE num = {$num_start}";
 			$fetchplan = "*:{$fp} ASNode.pools:0";

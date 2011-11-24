@@ -38,7 +38,7 @@ class MySQLEngine implements Engine {
 		$result = mysql_query($query, $this->_connection);
 		
 		if (!$result) {
-			echo mysql_error($this->_connection);
+			return null;
 		}
 		
 		$ret = array();		
