@@ -17,7 +17,7 @@ class NodesFindResource extends Resource {
 		$number = (int) $number;
 		$response->s404Unless($number, 'Nie przekazano prawidłowego numeru AS.');
 		
-		if($response->code === 200) {
+		if ($response->code === 200) {
 			$this->_engine = new MySQLEngine();
 			$forJSON = $this->_engine->nodesFind($number);
 			$response->s404If(empty($forJSON), 'Nie istnieje AS o podanym numerze.');
@@ -40,7 +40,7 @@ class NodesMetaResource extends Resource {
 		$numbers = json_decode($this->getParam('numbers'));
 		$response->s404If(empty($numbers), 'Nie przekazano żadnych numerów AS.');
 
-		if($response->code === 200) {
+		if ($response->code === 200) {
 			$this->_engine = new MySQLEngine();
 			$forJSON = $this->_engine->nodesMeta($numbers);
 			$response->s404If(empty($forJSON), 'Nie znaleziono informacji na temat wszystkich AS o przekazanych numerach.');
