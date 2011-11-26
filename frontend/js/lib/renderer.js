@@ -15,42 +15,42 @@
 			MATERIAL = {
 				NODE: new T.ParticleBasicMaterial({
 					color: 0x77FF77,
-					size: 5,
-					sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
-					map: SPRITE.NODE
-				}),
-				ROOT: new T.ParticleBasicMaterial({
-					color: 0xFF6666,
-					size: 12,
-					sizeAttenuation: false, // true - enable perspective (what's farther is smaller)
+					sizeAttenuation: false,			// true - enable perspective (what's farther is smaller)
 					map: SPRITE.NODE
 				}),
 				LINE: new T.LineBasicMaterial({
 					color: 0xFFFFFF,
-					opacity: 0.2
 				})
 			},
 			REFRESHING_STOP = {
-				DELAY: 1000, // how long after any action performed should rendering go on
-				CHECK_INTERVAL: 500 // how often check if any action was performed
+				DELAY: 1000,						// how long after any action performed should rendering go on
+				CHECK_INTERVAL: 500					// how often check if any action was performed
 			}; 
 
 		// properties
 		var	_renderer,
 			_scene,
-			_control_object,
-			_graph_object,
-			_graph_objects,
+			_control_object,						// main Object3D for control elements
+			_graph_object,							// main Object3D for graph elements
+			_graph_objects,							// array of Object3Ds
 			_vizir,
 			_components = [],
-			_next_component_id = 0,
-			_graph,
+			_graph,									// whole (with orders) graph data
+			_nodes_object,							// ParticleSystem with nodes
+			_camera_man = null,
 			// state -----------------------------------------------------------
 			_started = false,
-			_last_action = 0, // last action timestamp
+			_last_action = 0,						// last action timestamp
 			_long_delay = 0,
 			_refreshing_interval = null,
-			_camera_man = null;
+			_next_component_id = 0,
+			_settings = {
+				lines_opacity: 20,
+				show_nodes: true,
+				nodes_size: 50,
+				fog_near: 50,
+				fog_far: 50
+			};
 
 		// methods
 		var _refresh,
@@ -58,7 +58,8 @@
 			_initGraphObject,
 			_nver,
 			_nvec,
-			_markAsRoot;
+			_markAsRoot,
+			_updateFromSettings;
 
 		/*
 		 * Publics -------------------------------------------------------------
@@ -74,6 +75,10 @@
 
 		this.getEl = function getEl() {
 			return _renderer.domElement;
+		};
+
+		this.getSettings = function getSettings () {
+			return _settings;
 		};
 
 		this.start = function start() {
@@ -144,6 +149,7 @@
 				i, il;
 
 			_graph = graph.structure;
+			_nodes_object = psystem;
 
 			// clear graph object3d
 			_graph_objects.forEach(function (obj) {
@@ -172,7 +178,7 @@
 			_markAsRoot(graph.structure[root].pos);	
 		};
 
-		this.addComponents = function (components) {
+		this.addComponents = function addComponents(components) {
 			var components_object = new T.Object3D();
 
 			components.forEach(function (params) {
@@ -186,7 +192,7 @@
 			return _next_component_id++;
 		};
 
-		this.removeComponent = function (id) {
+		this.removeComponent = function removeComponent(id) {
 			var components_object = _components[id];
 
 			if (!components_object) {
@@ -195,6 +201,11 @@
 			
 			_graph_object.remove(components_object);
 			this.refresh();
+		};
+
+		this.setSettings = function setSettings(settings) {
+			_settings = settings;
+			_updateFromSettings();
 		};
 
 		/*
@@ -273,6 +284,14 @@
 			_graph_objects.push(root_mesh);
 		};
 
+		_updateFromSettings = function _updateFromSettings() {
+			var s = _settings;
+			MATERIAL.LINE.opacity = s.lines_opacity / 100;
+			MATERIAL.NODE.size = s.nodes_size / 10;
+			_nodes_object && (_nodes_object.visible = s.show_nodes);
+			_camera_man && _camera_man.setFog(s.fog_near, s.fog_far);
+		};
+
 		/*
 		 * Init ----------------------------------------------------------------
 		 */
@@ -295,11 +314,12 @@
 		}
 		_scene = new T.Scene();
 		_vizir = new Vizir();
+		_updateFromSettings();
 
 		_initGraphObject()
 		_initControlObject();
 
-		_camera_man = new CameraMan(that, _renderer, _scene, [ _graph_object ], opts.size.width, opts.size.height);
+		_camera_man = new CameraMan(_renderer, _scene, [ _graph_object ], opts.size.width, opts.size.height);
 		
 
 		widget_view.signals.resized.add(function (size) {
@@ -333,7 +353,7 @@
 
 			var line_material = new T.LineBasicMaterial({
 					color: 0xFF2222,
-					linewidth: 2,
+					linewidth: 3,
 				}),
 				line_geometry = new T.Geometry(),
 				line = new T.Line(line_geometry, line_material);

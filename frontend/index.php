@@ -75,10 +75,6 @@ function includeTemplates() {
 	<p id="flash"><span class="message"></span></p>
 	<div id="graph">
 		<div id="graph_renderer"></div>
-		<div id="graph_settings">
-			<p><input type="range" min="0" max="100" value="50" class="fog_near">
-			<input type="range" min="0" max="100" value="50" class="fog_far"></p>
-		</div>
 	</div>
 	<aside id="sidebar">
 	</aside>
@@ -111,6 +107,7 @@ function includeTemplates() {
 		'lib/resources/structures_resource.js',
 		'lib/widgets/widget.js',
 		'lib/widgets/start_form_widget.js',
+		'lib/widgets/graph_controls_widget.js',
 		'lib/widgets/graph_widget.js',
 		'lib/widgets/infobar_widget.js',
 	)) ?>

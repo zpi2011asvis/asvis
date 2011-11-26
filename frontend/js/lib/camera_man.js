@@ -5,8 +5,7 @@
 		deg2Rad = global.util.deg2Rad,
 		rad2Deg = global.util.rad2Deg;
 
-	// TODO remove asvis_renderer after refactoring this crap
-	var CameraMan = function CameraMan(asvis_renderer, renderer, scene, moving_objects, width, height) {
+	var CameraMan = function CameraMan(renderer, scene, moving_objects, width, height) {
 		// consts
 		var	TARGET = new T.Vector3(0, 0, 0),	// probably redundant
 			NORMAL = new T.Vector3(0, 0, 1),
@@ -31,13 +30,6 @@
 			// cache -----------------------------------------------------------
 			_eye;				// cached eye position on sphere
 
-		/*
-		 * TODO
-		 * Set max and min right-axis angle.
-		 * Keep not an eye vector, but the right, top (lat, lng) angle
-		 * Cache resulting eye vector
-		 */
-	
 		// methods
 		var _nvec,
 			_newCamera,
@@ -63,9 +55,6 @@
 		this.camera = null;
 
 		this.destroy = function destroy() {
-			// TODO refuck
-			global.x$('#graph_settings .fog_near').un('change');
-			global.x$('#graph_settings .fog_far').un('change');
 		};
 
 		this.zoom = function zoom(is_forward, pointed_at) {
@@ -115,6 +104,12 @@
 			_view_height = height;
 			_renderer.setSize(width, height);
 			_newCamera();
+		};
+
+		this.setFog = function setFog(near, far) {
+			_fog_near = near;
+			_fog_far = far;
+			_recalculateFog();
 		};
 
 		/*
@@ -191,7 +186,7 @@
 		};
 
 		_recalculateFog = function _recalculateFog() {
-			_fog.near = _distance - 750 + (_fog_near - 50) * 10 + 500;
+			_fog.near = _distance - 750 + (_fog_near - 50) * 10 + 600;
 			_fog.far =  _distance - 750 + (_fog_far - 50) * 15 + 1100;
 
 			if (_fog.near < 1) _fog.near = 1;
@@ -209,17 +204,6 @@
 		_fog = scene.fog = new THREE.Fog(0x111111, 1, 1000);
 		renderer.setClearColor(_fog.color, 1);
 
-		//TODO move to proper place
-		global.x$('#graph_settings .fog_near').on('change', function (event) {
-			_fog_near = +this.value;
-			_recalculateFog();
-			asvis_renderer.refresh();
-		});
-		global.x$('#graph_settings .fog_far').on('change', function (event) {
-			_fog_far = +this.value;
-			_recalculateFog();
-			asvis_renderer.refresh();
-		});
 		_recalculateFog();
 	
 		this.resize(width, height);

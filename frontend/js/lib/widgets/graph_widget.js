@@ -8,6 +8,26 @@
 
 	var GraphWidget = Widget.create(function GraphWidget() {}, {
 		_connection_mark_id: null,
+		_renderer: null,
+
+		_init: function _init() {
+			var renderer = new Renderer(this._view, {
+					size: this._view._getSize()
+				}),
+				controls = lib.widgets.GraphControlsWidget.new(this._container_el);
+
+			controls.set('settings', renderer.getSettings());
+			controls.signals.settings_changed.add(function (settings) {
+				renderer.setSettings(settings);
+				renderer.refresh();
+			});
+
+			this._view._renderer = renderer;
+			this._renderer = renderer;
+				
+			this._controls = controls;
+			this._children = [ this._controls ];
+		},
 
 		markConnectionTo: function markConnectionTo(from, to) {
 			this._connection_mark_id = this._view._renderer.addComponents([
@@ -68,9 +88,7 @@
 			if (this._el) return;
 
 			var that = this,
-				renderer = new Renderer(this, {
-					size: this._getSize()
-				}),
+				renderer = that._renderer,
 				window_el = x$(global.window);
 				
 			that._el = x$(renderer.getEl());
@@ -108,8 +126,6 @@
 				renderer.start();
 				global.app.signals.graph_rendering.ended.dispatch(that);
 			}, 1);
-
-			this._renderer = renderer;
 		},
 
 		_getSize: function _getSize() {

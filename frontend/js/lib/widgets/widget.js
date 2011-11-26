@@ -19,6 +19,7 @@ this.app.lib.widgets = {};
 		_dirty: true,
 		_dirty_keys: null,
 		_view: null,
+		_children: null,
 
 		init: function init(container_el, position) {
 			this._container_el = container_el;
@@ -27,11 +28,16 @@ this.app.lib.widgets = {};
 			};
 			this._data = {};
 			this._dirty_keys = [];
+			this._children = [];
 			this._view = this.constructor.View.new(container_el, position || 'bottom');
 			this._init && this._init();
 		},
 
 		destroy: function destroy() {
+			this._children.forEach(function (child) {
+				child.destroy();
+			});
+
 			this._view.destroy();
 			this._view = null;
 			this.signals.destroyed.dispatch();
@@ -49,6 +55,10 @@ this.app.lib.widgets = {};
 			this._view.render(this._data, this._dirty_keys);
 			this._dirty = false;
 			this._dirty_keys = [];
+
+			this._children.forEach(function (child) {
+				child.render();
+			});
 		}
 	},
 	{
