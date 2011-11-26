@@ -37,12 +37,12 @@ class MySQLEngine implements Engine {
 		
 		$result = mysql_query($query, $this->_connection);
 		
-		if (!$result) {
+		if(!$result) {
 			return null;
 		}
 		
 		$ret = array();		
-		while ( ($as = mysql_fetch_assoc($result)) ) {
+		while( ($as = mysql_fetch_assoc($result)) ) {
 			$ret[$as['asnum']] = array('name'=>$as['asname']);
 		}
 		
@@ -51,16 +51,28 @@ class MySQLEngine implements Engine {
 	
 	public function nodesMeta($nodes) {
 		$ret = array();
-		foreach ($nodes as $num) {
-			$query = 'SELECT ASNetwork as network, ASNetmask as netmask FROM aspool WHERE asnum = '.$num;
+		
+		$query = "SELECT asnum FROM ases WHERE asnum IN (".implode(',', $nodes).")";
+		$nums = mysql_query($query, $this->_connection);
+		
+		if(!$nums) {
+			return null;
+		}
+		
+		while( ($num = mysql_fetch_assoc($nums)) ) {
+			$query = 'SELECT ASNetwork, ASNetmask FROM aspool WHERE asnum = '.$num['asnum'];
 			$result = mysql_query($query, $this->_connection);
-
+			
 			$pools = array();
-			while ( ($pool = mysql_fetch_assoc($result)) ) {
-				$pools[] = $pool;
+			while( ($pool = mysql_fetch_assoc($result)) ) {
+				$pools[] = array('ip'=>long2ip($pool['ASNetwork']), 'netmask'=>$pool['ASNetmask']);
 			}
 			
-			$ret[$num]['pools'] = $pools;
+			$ret[$num['asnum']]['pools'] = $pools;
+		}
+		
+		if(count($ret) < count($nodes)) {
+			return array();
 		}
 		
 		return $ret;

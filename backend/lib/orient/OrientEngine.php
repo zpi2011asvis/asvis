@@ -82,9 +82,8 @@ class OrientEngine implements Engine {
 		$json = $this->_orient->query($query, null, -1, $fetchplan);	
 		$result = json_decode($json->getBody())->result;
 
-		// return null for all if one of numbers is wrong
 		if (count($result) < count($numbers)) {
-			return null;
+			return array();
 		}
 
 		foreach ($result as $node) {

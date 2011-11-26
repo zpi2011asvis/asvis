@@ -41,8 +41,10 @@ class NodesMetaResource extends Resource {
 		$response->s404If(empty($numbers), 'Nie przekazano żadnych numerów AS.');
 
 		if($response->code === 200) {
+			$this->_engine = new MySQLEngine();
 			$forJSON = $this->_engine->nodesMeta($numbers);
-			$response->s404If(is_null($forJSON), 'Nie znaleziono informacji na temat wszystkich AS o przekazanych numerach.');
+			$response->s404If(empty($forJSON), 'Nie znaleziono informacji na temat wszystkich AS o przekazanych numerach.');
+			$response->s500If(is_null($forJSON), 'Błąd pobierania danych z bazy.');
 		
 			$response->json($forJSON);
 		}
