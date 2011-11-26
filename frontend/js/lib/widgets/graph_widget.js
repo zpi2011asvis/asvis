@@ -21,6 +21,9 @@
 				renderer.setSettings(settings);
 				renderer.refresh();
 			});
+			controls.signals.fba_clicked.add(function () {
+				renderer.runFBA(5000);
+			});
 
 			this._view._renderer = renderer;
 			this._renderer = renderer;

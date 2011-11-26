@@ -102,6 +102,10 @@
 			return this;
 		};
 
+		this.runFBA = function runFBA(time) {
+			_fba.run(time);
+		};
+
 		/*
 		 * Privates ------------------------------------------------------------
 		 */

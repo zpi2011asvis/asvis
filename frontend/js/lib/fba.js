@@ -20,6 +20,7 @@
 
 		// properties
 		var that = this,
+			_started = false,
 			_root,
 			_root_index,
 			_graph,
@@ -52,6 +53,9 @@
 		 * @param max_times (ms)
 		 */
 		this.run = function run(max_time) {
+			if (_started) return;
+
+			_started = true;
 			global.app.signals.graph_rendering.started.dispatch(FBA);
 			this.signals.started.dispatch();
 
@@ -82,6 +86,7 @@
 				setTimeout(_run, 1);
 			}
 			else {
+				_started = false;
 				global.DEBUG && console.log('FBA steps done: ' + _steps_done);
 				global.app.signals.graph_rendering.ended.dispatch(FBA);
 				that.signals.ended.dispatch();

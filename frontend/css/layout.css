@@ -160,3 +160,10 @@ body {
 #graph_controls input {
 	vertical-align: middle;
 }
+#graph_controls button {
+	width: 100%;
+	font-size: 12px;
+	-moz-box-sizing: padding-box;
+	-webkit-box-sizing: padding-box;
+	box-sizing: padding-box;
+}

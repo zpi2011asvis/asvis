@@ -44,6 +44,7 @@
 			_long_delay = 0,
 			_refreshing_interval = null,
 			_next_component_id = 0,
+			_dirty_vertices = false,				// dirty nodes vertices (when fba works)
 			_settings = {
 				lines_opacity: 20,
 				show_nodes: true,
@@ -208,6 +209,10 @@
 			_updateFromSettings();
 		};
 
+		this.runFBA = function runFBA(time) {
+			_vizir.runFBA(time);
+		};
+
 		/*
 		 * Privates ------------------------------------------------------------
 		 */
@@ -222,10 +227,11 @@
 
 		_refresh = function _refresh() {
 			if (_started) {
-				_graph_objects.forEach(function (obj) {
-					// TODO maybe do this only between vizir start end signals?
-					obj.geometry.__dirtyVertices = true;
-				});
+				if (_dirty_vertices) {
+					_graph_objects.forEach(function (obj) {
+						obj.geometry.__dirtyVertices = true;
+					});
+				}
 				_renderer.render(_scene, _camera_man.camera);
 				requestAnimationFrame(_refresh, that.getEl());
 			}
@@ -341,9 +347,11 @@
 		});
 		_vizir.signals.started.add(function () {
 			that.startLong();
+			_dirty_vertices = true;
 		});
 		_vizir.signals.ended.add(function () {
 			that.stopLong();
+			_dirty_vertices = false;
 		});
 	};
 

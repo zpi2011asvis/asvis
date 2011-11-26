@@ -8,7 +8,8 @@
 	var GraphControlsWidget = Widget.create(function GraphControlsWidget() {}, {
 		signals: {
 			destroyed: null,
-			settings_changed: null
+			settings_changed: null,
+			fba_clicked: null
 		},
 
 		_init: function _init() {
@@ -16,7 +17,8 @@
 
 			that.signals = {
 				destroyed: new Signal(),
-				settings_changed: that._view.signals.settings_changed
+				settings_changed: that._view.signals.settings_changed,
+				fba_clicked: that._view.signals.fba_clicked
 			};
 		}
 	},
@@ -26,12 +28,14 @@
 
 	GraphControlsWidget.View = Widget.View.create(function GraphControlsWidgetView() {}, {
 		signals: {
-			settings_changed: null
+			settings_changed: null,
+			fba_clicked: null
 		}, 
 
 		_init: function _init() {
 			this.signals = {
-				settings_changed: new Signal()
+				settings_changed: new Signal(),
+				fba_clicked: new Signal()
 			};
 		},
 			
@@ -80,6 +84,10 @@
 						nodes_size:			+nodes_size_el.first().value
 					});
 				});
+			});
+
+			that._el.find('.fba').on('click', function () {
+				that.signals.fba_clicked.dispatch();
 			});
 		}
 	});
