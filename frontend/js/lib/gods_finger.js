@@ -33,8 +33,8 @@
 				c = THREE.Collisions.rayCastNearest(ray);
 
 			if (c !== _touched) {
+				that.signals.untouched.dispatch(_touched);
 				if (c) that.signals.touched.dispatch(c);
-				else that.signals.untouched.dispatch(_touched);
 				
 				_touched = c;
 			}
