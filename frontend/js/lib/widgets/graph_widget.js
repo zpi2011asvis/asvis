@@ -107,7 +107,7 @@
 			this.markHoveredNode(node_num);
 			this._node_info.set('node_num', node_num);
 			this._node_info.set('depth', this._data.depth);
-			this._node_info.set('node_meta', this._data.nodes_meta[node_num]);
+			this._node_info.set('node_meta', this._data.nodes_meta && this._data.nodes_meta[node_num]);
 			this._node_info.show();
 		},
 
