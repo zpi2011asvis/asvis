@@ -7,8 +7,18 @@
 		x = global.x$;
 
 	var NodeInfoWidget = Widget.create(function NodeInfoWidget() {}, {
+		signals: {
+			destroyed: null,
+			hidden: null
+		},
+
 		_init: function _init() {
 			var that = this;
+
+			that.signals = {
+				destroyed: new Signal(),
+				hidden: that._view.signals.hidden
+			};
 		},
 		_mouse_pos: null,
 
@@ -30,11 +40,18 @@
 	});
 
 	NodeInfoWidget.View = Widget.View.create(function NodeInfoWidgetView() {}, {
+		signals: {
+			hidden: null
+		},
+
 		_hovered: false,
 		_hiding_timers: null,
 
 		_init: function _init() {
 			this._hiding_timers = [];
+			this.signals = {
+				hidden: new Signal()
+			};
 		},
 
 		render: function render(data) {
@@ -77,8 +94,10 @@
 			this._hiding_timers.forEach(global.clearTimeout);
 			this._hiding_timers = [];
 			this._el
-				.setStyle('left', (pos.x + 5) + 'px')
-				.setStyle('top', (pos.y + 5) + 'px')
+				// display box container under the node
+				// so nodes between box and this nodes don't gain hover
+				.setStyle('left', (pos.x - 2) + 'px')
+				.setStyle('top', (pos.y - 2) + 'px')
 				.addClass('visible');
 		},
 
@@ -91,6 +110,7 @@
 						.removeClass('visible')
 						.setStyle('left', -100 + 'px')
 						.setStyle('top', -100 + 'px');
+					that.signals.hidden.dispatch();
 				}
 			}, 500));
 		}

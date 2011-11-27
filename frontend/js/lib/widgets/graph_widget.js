@@ -7,12 +7,13 @@
 		x = global.x$;
 
 	var GraphWidget = Widget.create(function GraphWidget() {}, {
-		_connection_mark_id: null,
 		_renderer: null,
 		_controls: null,
 		_node_info: null,
 		_block_node_info_timeout: null,
 		_is_node_info_blocked: null,
+		_connection_mark_id: null,
+		_hovered_mark_id: null,
 
 		_init: function _init() {
 			var that = this,
@@ -42,6 +43,10 @@
 				that.hideNodeInfoFor(node_num);
 			});
 
+			node_info.signals.hidden.add(function () {
+				that.unmarkHoveredNode();
+			});
+
 			// block info popup when dragging
 			// remove blockade after stopping
 			that._view.signals.dragged.add(function () {
@@ -62,27 +67,44 @@
 		},
 
 		markConnectionTo: function markConnectionTo(from, to) {
-			this._connection_mark_id = this._view._renderer.addComponents([
+			this._connection_mark_id = this._renderer.addComponents([
 				{
 					class: 'line',
-					type: 'marking',
+					style: 'marking',
 					fromNode: from,
 					toNode: to
 				},
 				{
 					class: 'node',
-					type: 'marking',
+					style: 'marking',
 					forNode: to
 				}
 			]);
 		},
 		
 		unmarkConnection: function unmarkConnection() {
-			this._view._renderer.removeComponent(this._connection_mark_id);
+			this._connection_mark_id && this._renderer.removeComponent(this._connection_mark_id);
 			this._connection_mark_id = null;
 		},
 
+		markHoveredNode: function (node_num) {
+			this._hovered_mark_id = this._renderer.addComponents([
+				{
+					class: 'node',
+					style: 'hovered',
+					forNode: node_num
+				}
+			]);
+		},
+
+		unmarkHoveredNode: function () {
+			this._hovered_mark_id && this._renderer.removeComponent(this._hovered_mark_id);
+			this._hovered_mark_id = null;
+		},
+
 		showNodeInfoFor: function showNodeInfoFor(node_num) {
+			this.unmarkHoveredNode();
+			this.markHoveredNode(node_num);
 			this._node_info.set('node_num', node_num);
 			this._node_info.set('depth', this._data.depth);
 			this._node_info.set('node_meta', this._data.nodes_meta[node_num]);

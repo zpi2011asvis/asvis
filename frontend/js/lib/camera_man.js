@@ -18,6 +18,7 @@
 			_renderer,
 			_camera,
 			_moving_objects,
+			_moving_objects_moved_by,
 			_fog,
 			_projector,
 			// state -----------------------------------------------------------
@@ -98,6 +99,7 @@
 			_moving_objects.forEach(function (obj) {
 				obj.position.addSelf(mvec);
 			});
+			_moving_objects_moved_by.addSelf(mvec);
 		};
 
 		this.resize = function resize(width, height) {
@@ -116,11 +118,16 @@
 		this.getRayForMousePos = function getRayForMousePos(mouse_pos) {
 			var x = mouse_pos.x / _view_width * 2 - 1,
 				y = -mouse_pos.y / _view_height * 2 + 1,
-				vector = new THREE.Vector3(x, y, 0.5);
+				vector = new THREE.Vector3(x, y, 0.5),
+				camera_pos = _camera.position.clone();
 
 			_projector.unprojectVector(vector, _camera);
+	
+			// objects moved so test ray also should be
+			vector.subSelf(_moving_objects_moved_by);
+			camera_pos.subSelf(_moving_objects_moved_by);
 
-			return new T.Ray(_camera.position, vector.subSelf(_camera.position).normalize());
+			return new T.Ray(camera_pos, vector.subSelf(camera_pos).normalize());
 		};
 
 		/*
@@ -211,6 +218,7 @@
 
 		_renderer = renderer;
 		_moving_objects = moving_objects;
+		_moving_objects_moved_by = _nvec();
 
 		_fog = scene.fog = new THREE.Fog(0x111111, 1, 1000);
 		renderer.setClearColor(_fog.color, 1);

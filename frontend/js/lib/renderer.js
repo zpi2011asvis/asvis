@@ -47,7 +47,7 @@
 			_last_action = 0,						// last action timestamp
 			_long_delay = 0,
 			_refreshing_interval = null,
-			_next_component_id = 0,
+			_next_component_id = 1,
 			_dirty_vertices = false,				// dirty nodes vertices (when fba works)
 			_settings = {
 				lines_opacity: 20,
@@ -178,7 +178,7 @@
 			for (i = 0, il = vertices.length; i < il; i++) {
 				v = vertices[i];
 				verts_geometry.vertices.push(v);
-				sc = new SphereCollider(v.position, 5);
+				sc = new SphereCollider(v.position, 3);
 				// TODO let sc know about node. but how?!
 				_colliders.push(sc);
 			}
@@ -382,13 +382,29 @@
 	};
 
 	var Components = {
-		line: function line(graph, params) {
-			// TODO refactor with params.type usage
+		LINES: {
+			marking: new T.LineBasicMaterial({
+				color: 0xFF2222,
+				linewidth: 3,
+			})
+		},
+		NODES: {
+			marking: function () {
+				return new T.Mesh(
+					new T.SphereGeometry(3, 10, 10),
+					new T.MeshBasicMaterial({ color: 0xFF2222 })
+				);
+			},
+			hovered: function (geometry) {
+				return new T.Mesh(
+					new T.SphereGeometry(2, 8, 8),
+					new T.MeshBasicMaterial({ color: 0x4444FF })
+				);
+			}
+		},
 
-			var line_material = new T.LineBasicMaterial({
-					color: 0xFF2222,
-					linewidth: 3,
-				}),
+		line: function line(graph, params) {
+			var line_material = this.LINES[params.style],
 				line_geometry = new T.Geometry(),
 				line = new T.Line(line_geometry, line_material);
 
@@ -401,11 +417,9 @@
 		},
 
 		node: function node(graph, params) {
-			// TODO refactor with params.type usage
-			// TODO why position does not change while fba works?
-			
-			var geometry = new T.SphereGeometry(3, 10, 10),
-				mesh = new T.Mesh(geometry, new T.MeshBasicMaterial({ color: 0xFF2222 }));
+			// TODO why position does not change when fba works?
+
+			var mesh = this.NODES[params.style]();
 
 			mesh.position = graph[params.forNode].pos;
 			
