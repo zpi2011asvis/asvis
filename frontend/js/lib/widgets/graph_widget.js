@@ -62,6 +62,7 @@
 			resized: null,
 			scrolled: null,
 			dragged: null,
+			mouse_moved: null,
 			action_performed: null
 		},
 		_renderer: null,
@@ -72,6 +73,7 @@
 				resized: new Signal(),
 				scrolled: new Signal(),
 				dragged: new Signal(),
+				mouse_moved: new Signal(),
 				action_performed: new Signal()
 			};
 			this._mouse_pos = { x: 0, y: 0 };
@@ -119,6 +121,7 @@
 
 			that._el.on('mousemove', function (event) {
 				that._mouse_pos = { x: event.layerX, y: event.layerY };
+				that.signals.mouse_moved.dispatch(that._mouse_pos);
 				that.signals.action_performed.dispatch();
 			});
 

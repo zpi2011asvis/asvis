@@ -4,6 +4,7 @@
 	var T = global.THREE,
 		Vizir = lib.Vizir,
 		CameraMan = lib.CameraMan,
+		GodsFinger = lib.GodsFinger,
 		requestAnimationFrame = global.util.requestAnimationFrame;
 
 	var Renderer = function Renderer(widget_view, opts) {
@@ -38,6 +39,8 @@
 			_graph,									// whole (with orders) graph data
 			_nodes_object,							// ParticleSystem with nodes
 			_camera_man = null,
+			_colliders,
+			_gods_finger,
 			// state -----------------------------------------------------------
 			_started = false,
 			_last_action = 0,						// last action timestamp
@@ -141,12 +144,14 @@
 		 * @param root {Integer} root vertex number
 		 */
 		this.setStructure = function setStructure(graph, root) {
-			var verts_geometry = new T.Geometry(),
+			var SphereCollider = T.SphereCollider,
+				verts_geometry = new T.Geometry(),
 				edges_geometry = new T.Geometry(),
 				psystem = new T.ParticleSystem(verts_geometry, MATERIAL.NODE),
 				line = new T.Line(edges_geometry, MATERIAL.LINE),
 				vertices,
 				edges,
+				sc, v,
 				i, il;
 
 			_graph = graph.structure;
@@ -157,6 +162,7 @@
 				_graph_object.remove(obj);
 			});
 			_graph_objects = [];
+			T.Collisions.colliders = _colliders = [];
 
 			_vizir.clear().setGraph(graph).setRoot(root).recalculate();
 
@@ -164,7 +170,11 @@
 			edges = _vizir.getEdges();
 
 			for (i = 0, il = vertices.length; i < il; i++) {
-				verts_geometry.vertices.push(vertices[i]);
+				v = vertices[i];
+				verts_geometry.vertices.push(v);
+				sc = new SphereCollider(v.position, 5);
+				// TODO let sc know about node. but how?!
+				_colliders.push(sc);
 			}
 
 			for (i = 0, il = edges.length; i < il; i++) {
@@ -326,7 +336,7 @@
 		_initControlObject();
 
 		_camera_man = new CameraMan(_renderer, _scene, [ _graph_object ], opts.size.width, opts.size.height);
-		
+		_gods_finger = new GodsFinger(_camera_man);
 
 		widget_view.signals.resized.add(function (size) {
 			_camera_man.resize(size.width, size.height);
@@ -345,6 +355,9 @@
 				_camera_man.rotate(change);
 			}
 		});
+		widget_view.signals.mouse_moved.add(function (mouse_pos) {
+			_gods_finger.onMouseMove(mouse_pos);
+		});
 		_vizir.signals.started.add(function () {
 			that.startLong();
 			_dirty_vertices = true;
@@ -352,6 +365,12 @@
 		_vizir.signals.ended.add(function () {
 			that.stopLong();
 			_dirty_vertices = false;
+		});
+		_gods_finger.signals.touched.add(function (collider) {
+			console.log('touched', collider);
+		});
+		_gods_finger.signals.untouched.add(function (collider) {
+			console.log('untouched', collider);
 		});
 	};
 

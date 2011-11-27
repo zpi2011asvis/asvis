@@ -97,6 +97,7 @@ function includeTemplates() {
 		'lib/fba.js',
 		'lib/vizir.js',
 		'lib/camera_man.js',
+		'lib/gods_finger.js',
 		'lib/renderer.js',
 		'lib/stores/store.js',
 		'lib/stores/memory_store.js',

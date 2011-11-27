@@ -19,6 +19,7 @@
 			_camera,
 			_moving_objects,
 			_fog,
+			_projector,
 			// state -----------------------------------------------------------
 			_view_width,
 			_view_height,
@@ -112,6 +113,16 @@
 			_recalculateFog();
 		};
 
+		this.getRayForMousePos = function getRayForMousePos(mouse_pos) {
+			var x = mouse_pos.x / _view_width * 2 - 1,
+				y = -mouse_pos.y / _view_height * 2 + 1,
+				vector = new THREE.Vector3(x, y, 0.5);
+
+			_projector.unprojectVector(vector, _camera);
+
+			return new T.Ray(_camera.position, vector.subSelf(_camera.position).normalize());
+		};
+
 		/*
 		 * Privates ------------------------------------------------------------
 		 */
@@ -203,6 +214,8 @@
 
 		_fog = scene.fog = new THREE.Fog(0x111111, 1, 1000);
 		renderer.setClearColor(_fog.color, 1);
+
+		_projector = new T.Projector();
 
 		_recalculateFog();
 	
