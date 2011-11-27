@@ -218,6 +218,8 @@
 				node.pos = current_pos;
 				node.conns = [];
 			}
+			// important - let position know about node
+			current_pos.node_num = num;
 			_vertices.push(current_pos);
 			_nodes_done.push(num);
 			

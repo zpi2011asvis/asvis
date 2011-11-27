@@ -9,12 +9,18 @@
 	var GraphWidget = Widget.create(function GraphWidget() {}, {
 		_connection_mark_id: null,
 		_renderer: null,
+		_controls: null,
+		_node_info: null,
+		_block_node_info_timeout: null,
+		_is_node_info_blocked: null,
 
 		_init: function _init() {
-			var renderer = new Renderer(this._view, {
-					size: this._view._getSize()
+			var that = this,
+				renderer = new Renderer(that._view, {
+					size: that._view._getSize()
 				}),
-				controls = lib.widgets.GraphControlsWidget.new(this._container_el);
+				controls = lib.widgets.GraphControlsWidget.new(that._container_el),
+				node_info = lib.widgets.NodeInfoWidget.new(that._container_el);
 
 			controls.set('settings', renderer.getSettings());
 			controls.signals.settings_changed.add(function (settings) {
@@ -25,11 +31,34 @@
 				renderer.runFBA(5000);
 			});
 
-			this._view._renderer = renderer;
-			this._renderer = renderer;
+			that._view.signals.mouse_moved.add(function (mouse_pos) {
+				node_info.onMouseMove(mouse_pos);
+			});
+			renderer.signals.touched_node.add(function (node_num) {
+				if (!that._is_node_info_blocked)
+					that.showNodeInfoFor(node_num);
+			});
+			renderer.signals.untouched_node.add(function (node_num) {
+				that.hideNodeInfoFor(node_num);
+			});
+
+			// block info popup when dragging
+			// remove blockade after stopping
+			that._view.signals.dragged.add(function () {
+				that._is_node_info_blocked = true;
+				that._block_node_info_timeout && global.clearTimeout(that._block_node_info_timeout);
+
+				that._block_node_info_timeout = global.setTimeout(function () {
+					that._is_node_info_blocked = false;
+				}, 100);
+			});
+
+			that._view._renderer = renderer;
+			that._renderer = renderer;
 				
-			this._controls = controls;
-			this._children = [ this._controls ];
+			that._controls = controls;
+			that._node_info = node_info;
+			that._children = [ controls, node_info ];
 		},
 
 		markConnectionTo: function markConnectionTo(from, to) {
@@ -51,6 +80,17 @@
 		unmarkConnection: function unmarkConnection() {
 			this._view._renderer.removeComponent(this._connection_mark_id);
 			this._connection_mark_id = null;
+		},
+
+		showNodeInfoFor: function showNodeInfoFor(node_num) {
+			this._node_info.set('node_num', node_num);
+			this._node_info.set('depth', this._data.depth);
+			this._node_info.set('node_meta', this._data.nodes_meta[node_num]);
+			this._node_info.show();
+		},
+
+		hideNodeInfoFor: function hideNodeInfoFor(node_num) {
+			this._node_info.hide();
 		}
 	},
 	{

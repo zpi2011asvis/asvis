@@ -6,8 +6,9 @@
 	var GodsFinger = function GodsFinger(camera) {
 		var that = this,
 			_camera,
-			_started = true,
-			_touched = null;
+			_started = false,
+			_touched = null,
+			_deferred_timeout = null;
 
 		/*
 		 * Publics -------------------------------------------------------------
@@ -28,16 +29,21 @@
 
 		this.onMouseMove = function onMouseMove(mouse_pos) {
 			if (!_started) return;
+	
+			// don't check if frequently called
+			_deferred_timeout && global.clearTimeout(_deferred_timeout);
+	
+			_deferred_timeout = global.setTimeout(function () {
+				var ray = _camera.getRayForMousePos(mouse_pos),
+					c = THREE.Collisions.rayCastNearest(ray);
 
-			var ray = _camera.getRayForMousePos(mouse_pos),
-				c = THREE.Collisions.rayCastNearest(ray);
-
-			if (c !== _touched) {
-				that.signals.untouched.dispatch(_touched);
-				if (c) that.signals.touched.dispatch(c);
-				
-				_touched = c;
-			}
+				if (c !== _touched) {
+					if (_touched) that.signals.untouched.dispatch(_touched);
+					if (c) that.signals.touched.dispatch(c);
+					
+					_touched = c;
+				}
+			}, 50);
 		};
 
 		/*

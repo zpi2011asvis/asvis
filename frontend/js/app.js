@@ -111,6 +111,7 @@
 					);
 					graph_w.set('graph', graph_data);
 					graph_w.set('root', number);
+					graph_w.set('depth', depth);
 
 					that.widgets.add(graph_w);
 					that.render();
@@ -134,6 +135,7 @@
 					);
 					// TODO add batch set (with object)
 					info_w.set('nodes_meta', nodes_meta);
+					graph_w.set('nodes_meta', nodes_meta);
 					info_w.set('connections_meta', conns_meta);
 					info_w.set('root', number);
 					info_w.set('depth', depth);

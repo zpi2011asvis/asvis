@@ -2,6 +2,7 @@
 	'use strict';
 
 	var T = global.THREE,
+		Signal = global.signals.Signal,
 		Vizir = lib.Vizir,
 		CameraMan = lib.CameraMan,
 		GodsFinger = lib.GodsFinger,
@@ -68,6 +69,11 @@
 		/*
 		 * Publics -------------------------------------------------------------
 		 */
+
+		this.signals = {
+			touched_node: new Signal(),
+			untouched_node: new Signal()
+		};
 
 		this.destroy = function destroy() {
 			this.stop();
@@ -337,6 +343,7 @@
 
 		_camera_man = new CameraMan(_renderer, _scene, [ _graph_object ], opts.size.width, opts.size.height);
 		_gods_finger = new GodsFinger(_camera_man);
+		_gods_finger.start();
 
 		widget_view.signals.resized.add(function (size) {
 			_camera_man.resize(size.width, size.height);
@@ -367,10 +374,10 @@
 			_dirty_vertices = false;
 		});
 		_gods_finger.signals.touched.add(function (collider) {
-			console.log('touched', collider);
+			that.signals.touched_node.dispatch(collider.center.node_num);
 		});
 		_gods_finger.signals.untouched.add(function (collider) {
-			console.log('untouched', collider);
+			that.signals.untouched_node.dispatch(collider.center.node_num);
 		});
 	};
 
