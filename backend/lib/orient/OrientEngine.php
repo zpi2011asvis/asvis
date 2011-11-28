@@ -205,15 +205,12 @@ class OrientEngine implements Engine {
 	}
 	
 	public function structurePathNew($num_start, $num_end, $dir) {
-		$fp = 1;
 		$structure = array();
+		$fp = 1;
 		
 		$regexp = '/"@rid": "(#\d:\d+)".*Node",/';
 		
 		while(empty($structure) && $fp <= Config::get('orient_max_fetch_depth')) {	
-			if($fp > 2) {
-				die;
-			}
 			
 			$fetchplan = "*:{$fp} ASNode.pools:0";
 			
@@ -231,35 +228,61 @@ class OrientEngine implements Engine {
 
 			$found = $this->hasCommonRids($rids_root, $rids_target);
 			
-			if(!$found) {
-				$fp++;
-				continue;
-			}
-			
-			$result_root = json_decode($json_root->getBody())->result;
-			$result_target = json_decode($json_target->getBody())->result;
+			if($found) {			
+				$result_root = json_decode($json_root->getBody())->result;
+				$result_target = json_decode($json_target->getBody())->result;
 
-			if ( (!count($result_root)) || (!count($result_target)) ) {
-				return null;
+				if ( (!count($result_root)) || (!count($result_target)) ) {
+					return null;
+				}
+		
+				$objectMapper = new ObjectsMapper($result_root[0], $num_start);		
+				$graph = $objectMapper->parse();
+				$start_graph = $graph->forJSON();
+		
+				$objectMapper = new ObjectsMapper($result_target[0], $num_end);		
+				$graph = $objectMapper->parse();
+				$end_graph = $graph->forJSON();
+			
+				$both_nodes = array_intersect_key($start_graph['structure'], $end_graph['structure']);
+			
+				foreach($both_nodes as $num => $node ) {
+					$graphAlgorithms = new GraphAlgorithms($start_graph);
+					$start_structure = $graphAlgorithms->getShortestPath($num, $dir);
+					
+					$graphAlgorithms = new GraphAlgorithms($end_graph);
+					$end_structure = $graphAlgorithms->getShortestPath($num, $dir);
+					
+					foreach($start_structure as $start_path) {
+						foreach($end_structure as $end_path) {
+							$structure[] = $this->_mergePaths($start_path, $end_path);
+						}	
+					}
+					
+				}
 			}
-		
-			$objectMapper = new ObjectsMapper($result_root[0], $num_start);		
-			$graph_root = $objectMapper->parse();
-		
-			$objectMapper = new ObjectsMapper($result_target[0], $num_end);		
-			$graph_target = $objectMapper->parse();
 			
-			
+			$fp++;
 		}
 		
 		return $structure;
+	}
+	
+	protected function _mergePaths($start_path, $end_path) {
+		$result = $start_path;
+		
+		for ($i = (count($end_path)-2); $i >= 0; $i--) {
+			$result[] = $end_path[$i];
+		}
+		
+		return $result;
 	}
 	
 	protected function hasCommonRids($rids_root, $rids_target) {
 		foreach($rids_root[0] as $rid_root) {
 			foreach($rids_target[0] as $rid_target) {
 				if($rid_root === $rid_target) {
-					echo $rid_root . ' equals ' . $rid_target . PHP_EOL;
+					//echo $rid_root . ' equals ' . $rid_target . PHP_EOL;
 					return true;
 				}
 			} 
