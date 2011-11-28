@@ -205,8 +205,69 @@ class OrientEngine implements Engine {
 	}
 	
 	public function structurePathNew($num_start, $num_end, $dir) {
-		return array();
+		$fp = 1;
+		$structure = array();
+		
+		$regexp = '/"@rid": "(#\d:\d+)".*Node",/';
+		
+		while(empty($structure) && $fp <= Config::get('orient_max_fetch_depth')) {	
+			if($fp > 2) {
+				die;
+			}
+			
+			$fetchplan = "*:{$fp} ASNode.pools:0";
+			
+			$query_root = "SELECT FROM ASNode WHERE num = {$num_start}";		
+			$json_root = $this->_orient->query($query_root, null, 1, $fetchplan);
+			
+			$query_target = "SELECT FROM ASNode WHERE num = {$num_end}";		
+			$json_target = $this->_orient->query($query_target, null, 1, $fetchplan);
+			
+			$rids_root = array();
+			$rids_target = array();
+			
+			preg_match_all($regexp, $json_root, $rids_root);
+			preg_match_all($regexp, $json_target, $rids_target);
+
+			$found = $this->hasCommonRids($rids_root, $rids_target);
+			
+			if(!$found) {
+				$fp++;
+				continue;
+			}
+			
+			$result_root = json_decode($json_root->getBody())->result;
+			$result_target = json_decode($json_target->getBody())->result;
+
+			if ( (!count($result_root)) || (!count($result_target)) ) {
+				return null;
+			}
+		
+			$objectMapper = new ObjectsMapper($result_root[0], $num_start);		
+			$graph_root = $objectMapper->parse();
+		
+			$objectMapper = new ObjectsMapper($result_target[0], $num_end);		
+			$graph_target = $objectMapper->parse();
+			
+			
+		}
+		
+		return $structure;
 	}
+	
+	protected function hasCommonRids($rids_root, $rids_target) {
+		foreach($rids_root[0] as $rid_root) {
+			foreach($rids_target[0] as $rid_target) {
+				if($rid_root === $rid_target) {
+					echo $rid_root . ' equals ' . $rid_target . PHP_EOL;
+					return true;
+				}
+			} 
+		}
+		
+		return false;
+	}
+	
 
 	protected function getConnectionMetaFor($rid) {
 		$conns_up = $this->getConnectionMetaForDir($rid, 'up');
