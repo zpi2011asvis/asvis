@@ -207,6 +207,9 @@ class OrientEngine implements Engine {
 				$query = "SELECT FROM ASNode WHERE num = {$num_end}";
 				$fetchplan = "*:{$fp} ASNode.pools:0";
 				
+				$json = $this->_orient->query($query, null, 1, $fetchplan);		
+				$result = json_decode($json->getBody())->result;
+				
 				if (!count($result)) {
 					return null;
 				}
@@ -218,18 +221,14 @@ class OrientEngine implements Engine {
 				
 				$both_nodes = array_intersect_key($start_graph['structure'], $end_graph['structure']);
 				
-				foreach($both_nodes as $node) {
+				foreach($both_nodes as $num => $node ) {
 					$graphAlgorithms = new GraphAlgorithms($start_graph);
-					$start_structure = $graphAlgorithms->getShortestPath($node, $dir);
+					$start_structure = $graphAlgorithms->getShortestPath($num, $dir);
 					
 					$graphAlgorithms = new GraphAlgorithms($end_graph);
-					$end_structure = $graphAlgorithms->getShortestPath($node, $dir);
+					$end_structure = $graphAlgorithms->getShortestPath($num, $dir);
 					
-					$structure[] = array(
-						'structure'=>$start_structure['structure']+$end_structure['structure'], 
-						'weight_order'=>$start_structure['weight_order']+$end_structure['weight_order'], 
-						'distance_order'=>$start_structure['distance_order']+$end_structure['distance_order']
-					);
+					$structure[] = array_merge($start_structure[0]['distance_order'], $end_structure[0]['distance_order']);
 				}
 			}
 			
