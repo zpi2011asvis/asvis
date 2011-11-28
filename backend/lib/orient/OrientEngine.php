@@ -183,7 +183,7 @@ class OrientEngine implements Engine {
 		
 			$query = "SELECT FROM ASNode WHERE num = {$num_start}";
 			$fetchplan = "*:{$fp} ASNode.pools:0";
-		
+
 			$json = $this->_orient->query($query, null, 1, $fetchplan);		
 			$result = json_decode($json->getBody())->result;
 
@@ -209,6 +209,7 @@ class OrientEngine implements Engine {
 		$fp = 1;
 		$structure = array();
 		$finished = false;
+		$found = false;
 		
 		$rids_root = null;
 		$json_root = null;
@@ -218,26 +219,39 @@ class OrientEngine implements Engine {
 		
 		$graph_target = new Graph();
 		
-		while(!finished) {						
-			$result = $this->getGraph($num_start, $fp);
-			$json_root = $result['json'];
-			$graph_root = $result['graph'];
-			
-			$structure = $this->getPath($graph_root, $graph_target, $num_end, $dir);
-			
-			$finished = !empty($structure);	
-
-			if($finished) {
-				break;
-			}
-					
-			$result = $this->getGraph($num_start, $fp);
-			$json_target = $result['json'];
-			$graph_target = $result['graph'];
-			
-			$structure = $this->getPath($graph_root, $graph_target, $num_end, $dir);
+		
+		
+		while( !$finished && $fp <= Config::get('orient_max_fetch_depth')) {						
+			$fetchplan = "*:{$fp} ASNode.pools:0";
 				
-			$finished = !empty($structure);
+			$query_root = "SELECT FROM ASNode WHERE num = {$nodeNum}";
+			$json_root  = $this->_orient->query($query_root, null, 1, $fetchplan);
+			
+			$rids_root = array();
+			preg_match_all('/"@rid": "(#\d:\d+)"/', $json_root, $rids_root);
+			
+			$query_target = "SELECT FROM ASNode WHERE num = {$nodeNum}";
+			$json_target  = $this->_orient->query($query_root, null, 1, $fetchplan);
+			
+			$rids_target = array();
+			preg_match_all('/"@rid": "(#\d:\d+)"/', $json_target, $rids_target);
+			
+			$found = $this->hasCommonRids($json_root, $json_target);
+			
+			if($found) {
+				$result_root	= json_decode($json_root->getBody())->result;
+				$result_target	= json_decode($json_target->getBody())->result;
+				
+				$objectMapper	= new ObjectsMapper($result_root[0], $num_start);
+				$graph_root		= $objectMapper->parse();
+				
+				$objectMapper	= new ObjectsMapper($result_target[0], $num_end);
+				$graph_target	= $objectMapper->parse();
+				
+				$structure = $this->getPath($graph_root, $graph_target, $num_end, $dir);
+				
+				$finished = !empty($structure);
+			}
 			
 			$fp++;
 		}
@@ -245,24 +259,22 @@ class OrientEngine implements Engine {
 		return $structure;
 	}
 	
-	protected function getGraph($nodeNum, $fp) {
-		$fetchplan = "*:{$fp} ASNode.pools:0";
-			
-		$query_root = "SELECT FROM ASNode WHERE num = {$nodeNum}";
-		$json_root = $this->_orient->query($query_root, null, 1, $fetchplan);
-		$result_root = json_decode($json_root->getBody())->result;
-			
-		if (!count($result_root)) {
-			return null;
-		}
-			
+	protected function hasCommonRids($json_root, $json_target) {		
 		$rids_root = array();
 		preg_match_all('/"@rid": "(#\d:\d+)"/', $json_root, $rids_root);
-			
-		$objectMapper = new ObjectsMapper($result_root[0], $num_start);
-		$graph = $objectMapper->parse();
+
+		$rids_target = array();
+		preg_match_all('/"@rid": "(#\d:\d+)"/', $json_target, $rids_target);
 		
-		return array('graph' => $graph, 'json' => $json);
+		foreach($rids_root as $rid_root) {
+			foreach($rids_target as $rid_target) {
+				if($rid_root === $rid_target) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	protected function getPath($graph_root, $graph_target, $num_end, $dir) {			
