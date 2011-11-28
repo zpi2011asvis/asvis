@@ -8465,7 +8465,9 @@ $json = <<<JSON
   ]
 JSON;
 
-preg_match_all('/"@rid": "(#\d:\d+)"/', $json, $matches);
+// match only rows with ", " at the end of the line
+// these are rows for complete nodes
+preg_match_all('/"@rid": "(#\d:\d+)".*,\ $/m', $json, $matches);
 
 echo '<pre>';
 
