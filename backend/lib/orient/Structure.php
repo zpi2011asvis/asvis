@@ -30,6 +30,16 @@ class Structure {
 		}
 	}
 	
+	public function groupAdd($nodes) {
+		foreach ($nodes as $num => $node) {
+			$this->_structure[$num] = $node;
+		}
+	}
+	
+	public function getAll() {
+		return $this->_structure;
+	}
+	
 	public function get($num) {
 		return $this->_structure[$num];
 	}

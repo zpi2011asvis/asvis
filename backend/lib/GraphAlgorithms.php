@@ -169,4 +169,31 @@ class GraphAlgorithms {
 		
 		return array('structure'=>$structure, 'weight_order'=>$weight_order, 'distance_order'=>$distance_order);
 	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

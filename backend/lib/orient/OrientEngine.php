@@ -203,6 +203,77 @@ class OrientEngine implements Engine {
 		
 		return $structure;
 	}
+	
+	public function structurePathNew($num_start, $num_end, $dir) {
+	
+		$fp = 1;
+		$structure = array();
+		$finished = false;
+		
+		$rids_root = null;
+		$json_root = null;
+		
+		$rids_target = null;
+		$json_target = null;
+		
+		$graph_target = new Graph();
+		
+		while(!finished) {						
+			$result = $this->getGraph($num_start, $fp);
+			$json_root = $result['json'];
+			$graph_root = $result['graph'];
+			
+			$structure = $this->getPath($graph_root, $graph_target, $num_end, $dir);
+			
+			$finished = !empty($structure);	
+
+			if($finished) {
+				break;
+			}
+					
+			$result = $this->getGraph($num_start, $fp);
+			$json_target = $result['json'];
+			$graph_target = $result['graph'];
+			
+			$structure = $this->getPath($graph_root, $graph_target, $num_end, $dir);
+				
+			$finished = !empty($structure);
+			
+			$fp++;
+		}
+	
+		return $structure;
+	}
+	
+	protected function getGraph($nodeNum, $fp) {
+		$fetchplan = "*:{$fp} ASNode.pools:0";
+			
+		$query_root = "SELECT FROM ASNode WHERE num = {$nodeNum}";
+		$json_root = $this->_orient->query($query_root, null, 1, $fetchplan);
+		$result_root = json_decode($json_root->getBody())->result;
+			
+		if (!count($result_root)) {
+			return null;
+		}
+			
+		$rids_root = array();
+		preg_match_all('/"@rid": "(#\d:\d+)"/', $json_root, $rids_root);
+			
+		$objectMapper = new ObjectsMapper($result_root[0], $num_start);
+		$graph = $objectMapper->parse();
+		
+		return array('graph' => $graph, 'json' => $json);
+	}
+	
+	protected function getPath($graph_root, $graph_target, $num_end, $dir) {			
+		$graph_root->groupAdd($graph_target->getAll());
+		
+		$graphAlgorithms = new GraphAlgorithms($graph_root->forJSON());
+		
+		$structure = $graphAlgorithms->getShortestPath($num_end, $dir);
+		
+		return $structure;
+	}
 
 	protected function getConnectionMetaFor($rid) {
 		$conns_up = $this->getConnectionMetaForDir($rid, 'up');
