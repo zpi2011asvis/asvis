@@ -111,6 +111,7 @@ function includeTemplates() {
 		'lib/widgets/graph_controls_widget.js',
 		'lib/widgets/node_info_widget.js',
 		'lib/widgets/graph_widget.js',
+		'lib/widgets/autocompleter_widget.js',
 		'lib/widgets/infobar_widget.js',
 	)) ?>
 	<? includeTemplates() ?>
