@@ -150,6 +150,7 @@ body {
 	color: #FFF;
 	text-shadow: 0 0 1px #000;
 	white-space: nowrap;
+	min-width: 75px;
 }
 #node_info.visible {
 	opacity: 1;
