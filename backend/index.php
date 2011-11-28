@@ -17,6 +17,12 @@ if (Config::get('env') === 'dev') {
 	ini_set('display_errors', 1);
 }
 
+if (Config::get('env') === 'prod') {
+	// Report all PHP errors (see changelog)
+	error_reporting(E_ALL | E_STRICT);
+	ini_set('display_errors', 0);
+}
+
 $request = new Request(array( 
 	'baseUri' => Config::get('backend_base_uri'),
 	/*'mount' => array(
@@ -34,11 +40,20 @@ catch (ResponseException $e) {
 	$response->output();
 }
 catch (Exception $e) {
-	header('HTTP/1.1 500 Internal Server Error');
+	header('HTTP/1.1 500 Wewnętrzny błąd serwera');
 
 	# TODO lepsza obsługa exceptionów - zależna od środowiska
-	echo '<pre>';
-	echo $e->getMessage();
-	echo (string) $e;
-	echo '</pre>';
+	if (Config::get('env') === 'dev') {
+		echo $e->getMessage();
+		echo (string) $e;
+	} else {
+
+		if( strstr($e->getMessage(), 'The Congow\Orient\Http\Client\Curl client has been unable to retrieve a response' ) !== -1) {
+			echo 'Baza Orient DB nie odpowiada.';
+		} else {
+			echo 'Nieznany błąd';
+		}
+		
+	}
+	
 }
