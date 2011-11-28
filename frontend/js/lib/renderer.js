@@ -248,10 +248,6 @@
 						obj.geometry.__dirtyVertices = true;
 					});
 				}
-				// TODO debug
-					_graph_objects.forEach(function (obj) {
-						obj.geometry.__dirtyVertices = true;
-					});
 				_renderer.render(_scene, _camera_man.camera);
 				requestAnimationFrame(_refresh, that.getEl());
 			}
