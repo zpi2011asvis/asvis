@@ -180,10 +180,11 @@ class OrientEngine implements Engine {
 		$structure = array();
 		
 		while(empty($structure) && $fp <= Config::get('orient_max_fetch_depth')) {
-		
+			
+			//from $num_start
 			$query = "SELECT FROM ASNode WHERE num = {$num_start}";
 			$fetchplan = "*:{$fp} ASNode.pools:0";
-
+		
 			$json = $this->_orient->query($query, null, 1, $fetchplan);		
 			$result = json_decode($json->getBody())->result;
 
@@ -193,96 +194,47 @@ class OrientEngine implements Engine {
 		
 			$objectMapper = new ObjectsMapper($result[0], $num_start);		
 			$graph = $objectMapper->parse();
-		
-			$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
-		
-			$structure = $graphAlgorithms->getShortestPath($num_end, $dir);
 			
-			$fp++;
-		}
-		
-		return $structure;
-	}
-	
-	public function structurePathNew($num_start, $num_end, $dir) {
-	
-		$fp = 1;
-		$structure = array();
-		$finished = false;
-		$found = false;
-		
-		$rids_root = null;
-		$json_root = null;
-		
-		$rids_target = null;
-		$json_target = null;
-		
-		$graph_target = new Graph();
-		
-		
-		
-		while( !$finished && $fp <= Config::get('orient_max_fetch_depth')) {						
-			$fetchplan = "*:{$fp} ASNode.pools:0";
-				
-			$query_root = "SELECT FROM ASNode WHERE num = {$nodeNum}";
-			$json_root  = $this->_orient->query($query_root, null, 1, $fetchplan);
+			$start_graph = $graph->forJSON();
 			
-			$rids_root = array();
-			preg_match_all('/"@rid": "(#\d:\d+)"/', $json_root, $rids_root);
-			
-			$query_target = "SELECT FROM ASNode WHERE num = {$nodeNum}";
-			$json_target  = $this->_orient->query($query_root, null, 1, $fetchplan);
-			
-			$rids_target = array();
-			preg_match_all('/"@rid": "(#\d:\d+)"/', $json_target, $rids_target);
-			
-			$found = $this->hasCommonRids($json_root, $json_target);
-			
-			if($found) {
-				$result_root	= json_decode($json_root->getBody())->result;
-				$result_target	= json_decode($json_target->getBody())->result;
-				
-				$objectMapper	= new ObjectsMapper($result_root[0], $num_start);
-				$graph_root		= $objectMapper->parse();
-				
-				$objectMapper	= new ObjectsMapper($result_target[0], $num_end);
-				$graph_target	= $objectMapper->parse();
-				
-				$structure = $this->getPath($graph_root, $graph_target, $num_end, $dir);
-				
-				$finished = !empty($structure);
+			if(array_key_exists($num_end, $start_graph['structure'])) {
+				$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
+		
+				$structure = $graphAlgorithms->getShortestPath($num_end, $dir);
 			}
-			
-			$fp++;
-		}
-	
-		return $structure;
-	}
-	
-	protected function hasCommonRids($json_root, $json_target) {		
-		$rids_root = array();
-		preg_match_all('/"@rid": "(#\d:\d+)"/', $json_root, $rids_root);
-
-		$rids_target = array();
-		preg_match_all('/"@rid": "(#\d:\d+)"/', $json_target, $rids_target);
+			else {
+				//from $num_end
+				$query = "SELECT FROM ASNode WHERE num = {$num_end}";
+				$fetchplan = "*:{$fp} ASNode.pools:0";
+				
+				if (!count($result)) {
+					return null;
+				}
 		
-		foreach($rids_root as $rid_root) {
-			foreach($rids_target as $rid_target) {
-				if($rid_root === $rid_target) {
-					return true;
+				$objectMapper = new ObjectsMapper($result[0], $num_end);		
+				$graph = $objectMapper->parse();
+			
+				$end_graph = $graph->forJSON();
+				
+				$both_nodes = array_intersect_key($start_graph['structure'], $end_graph['structure']);
+				
+				foreach($both_nodes as $node) {
+					$graphAlgorithms = new GraphAlgorithms($start_graph);
+					$start_structure = $graphAlgorithms->getShortestPath($node, $dir);
+					
+					$graphAlgorithms = new GraphAlgorithms($end_graph);
+					$end_structure = $graphAlgorithms->getShortestPath($node, $dir);
+					
+					$structure[] = array(
+						'structure'=>$start_structure['structure']+$end_structure['structure'], 
+						'weight_order'=>$start_structure['weight_order']+$end_structure['weight_order'], 
+						'distance_order'=>$start_structure['distance_order']+$end_structure['distance_order']
+					);
 				}
 			}
+			
+			$fp++;
 		}
-		
-		return false;
-	}
-	
-	protected function getPath($graph_root, $graph_target, $num_end, $dir) {			
-		$graph_root->groupAdd($graph_target->getAll());
-		
-		$graphAlgorithms = new GraphAlgorithms($graph_root->forJSON());
-		
-		$structure = $graphAlgorithms->getShortestPath($num_end, $dir);
 		
 		return $structure;
 	}
