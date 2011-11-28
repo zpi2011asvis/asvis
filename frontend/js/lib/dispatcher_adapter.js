@@ -115,7 +115,7 @@
 			global.DEBUG2 && console.log('Popped state: ' + params.path);
 		
 			dispatcher.parse(params);
-		});
+		}, false);
 
 		dispatcher.bypassed.add(function (path, params) {
 			// TODO move this to app
