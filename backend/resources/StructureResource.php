@@ -77,7 +77,7 @@ class StructurePathResource extends Resource {
 		$response->s404If($dir !== 'in' && $dir !== 'out' && $dir !== 'both', 'Nie przekazano prawidłowego parametru kierunku.');
 
 		if($response->code === 200) {
-			$forJSON = $this->_engine->structurePathNew($num_start, $num_end, $dir);
+			$forJSON = $this->_engine->structurePath($num_start, $num_end, $dir);
 			$response->s404If(empty($forJSON), 'Nie znaleziono żadnej istniejącej ścieżki w badanym zakresie.');
 			$response->s404If(is_null($forJSON), 'Nie istnieje AS o podanym numerze początkowym.');
 		

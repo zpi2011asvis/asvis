@@ -181,40 +181,20 @@ class OrientEngine implements Engine {
 	}
 	
 	public function structurePath($num_start, $num_end, $dir) {
-
-		$fp = 1;
-		$structure = array();
-		
-		while(empty($structure) && $fp <= Config::get('orient_max_fetch_depth')) {
-		
-			$query = "SELECT FROM ASNode WHERE num = {$num_start}";
-			$fetchplan = "*:{$fp} ASNode.pools:0";
-
-			$json = $this->_orient->query($query, null, 1, $fetchplan);		
-			$result = json_decode($json->getBody())->result;
-
-			if (!count($result)) {
-				return null;
-			}
-		
-			$objectMapper = new ObjectsMapper($result[0], $num_start);		
-			$graph = $objectMapper->parse();
-		
-			$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
-		
-			$structure = $graphAlgorithms->getShortestPath($num_end, $dir);
-			
-			$fp++;
-		}
-		
-		return $structure;
-	}
-	
-	public function structurePathNew($num_start, $num_end, $dir) {
 		$structure = array();
 		$fp = 1;
 		
 		$regexp = '/"@rid": "(#\d:\d+)".*Node",/';
+		
+		if($dir === 'in') {
+			$opp_dir = 'out';
+		}
+		else if($dir === 'out') {
+			$opp_dir = 'in';
+		}
+		else {
+			$opp_dir = 'both';
+		}
 		
 		while(empty($structure) && $fp <= Config::get('orient_max_fetch_depth')) {	
 			
@@ -254,7 +234,7 @@ class OrientEngine implements Engine {
 			
 				foreach($both_nodes as $num => $node ) {
 					$graphAlgorithms = new GraphAlgorithms($start_graph);
-					$start_structure = $graphAlgorithms->getShortestPath($num, $dir);
+					$start_structure = $graphAlgorithms->getShortestPath($num, $opp_dir);
 					
 					$graphAlgorithms = new GraphAlgorithms($end_graph);
 					$end_structure = $graphAlgorithms->getShortestPath($num, $dir);
