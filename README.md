@@ -12,5 +12,5 @@ Hello world, this is SPARTA!!!
 Byłem tu (czekam na Wasze tagi ;>):
 
 * Reinmar
-* gloowa (ku chwale szatana)
+* gloowa
 * mactoob
