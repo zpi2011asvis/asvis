@@ -5,12 +5,25 @@
 		Signal = global.signals.Signal;
 
 	var StartFormWidget = Widget.create(function StartFormWidget() {}, {
+		signals: {
+			destroyed: null,
+			submitted: null,
+			closed: null
+		},
+
 		_init: function _init() {
 			var that = this;
 
-			that.signals.submitted = new Signal();
+			that.signals = {
+				destroyed: new Signal(),
+				submitted: new Signal(),
+				closed: new Signal()
+			};
 
-			that._view.signals.bg_clicked.add(that.destroy.bind(that));
+			that._view.signals.bg_clicked.add(function () {
+				that.destroy();
+				that.signals.closed.dispatch();
+			});
 
 			that._view.signals.submitted.add(function (params) {
 				that.destroy();

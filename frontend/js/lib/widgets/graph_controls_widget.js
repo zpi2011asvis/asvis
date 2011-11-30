@@ -66,7 +66,7 @@
 			fog_far_el.first().value = data.settings.fog_far;
 			show_nodes_el.first().value = data.settings.show_nodes;
 			lines_opacity_el.first().value = data.settings.lines_opacity;
-			nodes_size_el.first().value = data.settings.nodes_size_el;
+			nodes_size_el.first().value = data.settings.nodes_size;
 
 			[
 				fog_near_el,

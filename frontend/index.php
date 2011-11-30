@@ -71,6 +71,14 @@ function includeTemplates() {
 <body id="container">
 	<header id="top">
 		<h1><a href="/"><strong>AS</strong>vis</a></h1>
+
+		<nav id="menu">
+			<ul>
+				<li><a href="/">wyszukaj AS</a></li>
+				<li><a href="/find/trees">wyszukaj drzewa</a></li>
+				<li><a href="/find/paths">wyszukaj ścieżki</a></li>
+			</ul>
+		</nav>
 	</header>
 	<p id="flash"><span class="message"></span></p>
 	<div id="graph">
@@ -88,6 +96,7 @@ function includeTemplates() {
 		'vendor/ejs.js',
 		'xui_extends.js',
 		'app.js',
+		'routes.js',
 		'util.js',
 		'lib/dispatcher_adapter.js',
 		'lib/xhr_adapter_xui.js',
