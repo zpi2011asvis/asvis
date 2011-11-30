@@ -194,6 +194,40 @@
 			_markAsRoot(graph.structure[root].pos);	
 		};
 
+		this.addToStructure = function addToStructure(graph, paths) {
+			var SphereCollider = T.SphereCollider,
+				edges_geometry = new T.Geometry(),
+				psystem = _nodes_object,
+				verts_geometry = psystem.geometry,
+				line = new T.Line(edges_geometry, MATERIAL.LINE),
+				vertices,
+				edges,
+				sc, v,
+				i, il;
+
+			_vizir.addNodes(graph, paths);
+
+			vertices = _vizir.getVertices();
+			edges = _vizir.getEdges();
+
+			for (i = 0, il = vertices.length; i < il; i++) {
+				v = vertices[i];
+				verts_geometry.vertices.push(v);
+				sc = new SphereCollider(v.position, 3);
+				_colliders.push(sc);
+			}
+			verts_geometry.__dirtyVertices = true;
+
+			for (i = 0, il = edges.length; i < il; i++) {
+				edges_geometry.vertices.push(edges[i]);
+			}
+
+			line.type = T.LineStrip;
+//			_graph_object.add(psystem);
+			_graph_object.add(line);
+			_graph_objects.push(line);
+		};
+
 		this.addComponents = function addComponents(components) {
 			var components_object = new T.Object3D(),
 				objs;
@@ -436,12 +470,8 @@
 		},
 
 		node: function node(graph, params) {
-			// TODO why position does not change when fba works?
-
 			var mesh = this.NODES[params.style]();
-
 			mesh.position = graph[params.forNode].pos;
-			
 			return [ mesh ];
 		},
 
@@ -497,6 +527,10 @@
 			}
 
 			return [ line ];
+		},
+
+		paths: function () {
+			return [ ];
 		}
 	};
 	Components.constructor = function Components() {};

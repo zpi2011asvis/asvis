@@ -147,11 +147,23 @@
 		},
 
 		additionalStructure: function additionalStructure(type, data) {
+			this._additional_struct_id && this._renderer.removeComponents(this._additional_struct_id);
+			this._additional_struct_id = null;
+
 			if (type === 'trees') {
-				this._renderer.addComponents([
+				this._additional_struct_id = this._renderer.addComponents([
 					{
 						class: 'trees',
 						data: data
+					}
+				]);
+			}
+			else if (type === 'paths') {
+				this._renderer.addToStructure(data[0], data[1]);
+				this._additional_struct_id = this._renderer.addComponents([
+					{
+						class: 'paths',
+						data: data[1]
 					}
 				]);
 			}
