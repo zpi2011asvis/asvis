@@ -436,7 +436,7 @@
 			paths: function () {
 				return new T.LineBasicMaterial({
 					color: 0x0077CC,
-					linewidth: 2,
+					linewidth: 3,
 					opacity: 0.75
 				});
 			}
