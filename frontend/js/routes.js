@@ -31,12 +31,30 @@
 
 			w.set('from', curr_number);
 
-			w.signals.submitted.add(function routerRoot_onSubmit(params) {
+			w.signals.submitted.add(function routerFindPaths_onSubmit(params) {
 				curr_depth = null;
 				curr_number = null;
 				that.dispatcher.get('/paths/{from}/{to}/{type}', params);
 			});
-			w.signals.closed.add(function routerRoot_onClosed() {
+			w.signals.closed.add(function routerFindPaths_onClosed() {
+				_backToGraph(w);
+			});
+
+			that.widgets.add(w);
+			that.render();
+		});
+
+		dispatcher.get('/find/trees', function routerFindTrees() {
+			var w = widgets.FindTreesFormWidget.new(that._container_el);
+
+			w.set('from', curr_number);
+
+			w.signals.submitted.add(function routerFindTrees_onSubmit(params) {
+				curr_depth = null;
+				curr_number = null;
+				that.dispatcher.get('/trees/{from}/{height}/{type}', params);
+			});
+			w.signals.closed.add(function routerFindTrees_onClosed() {
 				_backToGraph(w);
 			});
 
@@ -47,6 +65,13 @@
 		dispatcher.get('/paths/{from}/{to}/{type}', function routerPaths(request) {
 			var from = request.get.from,
 				to = request.get.to,
+				type = request.get.type;
+
+		});		
+
+		dispatcher.get('/trees/{from}/{height}/{type}', function routerTrees(request) {
+			var from = request.get.from,
+				height = request.get.height,
 				type = request.get.type;
 
 		});		

@@ -35,9 +35,9 @@ class StructureGraphResource extends Resource {
 }
 
 /**
- * @uri /structure/tree/{number}/{height}/{dir}
+ * @uri /structure/trees/{number}/{height}/{dir}
  */
-class StructureTreeResource extends Resource {
+class StructureTreesResource extends Resource {
 	function get($request, $number, $height, $dir) {		
 		$response = new Response($request);
 		
@@ -64,7 +64,7 @@ class StructureTreeResource extends Resource {
 /**
  * @uri /structure/paths/{num_start}/{num_end}/{dir}
  */
-class StructurePathResource extends Resource {
+class StructurePathsResource extends Resource {
 	function get($request, $num_start, $num_end, $dir) {
 		$dirs = array('up' => 'out', 'down' => 'in', 'both' => 'both');
 		$dir = @ $dirs[$dir];
