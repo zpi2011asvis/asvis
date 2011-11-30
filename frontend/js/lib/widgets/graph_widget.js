@@ -83,7 +83,7 @@
 		},
 		
 		unmarkConnection: function unmarkConnection() {
-			this._connection_mark_id && this._renderer.removeComponent(this._connection_mark_id);
+			this._connection_mark_id && this._renderer.removeComponents(this._connection_mark_id);
 			this._connection_mark_id = null;
 		},
 
@@ -98,7 +98,7 @@
 		},
 
 		unmarkHoveredNode: function () {
-			this._hovered_mark_id && this._renderer.removeComponent(this._hovered_mark_id);
+			this._hovered_mark_id && this._renderer.removeComponents(this._hovered_mark_id);
 			this._hovered_mark_id = null;
 		},
 

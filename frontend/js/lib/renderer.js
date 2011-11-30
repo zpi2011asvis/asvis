@@ -187,7 +187,7 @@
 				edges_geometry.vertices.push(edges[i]);
 			}
 
-			line.type = T.Lines;
+			line.type = T.LineStrip;
 			_graph_object.add(psystem);
 			_graph_object.add(line);
 			_graph_objects.push(psystem, line);
@@ -209,7 +209,7 @@
 			return _next_component_id++;
 		};
 
-		this.removeComponent = function removeComponent(id) {
+		this.removeComponents = function removeComponents(id) {
 			var components_object = _components[id];
 
 			if (!components_object) {
@@ -271,7 +271,7 @@
 				_nver(0, -2000, 0), _nver(0, 2000, 0),
 				_nver(0, 0, -2000), _nver(0, 0, 2000)
 			);
-			line.type = T.Lines;
+			line.type = T.LineStrip;
 	
 			// flat elipse
 			for (i = 0, il = Math.PI * 2 + 0.1; i < il; i += 0.1) {
@@ -383,10 +383,12 @@
 
 	var Components = {
 		LINES: {
-			marking: new T.LineBasicMaterial({
-				color: 0xFF2222,
-				linewidth: 3,
-			})
+			marking: function () {
+				return new T.LineBasicMaterial({
+					color: 0xFF2222,
+					linewidth: 3,
+				});
+			}
 		},
 		NODES: {
 			marking: function () {
@@ -404,14 +406,14 @@
 		},
 
 		line: function line(graph, params) {
-			var line_material = this.LINES[params.style],
+			var line_material = this.LINES[params.style](),
 				line_geometry = new T.Geometry(),
 				line = new T.Line(line_geometry, line_material);
 
 			line_geometry.vertices.push(
 				new T.Vertex(graph[params.fromNode].pos), new T.Vertex(graph[params.toNode].pos)
 			);
-			line.type = T.Lines;
+			line.type = T.LineStrip;
 
 			return line;
 		},
