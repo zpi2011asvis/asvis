@@ -14,6 +14,7 @@
 		_is_node_info_blocked: null,
 		_connection_mark_id: null,
 		_hovered_mark_id: null,
+		_additional_struct_id: null,
 
 		_init: function _init() {
 			var that = this,
@@ -113,6 +114,17 @@
 
 		hideNodeInfoFor: function hideNodeInfoFor(node_num) {
 			this._node_info.hide();
+		},
+
+		additionalStructure: function additionalStructure(type, data) {
+			if (type === 'trees') {
+				this._additional_struct_id = this._renderer.addComponents([
+					{
+						class: 'tree',
+						data: data
+					}
+				]);
+			}
 		}
 	},
 	{

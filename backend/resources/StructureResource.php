@@ -21,7 +21,7 @@ class StructureGraphResource extends Resource {
 		
 		$depth = (int) $depth;
 		$response->s404Unless($depth, 'Nie przekazano prawidłowego parametru głębokości.');
-		$response->s404If($depth < 0 || $depth > Config::get('orient_max_fetch_depth'), 'Przekazany parametr wysokości jest spoza zakresu.');
+		$response->s404If($depth < 0 || $depth > Config::get('orient_max_fetch_depth'), 'Przekazany parametr głębokości jest spoza zakresu.');
 
 		if($response->code === 200) {
 			$forJSON = $this->_engine->structureGraph($number, $depth);
@@ -46,7 +46,7 @@ class StructureTreesResource extends Resource {
 		
 		$height = (int) $height;
 		$response->s404Unless($height, 'Nie przekazano prawidłowego parametru głębokości.');
-		$response->s404If($height < 0 || $height > Config::get('orient_max_fetch_depth'), 'Przekazany parametr głębokości jest spoza zakresu.');
+		$response->s404If($height < 0 || $height > Config::get('orient_max_fetch_depth'), 'Przekazany parametr wysokości jest spoza zakresu.');
 		
 		$response->s404If($dir !== 'in' && $dir !== 'out' && $dir !== 'both', 'Nie przekazano prawidłowego parametru kierunku.');
 

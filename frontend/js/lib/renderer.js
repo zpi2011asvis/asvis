@@ -179,7 +179,6 @@
 				v = vertices[i];
 				verts_geometry.vertices.push(v);
 				sc = new SphereCollider(v.position, 3);
-				// TODO let sc know about node. but how?!
 				_colliders.push(sc);
 			}
 
@@ -426,8 +425,13 @@
 			mesh.position = graph[params.forNode].pos;
 			
 			return mesh;
+		},
+
+		tree: function tree(data) {
+			return new T.Object3D();
 		}
 	};
+	Components.constructor = function Components() {};
 
 	exports.Renderer = Renderer;
 

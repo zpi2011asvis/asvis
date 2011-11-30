@@ -85,7 +85,9 @@
 				resources.nodes.NodesFindResource.new(),
 				resources.nodes.NodesMetaResource.new(),
 				resources.connections.ConnectionsMetaResource.new(),
-				resources.structures.StructureGraphResource.new()
+				resources.structures.StructureGraphResource.new(),
+				resources.structures.StructureTreesResource.new(),
+				resources.structures.StructurePathsResource.new()
 			]);
 		},
 

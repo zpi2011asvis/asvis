@@ -17,9 +17,9 @@
 		_cache: true,
 	});
 
-	var StructureTreeResource = Resource.create(function StructureTreeResource() {}, {
-		name: 'structure/tree',
-		_url: 'structure/paths/:number/:height/:type',
+	var StructureTreesResource = Resource.create(function StructureTreesResource() {}, {
+		name: 'structure/trees',
+		_url: 'structure/trees/:number/:height/:type',
 		_method: 'get',
 		_cache: true,
 	});
@@ -27,7 +27,7 @@
 	exports.structures = {
 		StructureGraphResource: StructureGraphResource,
 		StructurePathsResource: StructurePathsResource,
-		StructureTreeResource: StructureTreeResource
+		StructureTreesResource: StructureTreesResource
 	};
 
 }.call({}, this.app.lib.resources, this, this.app.lib));
