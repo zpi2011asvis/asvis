@@ -19,9 +19,9 @@ class GraphAlgorithms {
 		
 		$distance = $this->_structure[$num_end]->distance;
 		$paths = $this->_findPaths(array($num_end), $distance, $dir);
-			
-		foreach($paths as $path) {
-			if(count($path) === ($distance+1)) {
+
+		foreach ($paths as $path) {
+			if (count($path) === ($distance + 1)) {
 				$structure[] = $path;
 			}
 		}	
@@ -32,11 +32,11 @@ class GraphAlgorithms {
 	private function _findPaths($nodes, $distance, $dir) {
 		$paths = array();
 		
-		if($distance > 0) {
+		if ($distance > 0) {
 			foreach($nodes as $num) {
-				if($this->_structure[$num]->distance === $distance) {
+				if ($this->_structure[$num]->distance === $distance) {
 					
-					if($dir === 'both') {
+					if ($dir === 'both') {
 						$conns = array_merge($this->_structure[$num]->in, $this->_structure[$num]->out);
 						$conns = array_unique($conns);
 					}
@@ -44,7 +44,7 @@ class GraphAlgorithms {
 						$conns = $this->_structure[$num]->$dir;
 					}
 					
-					foreach($this->_findPaths($conns, ($distance-1), $dir) as $path) {
+					foreach ($this->_findPaths($conns, ($distance - 1), $dir) as $path) {
 						$path[] = $num;
 					 	$paths[] = $path; 
 					}
@@ -53,8 +53,8 @@ class GraphAlgorithms {
 		}
 		else {
 			$path = array();
-			foreach($nodes as $num) {
-				if($this->_structure[$num]->distance === 0) {
+			foreach ($nodes as $num) {
+				if ($this->_structure[$num]->distance === 0) {
 					$path[] = $num;
 				}
 			}

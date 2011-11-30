@@ -10,8 +10,16 @@
 		_cache: true,
 	});
 
+	var StructurePathsResource = Resource.create(function StructurePathsResource() {}, {
+		name: 'structure/paths',
+		_url: 'structure/paths/:from/:to/:type',
+		_method: 'get',
+		_cache: true,
+	});
+
 	exports.structures = {
 		StructureGraphResource: StructureGraphResource
+		StructurePathsResource: StructurePathsResource
 	};
 
 }.call({}, this.app.lib.resources, this, this.app.lib));

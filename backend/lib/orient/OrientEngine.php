@@ -182,43 +182,47 @@ class OrientEngine implements Engine {
 	
 	public function structurePath($num_start, $num_end, $dir) {
 		$structure = array();
-		$fp = 1;
+		$depth_left = 1;
+		$depth_right = 1;
 		
-		$regexp = '/"@rid": "(#\d:\d+)".*Node",/';
+		$regexp = '/"@rid": "(#\d:\d+)".*,\ $/m';
 		
-		if($dir === 'in') {
+		if ($dir === 'in') {
 			$opp_dir = 'out';
+			$dir_fetchplan = ' ASNode.out:0';
+			$opp_dir_fetchplan = ' ASNode.in:0';
 		}
-		else if($dir === 'out') {
+		elseif ($dir === 'out') {
 			$opp_dir = 'in';
+			$dir_fetchplan = ' ASNode.in:0';
+			$opp_dir_fetchplan = ' ASNode.out:0';
 		}
 		else {
 			$opp_dir = 'both';
+			$dir_fetchplan = '';
+			$opp_dir_fetchplan = '';
 		}
 		
-		while(empty($structure) && $fp <= Config::get('orient_max_fetch_depth')) {	
+		while ($depth_left <= Config::get('orient_max_fetch_depth')) {	
 			
-			$fetchplan = "*:{$fp} ASNode.pools:0";
-			
+			$fetchplan = "*:{$depth_left} ASNode.pools:0" . $dir_fetchplan;
 			$query_root = "SELECT FROM ASNode WHERE num = {$num_start}";		
-			$json_root = $this->_orient->query($query_root, null, 1, $fetchplan);
+			$json_root = $this->_orient->query($query_root, null, 1, $fetchplan)->getBody();
 			
+			$fetchplan = "*:{$depth_right} ASNode.pools:0" . $opp_dir_fetchplan;
 			$query_target = "SELECT FROM ASNode WHERE num = {$num_end}";		
-			$json_target = $this->_orient->query($query_target, null, 1, $fetchplan);
-			
-			$rids_root = array();
-			$rids_target = array();
-			
+			$json_target = $this->_orient->query($query_target, null, 1, $fetchplan)->getBody();
+
 			preg_match_all($regexp, $json_root, $rids_root);
 			preg_match_all($regexp, $json_target, $rids_target);
+			$rids_root = $rids_root[1];
+			$rids_target = $rids_target[1];
 
-			$found = $this->hasCommonRids($rids_root, $rids_target);
-			
-			if($found) {			
-				$result_root = json_decode($json_root->getBody())->result;
-				$result_target = json_decode($json_target->getBody())->result;
+			if ($this->hasCommonRids($rids_root, $rids_target)) {
+				$result_root = json_decode($json_root)->result;
+				$result_target = json_decode($json_target)->result;
 
-				if ( (!count($result_root)) || (!count($result_target)) ) {
+				if (!count($result_root) || !count($result_target)) {
 					return null;
 				}
 		
@@ -232,26 +236,61 @@ class OrientEngine implements Engine {
 			
 				$both_nodes = array_intersect_key($start_graph['structure'], $end_graph['structure']);
 			
-				foreach($both_nodes as $num => $node ) {
+				foreach ($both_nodes as $num => $node) {
+					// pobierz struktury jeszcze raz ale z otoczeniem
+					// wymagane niestety przez getShortestPath
+
+					$fetchplan = "*:" . ($depth_left + 1) . " ASNode.pools:0";
+					$query_root = "SELECT FROM ASNode WHERE num = {$num_start}";
+					$json_root = $this->_orient->query($query_root, null, 1, $fetchplan)->getBody();
+					
+					$fetchplan = "*:" . ($depth_right + 1) . " ASNode.pools:0";
+					$query_target = "SELECT FROM ASNode WHERE num = {$num_end}";
+					$json_target = $this->_orient->query($query_target, null, 1, $fetchplan)->getBody();
+
+					$result_root = json_decode($json_root)->result;
+					$result_target = json_decode($json_target)->result;
+
+					$objectMapper = new ObjectsMapper($result_root[0], $num_start);		
+					$graph = $objectMapper->parse();
+					$start_graph = $graph->forJSON();
+			
+					$objectMapper = new ObjectsMapper($result_target[0], $num_end);		
+					$graph = $objectMapper->parse();
+					$end_graph = $graph->forJSON();
+
+					// znajdz najkrotsze sciezki do wezla koncowego do roota
+					// i od wezla poczatkowego do roota
+
 					$graphAlgorithms = new GraphAlgorithms($start_graph);
 					$start_structure = $graphAlgorithms->getShortestPath($num, $opp_dir);
 					
 					$graphAlgorithms = new GraphAlgorithms($end_graph);
 					$end_structure = $graphAlgorithms->getShortestPath($num, $dir);
-					
-					foreach($start_structure as $start_path) {
+
+					foreach ($start_structure as $start_path) {
 						foreach($end_structure as $end_path) {
 							$structure[] = $this->_mergePaths($start_path, $end_path);
 						}	
 					}
-					
 				}
+
+				return array(
+					'paths' => $structure,
+					'depth_left' => $depth_left,
+					'depth_right' => $depth_right
+				);
 			}
 			
-			$fp++;
+			if ($depth_left <= $depth_right) {
+				$depth_left++;
+			}
+			else {
+				$depth_right++;
+			}
 		}
-		
-		return $structure;
+
+		return 0;
 	}
 	
 	protected function _mergePaths($start_path, $end_path) {
@@ -265,16 +304,7 @@ class OrientEngine implements Engine {
 	}
 	
 	protected function hasCommonRids($rids_root, $rids_target) {
-		foreach($rids_root[0] as $rid_root) {
-			foreach($rids_target[0] as $rid_target) {
-				if($rid_root === $rid_target) {
-					//echo $rid_root . ' equals ' . $rid_target . PHP_EOL;
-					return true;
-				}
-			} 
-		}
-		
-		return false;
+		return count(array_intersect($rids_root, $rids_target)) > 0;
 	}
 	
 

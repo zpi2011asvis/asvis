@@ -26,7 +26,7 @@
 			that.render();
 		});
 
-		dispatcher.get('/find/paths', function routerRoot() {
+		dispatcher.get('/find/paths', function routerFindPaths() {
 			var w = widgets.FindPathsFormWidget.new(that._container_el);
 
 			w.set('from', curr_number);
@@ -34,7 +34,7 @@
 			w.signals.submitted.add(function routerRoot_onSubmit(params) {
 				curr_depth = null;
 				curr_number = null;
-				that.dispatcher.get('/path/{from}/{to}/{type}', params);
+				that.dispatcher.get('/paths/{from}/{to}/{type}', params);
 			});
 			w.signals.closed.add(function routerRoot_onClosed() {
 				_backToGraph(w);
@@ -43,6 +43,13 @@
 			that.widgets.add(w);
 			that.render();
 		});
+
+		dispatcher.get('/paths/{from}/{to}/{type}', function routerPaths(request) {
+			var from = request.get.from,
+				to = request.get.to,
+				type = request.get.type;
+
+		});		
 	
 		dispatcher.get('/node/{number}/{depth}', function routerNode(request) {
 			var number = request.get.number,

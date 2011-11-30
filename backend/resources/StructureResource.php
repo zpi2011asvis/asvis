@@ -62,10 +62,13 @@ class StructureTreeResource extends Resource {
 }
 
 /**
- * @uri /structure/path/{num_start}/{num_end}/{dir}
+ * @uri /structure/paths/{num_start}/{num_end}/{dir}
  */
 class StructurePathResource extends Resource {
 	function get($request, $num_start, $num_end, $dir) {
+		$dirs = array('up' => 'out', 'down' => 'in', 'both' => 'both');
+		$dir = @ $dirs[$dir];
+
 		$response = new Response($request);
 		
 		$num_start = (int) $num_start;
@@ -74,11 +77,11 @@ class StructurePathResource extends Resource {
 		$num_end = (int) $num_end;
 		$response->s404Unless($num_end, 'Nie przekazano prawidłowego końcowego numeru AS.');
 		
-		$response->s404If($dir !== 'in' && $dir !== 'out' && $dir !== 'both', 'Nie przekazano prawidłowego parametru kierunku.');
+		$response->s404If(!$dir, 'Nie przekazano prawidłowego parametru kierunku.');
 
-		if($response->code === 200) {
+		if ($response->code === 200) {
 			$forJSON = $this->_engine->structurePath($num_start, $num_end, $dir);
-			$response->s404If(empty($forJSON), 'Nie znaleziono żadnej istniejącej ścieżki w badanym zakresie.');
+			$response->s404If($forJSON === 0, 'Nie znaleziono żadnej istniejącej ścieżki w badanym zakresie.');
 			$response->s404If(is_null($forJSON), 'Nie istnieje AS o podanym numerze początkowym.');
 		
 			$response->json($forJSON);
