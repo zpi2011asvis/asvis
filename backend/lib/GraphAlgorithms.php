@@ -68,7 +68,7 @@ class GraphAlgorithms {
 		$leafs = $this->_findLeafs($height+1);
 		$conns = $this->_findConnected($leafs, $dir);
 		
-		return $this->_rebuildStructure($leafs+$conns);
+		return $this->_rebuildStructure(array_merge($leafs, $conns));
 	}
 	
 	private function _findLeafs($distance) {
@@ -105,9 +105,9 @@ class GraphAlgorithms {
 						$conns_up[] = $num_up;
 					}
 				}
-
-				$nodes += $conns_up;
-				$nodes += $this->_findConnected($conns_up, $dir);
+				
+				$nodes = array_merge($nodes, $conns_up);
+				$nodes = array_merge($nodes, $this->_findConnected($conns_up, $dir));
 			}
 		}
 		
@@ -120,23 +120,23 @@ class GraphAlgorithms {
 		$distance_order = array();
 		
 		foreach($this->_structure as $num=>$node) {
+			if(!in_array($num, $conns)) {
 
-			if(in_array($num, $conns)) {
 				$structure[$num] = $node; 
-				
+								
 				$in_array = array();
 				$out_array = array();
 				
 				foreach($this->_structure[$num]->in as $in) {
 				
-					if(in_array($in, $conns)) {
+					if(!in_array($in, $conns)) {
 						$in_array[] = $in;
 					}
 				}
 				
 				foreach($this->_structure[$num]->out as $out) {
 				
-					if(in_array($out, $conns)) {
+					if(!in_array($out, $conns)) {
 						$out_array[] = $out;
 					}
 				}
@@ -148,14 +148,14 @@ class GraphAlgorithms {
 		
 		foreach($this->_weight_order as $num) {
 			
-			if(in_array($num, $conns)) {
+			if(!in_array($num, $conns)) {
 				$weight_order[] = $num;
 			}
 		}
 		
 		foreach($this->_distance_order as $num) {
 			
-			if(in_array($num, $conns)) {
+			if(!in_array($num, $conns)) {
 				$distance_order[] = $num;
 			}
 		}

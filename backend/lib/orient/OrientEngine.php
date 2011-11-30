@@ -176,7 +176,7 @@ class OrientEngine implements Engine {
 		$graph = $objectMapper->parse();
 		
 		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
-		
+
 		return $graphAlgorithms->getTree($height, $dir);
 	}
 	
