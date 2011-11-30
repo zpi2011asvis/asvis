@@ -25,6 +25,13 @@ class Response extends TonicResponse {
 		return $this->s500If(!$boolean, $msg);
 	}
 
+	/**
+	 * Sets response type to 404 when $boolean is true, giving $msg message
+	 * Usage: s404If($foo < 100, 'foo is less then 100!';
+	 * 
+	 * @param boolean $boolean condition
+	 * @param string $msg error message
+	 */
 	public function s404If($boolean, $msg) {
 		if($boolean) {
 			$this->code = Response::NOTFOUND;
@@ -35,6 +42,13 @@ class Response extends TonicResponse {
 		return $this;
 	}
 	
+	/**
+	 * Sets response type to 500 when $boolean is true, giving $msg message
+	 * Usage: s500If($foo < 100, 'foo is less then 100!';
+	 * 
+	 * @param boolean $boolean condition
+	 * @param string $msg error message
+	 */
 	public function s500If($boolean, $msg) {
 		if($boolean) {
 			$this->code = Response::INTERNALSERVERERROR;

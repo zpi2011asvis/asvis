@@ -2,6 +2,9 @@
 
 namespace asvis;
 
+/**
+ * Config class - all applications settings are stored here.
+ */
 class Config {
 	private static $opts = array(
 		'env'						=> 'dev', //or 'prod'
