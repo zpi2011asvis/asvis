@@ -6,8 +6,15 @@ require_once 'Structure.php';
 
 use asvis\lib\orient\Structure as Structure;
 
+/**
+ *	
+ */
 class Graph extends Structure {
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see asvis\lib\orient.Structure::forJSON()
+	 */
 	public function forJSON() {
 		$toEncode = array();
 		

@@ -6,6 +6,9 @@ require_once 'Graph.php';
 
 use asvis\lib\orient\Graph as Graph;
 
+/**
+ * Mapper class, responsible for transforming JSON to Objects.
+ */
 class ObjectsMapper {
 	
 	private $_json;
@@ -14,6 +17,10 @@ class ObjectsMapper {
 	
 	private $_rootNum;
 	
+	/**
+	 * @param string $json
+	 * @param int $rootNum
+	 */
 	public function __construct($json, $rootNum) {
 		$this->_json = $json;
 		$this->_rootNum = $rootNum;
@@ -21,6 +28,10 @@ class ObjectsMapper {
 		$this->_structure = null;
 	}
 	
+	/**
+	 * Parses JSON
+	 * @return Graph instance of asvis\Graph
+	 */
 	public function parse() {
 		if ($this->_isParsed) {
 			return new Graph($this->_structure);

@@ -5,49 +5,54 @@ namespace asvis\lib\orient;
 class Node {
 	
 	/**
-	 * Resource IDentifier z Orienta
+	 * OrientDB Resource IDentifier
 	 * @var string
 	 */
 	private $rid;
 	
 	/**
-	 * Numer Systemu Autonomicznego
+	 * AS number
 	 * @var int
 	 */
 	private $num;
 	
 	/**
-	 * Nazwa Systemu Autonomicznego
+	 * AS name
 	 * @var string
 	 */
 	private $name;
 	
 	/**
-	 * Połączenia wychodzące
-	 * @var array
+	 * Outgoing connections
+	 * @var array of int
 	 */
 	public $out;
 	
 	/**
-	 * Połączenia przychodzące
-	 * @var array
+	 * Incoming connections
+	 * @var array of int
 	 */
 	public $in;
 	
 	/**
-	 * Dystans od węzła źródłowego
+	 * Distance from root node
 	 * @var int
 	 */
 	public $distance;
 	
 	/**
-	 * Waga połączenia (suma połączeń wychodzących i wchodzących)
-	 * @var unknown_type
+	 * Node weight (sum of incoming and outgoing connections count)
+	 * @var int
 	 */
 	public $weight;
 	
 	/**
-	 * Konstruktor wypełniający pola klasy
+	 * @param string $rid
+	 * @param int $num
+	 * @param string $name
+	 * @param array of int $out
+	 * @param array of int $in
+	 * @param int $distance
 	 */
 	public function __construct($rid = null, $num = null, $name = null, $out = null, $in = null, $distance = null) {
 		$this->rid	= $rid;
@@ -62,10 +67,11 @@ class Node {
 	}
 	
 	/**
-	 * Oblicza wagę węzła
+	 * Calculates node weight, stores it internally and returns it.
 	 */
 	public function calculateWeight() {
 		$this->weight = count($this->out) + count($this->in);
+		return $this->weight;
 	}
 	
 	public function __get($name) {

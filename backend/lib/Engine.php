@@ -10,7 +10,7 @@ interface Engine {
 	 * 12 gives nodes with numbers:
 	 * 12, 120, ..., 1252352355234, ...
 	 * 
-	 * @param int $num
+	 * @param int $num ASNode number
 	 */
 	public function nodesFind($num);
 	
@@ -25,7 +25,7 @@ interface Engine {
 	 * Returns an array of meta data for connections
 	 * taken from in and out fields of given node.
 	 * 
-	 * @param int $for_number
+	 * @param int $for_number ASNode number
 	 */
 	public function connectionsMeta($for_node);
 	
@@ -34,8 +34,8 @@ interface Engine {
 	 * origin node number and depth of recurson.
 	 * $depth <1,inf>
 	 * 
-	 * @param int $nodeNum
-	 * @param int $depth
+	 * @param int $nodeNum ASNode number
+	 * @param int $depth recursion depth
 	 */
 	public function structureGraph($nodeNum, $depth);
 	
@@ -45,8 +45,8 @@ interface Engine {
 	 * represents a tree which begins in root node (nodeNum) and
 	 * includes only nodes with single incoming link.
 	 * 
-	 * @param int $nodeNum
-	 * @param int $height
+	 * @param int $nodeNum ASNode number
+	 * @param int $height tree height
 	 */
 	public function structureTree($nodeNum, $height, $dir);
 	
@@ -54,8 +54,8 @@ interface Engine {
 	 * Returns array of nodes and their connections representing 
 	 * the shortest path between two nodes.
 	 * 
-	 * @param int $num_start
-	 * @param int $num_end
+	 * @param int $num_start ASNode number
+	 * @param int $num_end ASNode number
 	 */
 	public function structurePath($num_start, $num_end, $dir);
 	
