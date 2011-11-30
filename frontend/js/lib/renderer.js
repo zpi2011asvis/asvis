@@ -195,10 +195,15 @@
 		};
 
 		this.addComponents = function addComponents(components) {
-			var components_object = new T.Object3D();
+			var components_object = new T.Object3D(),
+				objs;
 
 			components.forEach(function (params) {
-				components_object.add(Components[params.class](_graph, params));
+				objs = Components[params.class](_graph, params);
+				objs.forEach(function (obj) {
+					_graph_objects.push(obj);
+					components_object.add(obj);
+				});
 			});
 			
 			_graph_object.add(components_object);
@@ -271,7 +276,7 @@
 				_nver(0, 0, -2000), _nver(0, 0, 2000)
 			);
 			line.type = T.LineStrip;
-	
+
 			// flat elipse
 			for (i = 0, il = Math.PI * 2 + 0.1; i < il; i += 0.1) {
 				circle_geometry.vertices.push(_nver(
@@ -308,7 +313,7 @@
 		_updateFromSettings = function _updateFromSettings() {
 			var s = _settings;
 			MATERIAL.LINE.opacity = s.lines_opacity / 100;
-			MATERIAL.NODE.size = s.nodes_size / 10;
+			MATERIAL.NODE.size = s.nodes_size / 12;
 			_nodes_object && (_nodes_object.visible = s.show_nodes);
 			_camera_man && _camera_man.setFog(s.fog_near, s.fog_far);
 		};
@@ -387,6 +392,13 @@
 					color: 0xFF2222,
 					linewidth: 3,
 				});
+			},
+			add_struct: function () {
+				return new T.LineBasicMaterial({
+					color: 0x0077CC,
+					linewidth: 1.5,
+					opacity: 0.5
+				});
 			}
 		},
 		NODES: {
@@ -396,10 +408,16 @@
 					new T.MeshBasicMaterial({ color: 0xFF2222 })
 				);
 			},
-			hovered: function (geometry) {
+			hovered: function () {
 				return new T.Mesh(
-					new T.SphereGeometry(2, 8, 8),
-					new T.MeshBasicMaterial({ color: 0x4444FF })
+					new T.SphereGeometry(2.5, 10, 10),
+					new T.MeshBasicMaterial({ color: 0xDDDD33 })
+				);
+			},
+			add_struct: function () {
+				return new T.Mesh(
+					new T.SphereGeometry(2, 10, 10),
+					new T.MeshBasicMaterial({ color: 0x2299FF })
 				);
 			}
 		},
@@ -414,7 +432,7 @@
 			);
 			line.type = T.LineStrip;
 
-			return line;
+			return [ line ];
 		},
 
 		node: function node(graph, params) {
@@ -424,11 +442,61 @@
 
 			mesh.position = graph[params.forNode].pos;
 			
-			return mesh;
+			return [ mesh ];
 		},
 
-		tree: function tree(data) {
-			return new T.Object3D();
+		trees: function tree(graph, params) {
+			var line_material = this.LINES.add_struct(),
+				mesh_constructor = this.NODES.add_struct,
+				line_geometry = new T.Geometry(),
+				line = new T.Line(line_geometry, line_material),
+				data = params.data,
+				trees = data.structure,
+				num, node, pos,
+				mesh,
+				queue,
+				nodes_done = {},
+				edges_done = {};
+
+			line.type = T.LineStrip;
+	
+			if (data.distance_order.length === 0) return object3d;
+
+			queue = [ data.distance_order[0] ];
+
+			while (queue.length > 0) {
+				num = queue.shift();
+				nodes_done[num] = true;
+				node = trees[num];
+				pos = graph[num].pos;
+					
+				//mesh = mesh_constructor();
+				//mesh.position = pos;
+				//object3d.add(mesh);
+
+				node.out.forEach(function (num) {
+					if (!nodes_done[num]) {
+						queue.push(num);
+						line_geometry.vertices.push(
+							pos.vertex, graph[num].pos.vertex
+						);
+					}
+				});
+				node.in.forEach(function (next_num) {
+					if (!nodes_done[next_num]) {
+						queue.push(next_num);
+					}
+					if (!edges_done[num + '_' + next_num]) {
+						line_geometry.vertices.push(
+							pos.vertex, graph[next_num].pos.vertex
+						);
+						edges_done[next_num + '_' + num] = true;
+						edges_done[num + '_' + next_num] = true;
+					}
+				});
+			}
+
+			return [ line ];
 		}
 	};
 	Components.constructor = function Components() {};
