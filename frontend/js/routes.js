@@ -19,12 +19,25 @@
 				that.dispatcher.get('/node/{number}/{depth}', params);
 			});
 			w.signals.closed.add(function routerRoot_onClosed() {
-				if (curr_depth && curr_number) {
-					that.dispatcher.get('/node/{number}/{depth}', {
-						number: curr_number,
-						depth: curr_depth
-					});
-				}
+				_backToGraph(w);
+			});
+
+			that.widgets.add(w);
+			that.render();
+		});
+
+		dispatcher.get('/find/paths', function routerRoot() {
+			var w = widgets.FindPathsFormWidget.new(that._container_el);
+
+			w.set('from', curr_number);
+
+			w.signals.submitted.add(function routerRoot_onSubmit(params) {
+				curr_depth = null;
+				curr_number = null;
+				that.dispatcher.get('/path/{from}/{to}/{type}', params);
+			});
+			w.signals.closed.add(function routerRoot_onClosed() {
+				_backToGraph(w);
 			});
 
 			that.widgets.add(w);
@@ -98,6 +111,17 @@
 				});
 			}).end(that.err);
 		});
+
+
+		var _backToGraph = function _backToGraph(widget) {
+			if (curr_number && curr_depth) {
+				widget.destroy();
+				that.dispatcher.get('/node/{number}/{depth}', {
+					number: curr_number,
+					depth: curr_depth
+				});
+			}
+		};
 	};
 	
 	exports.Routes = Routes;

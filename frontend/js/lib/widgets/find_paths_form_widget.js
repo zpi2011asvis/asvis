@@ -4,7 +4,7 @@
 	var Widget = lib.widgets.Widget,
 		Signal = global.signals.Signal;
 
-	var StartFormWidget = Widget.create(function StartFormWidget() {}, {
+	var FindPathsFormWidget = Widget.create(function FindPathsFormWidget() {}, {
 		signals: {
 			destroyed: null,
 			submitted: null,
@@ -34,7 +34,7 @@
 		multiple: false
 	});
 
-	StartFormWidget.View = Widget.View.create(function StartFormWidgetView() {}, {
+	FindPathsFormWidget.View = Widget.View.create(function FindPathsFormWidgetView() {}, {
 		signals: {
 			bg_clicked: null,
 			submitted: null,
@@ -47,15 +47,15 @@
 			};
 		},
 
-		render: function render() {
+		render: function render(data) {
 			if (this._el) return;
 
 			var that = this;
 			that._cel.html(
 				that._position, 
-				that._tpls.render('start_form')
+				that._tpls.render('find_paths_form', data)
 			);
-			that._el = that._cel.find('#start_form');
+			that._el = that._cel.find('#find_paths_form');
 			that._el.on('click', function (event) {
 				// check whether it is exactly _el that was clicked
 				if (event.target === that._el.first()) {
@@ -65,8 +65,9 @@
 			});
 			that._el.find('.submit > button').on('click', function (event) {
 				that.signals.submitted.dispatch({
-					number: +that._el.find('input[name=number]').first().value,
-					depth: +that._el.find('input[name=depth]').first().value
+					from:		data.from || +that._el.find('#popup_form_from').first().value,
+					to:			+that._el.find('#popup_form_to').first().value,
+					type:		that._el.find('#popup_form_type').first().value
 				});
 				event.preventDefault();
 				event.stopPropagation();
@@ -74,5 +75,5 @@
 		},
 	});
 
-	exports.StartFormWidget = StartFormWidget;
+	exports.FindPathsFormWidget = FindPathsFormWidget;
 }.call({}, this.app.lib.widgets, this, this.app.lib));

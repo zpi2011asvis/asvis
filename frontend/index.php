@@ -117,6 +117,7 @@ function includeTemplates() {
 		'lib/resources/structures_resource.js',
 		'lib/widgets/widget.js',
 		'lib/widgets/start_form_widget.js',
+		'lib/widgets/find_paths_form_widget.js',
 		'lib/widgets/graph_controls_widget.js',
 		'lib/widgets/node_info_widget.js',
 		'lib/widgets/graph_widget.js',

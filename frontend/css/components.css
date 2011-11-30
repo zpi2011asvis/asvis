@@ -138,3 +138,17 @@ table.std.hoverable tr:hover td {
 	cursor: pointer;
 }
 
+/*
+ * FORM ------------------------------------------------------------------------
+ */
+
+.std_form label {
+	display: inline-block;
+	min-width: 100px;
+}
+.std_form > p {
+	margin-bottom: 5px;
+}
+.std_form .submit > button {
+	padding: 5px 50px;
+}
