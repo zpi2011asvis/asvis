@@ -121,7 +121,7 @@ class GraphAlgorithms {
 		
 		foreach($this->_structure as $num=>$node) {
 
-			if(!in_array($num, $conns)) {
+			if(in_array($num, $conns)) {
 				$structure[$num] = $node; 
 				
 				$in_array = array();
@@ -129,14 +129,14 @@ class GraphAlgorithms {
 				
 				foreach($this->_structure[$num]->in as $in) {
 				
-					if(!in_array($in, $conns)) {
+					if(in_array($in, $conns)) {
 						$in_array[] = $in;
 					}
 				}
 				
 				foreach($this->_structure[$num]->out as $out) {
 				
-					if(!in_array($out, $conns)) {
+					if(in_array($out, $conns)) {
 						$out_array[] = $out;
 					}
 				}
@@ -148,14 +148,14 @@ class GraphAlgorithms {
 		
 		foreach($this->_weight_order as $num) {
 			
-			if(!in_array($num, $conns)) {
+			if(in_array($num, $conns)) {
 				$weight_order[] = $num;
 			}
 		}
 		
 		foreach($this->_distance_order as $num) {
 			
-			if(!in_array($num, $conns)) {
+			if(in_array($num, $conns)) {
 				$distance_order[] = $num;
 			}
 		}
