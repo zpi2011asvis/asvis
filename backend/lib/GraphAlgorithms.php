@@ -89,7 +89,7 @@ class GraphAlgorithms {
 		foreach($conns as $num) {
 			$distance = $this->_structure[$num]->distance;
 			
-			if($distance > 0) {
+			if($distance > 1) {
 				$conns_up = array();
 				$conns_same = array();
 				$nums_up = array();
