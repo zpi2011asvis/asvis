@@ -80,11 +80,12 @@
 			
 			setTimeout(function () {
 				that._renderer.setStructure(that._data.graph, that._data.root);
-				that._renderer.start();
 		
 				if (add_struct) {
 					that.additionalStructure(add_struct.type, add_struct.data);
 				}
+
+				that._renderer.start();
 
 				global.app.signals.graph_rendering.ended.dispatch(that);
 			}, 1);			
