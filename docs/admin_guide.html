@@ -1,0 +1,127 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+</head>
+<body>
+<h1>ASvis</h1>
+<h2>Dokumentacja</h2>
+<h3>Podręcznik administratora</h3>
+
+
+
+<h4>Spis treści</h4>
+<ol>
+	<li><a href="#requirements">Wymagania</a></li>
+	<li><a href="#installation">Instalacja</a></li>
+	<li><a href="#configuration">Konfiguracja</a></li>
+	<li><a href="#data">Dane</a></li>
+</ol>
+
+
+
+
+
+<ol>
+	<a name="requirements"></a>
+	<li><strong>Wymagania</strong>
+		<ul>
+			<li>Linux</li>
+			<li>JRE (Java Runtime Environment) >= 1.6</li>
+			<li>Apache >= 2.2</li>
+			<li>PHP >= 5.3</li>
+			<li>MySQL</li>
+			<li>Zalecane przynajmniej 2GB pamięcie RAM</li>
+		</ul>
+		
+	</li>
+	
+	
+	
+	<a name="installation"></a>
+	<li><strong>Instalacja</strong>
+		<p>W celu zainstalowania aplikacji należy umieścić ją w wybranym katalogu na serwerze, np. <code>/srv/www/vhosts/asvis</code></p>
+		<p>Nastepnie należy skonfigurowac virtual host serwera Apache, tak aby document root wskazywal na główny katalog aplikacji.Przykadowa konfiguracja vhosta:</p>
+		<code><pre>&lt;VirtualHost asvis.local.pl:80&gt;
+	ServerName asvis.local.pl
+	DocumentRoot /srv/www/vhosts/asvis/
+	DirectoryIndex index.php
+	
+	&lt;Directory /&gt;
+		Options FollowSymLinks
+		AllowOverride All
+	&lt;/Directory&gt;
+	
+	&lt;Directory /srv/www/vhosts/asvis/&gt;
+		AllowOverride All
+		allow from all
+	&lt;/Directory&gt;	
+&lt;/VirtualHost&gt;</pre></code>
+		<p><strong>Po skonfigurowaniu vhosta trzeba zrestartowac Apache'a!</strong></p>
+		<p>Następnie należy uruchomić bazę danych Orient DB:</p>	
+		<code>$ ./scripts/orient_server_prod.sh</code>
+		<p>lub</p>
+		<code>$ cd db/orientdb/bin$ ./server_prod.sh</code>
+		<p>Następnie należy zainicjalizować baze danych asvis:</p>	
+		<code>$ ./scripts/create_orient_db.sh</code>
+		<p>Ten skrypt tworzy w bazie Orient DB schemat bazy asvis.</p>
+		
+	</li>
+	
+	
+	
+	<a name="configuration"></a>
+	<li><strong>Konfiguracja</strong>
+		<p><strong>Konfiguracja Orient DB</strong></p>
+		<p>Ustalene ilości pamięcie RAM dostępnej dla bazy:W pliku db/orientdb/bin/server_prod.sh nalezy zmienić linię 29</p>
+		<p>Mało (0.5 GiB)</p>
+		<code>JAVA_OPTS=-Xms512m\ -Xmx512m</code>
+		<p>Średnio (1 GiB)</p>
+		<code>JAVA_OPTS=-Xms1024m\ -Xmx1024m</code>
+		<p>Dużo (2 GiB)</p>
+		<code>JAVA_OPTS=-Xms2048m\ -Xmx2048m</code>
+		
+		
+		<p><strong>Konfiguracja aplikacji</strong></p>
+		<p>Aby stworzyć plik konfiguracyjny aplikacji należy zmienić nazwę pliku config.php-- na config.php. Następnie mozna w nim ustawić odpowiednie wartości:</p>
+		<code><pre>
+'mysql_db_host'				=> 'localhost',			&lt;- adres URL bazy MySQL z danymi ASów
+'mysql_db_name'				=> 'asmap',			&lt;- nazwa bazy MySQL z danymi ASów
+'mysql_db_user'				=> 'user',			&lt;- nazwa uzytkownika bazy MySQL z danymi ASów
+'mysql_db_pass'				=> 'pass',			&lt;- hasło użytkownika bazy MySQL z danymi ASów
+        </pre></code>
+        
+	</li>
+	
+	
+	
+	<a name="data"></a>
+	<li><strong>Dane</strong>
+		<p>Aplikacja ASvis wykorzystuje obie bazy danych (MySQL i Orient DB) do działania. Ponieważ jednak dane aktualizowane są tylko w bazie MySQL konieczne jest czasowe synchronizowanie bazy Orient DB z baza MySQL. Do tego celu został przygotowany skrypt <code>scripts/import_to_orient.sh</code>. Można go dodać do crontaba aby wykonywał się w określonych odstępach czasu:</p>
+		<code>0 3 * * * sciezka_do_asvis/scripts/import_to_orient.sh</code>
+		<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a target="blank" href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a></p>
+		<p>Import trwa około 5 minut, w zalezności od wydajności serwera. Na czas trwania importu aplikacja wstrzymuje swoje działanie - przy próbie otwarcia strony wyświetla komunikat o niedostepności.</p>
+	</li>
+	
+</ol>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

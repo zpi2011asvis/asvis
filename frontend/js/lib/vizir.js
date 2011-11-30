@@ -31,7 +31,9 @@
 			_vertices = [],		// ordered as in _order
 			_edges = [],
 			_dirty = false,
-			_fba;
+			_fba,
+			_mass_centers,
+			_auto_fba_delay;
 
 		// methods
 		var _nver,
@@ -42,8 +44,10 @@
 			_generateVEObjects,
 			_recursiveVertexPos,
 			_runRecursiveVertexPos,
+			_initFBA,
 			_calculateInclinationAngle,
-			_calculateRotationAngle;
+			_calculateRotationAngle,
+			_continuePath;
 	
 		/*
 		 * Publics -------------------------------------------------------------
@@ -70,6 +74,51 @@
 			_dirty = true;
 			_root = root;
 			return this;
+		};
+
+		this.addNodes = function (graph, paths) {
+			var structure = graph.structure,
+				new_nodes = [],
+				num, prev_num,
+				i,
+				paths_todo = [];
+
+			_vertices = [];
+			_edges = [];
+
+			graph.distance_order.forEach(function (num) {
+				if (!_graph[num]) {
+					new_nodes.push(num);
+					_graph[num] = structure[num];
+				}
+			});
+
+			paths.forEach(function (path) {
+				i = 0;
+				num = path[i];
+				while (new_nodes.indexOf(num) === -1 && ++i < path.length) {
+					prev_num = num;
+					num = path[i];
+				}
+				if (i < path.length) {
+					_continuePath(prev_num, path.slice(i), structure);
+				}
+			});
+	
+			// clear nodes that wasn't traversed
+			Object.keys(_graph).forEach(function (num) {
+				if (!_graph[num].pos) delete _graph[num];
+			});
+
+			new_nodes.forEach(function (num) {
+				if (_order.indexOf(num) === -1) {
+					_order.push(num);
+					_distance_order.push(num);
+				}
+			});
+
+			_generateVEObjects();
+			_initFBA();
 		};
 
 		this.getVertices = function getVertices() {
@@ -124,6 +173,8 @@
 				mc = {},
 				signal,
 				mc_base = BASE * MASS_CENTER_BASE_FACTOR;
+
+			_mass_centers = mc;
 			
 			// set mass centers
 			node = _graph[_order[0]];
@@ -153,7 +204,15 @@
 			global.DEBUG && console.log('Recalculating took: ' + (new Date() - d) + 'ms (for ' + _vertices.length + ' vertices)');
 			_dirty = false;
 
-			_fba = new FBA(_root, _graph, mc);
+			_initFBA();
+		};
+
+		_initFBA = function _initFBA() {
+			var signal;
+
+			_fba && _fba.stop();
+			_auto_fba_delay && global.clearTimeout(_auto_fba_delay);
+			_fba = new FBA(_root, _graph, _mass_centers);
 
 			// forward signals
 			signal = that.signals.started;
@@ -162,7 +221,7 @@
 			_fba.signals.ended.add(signal.dispatch, signal);
 
 			if (_order.length < AUTO_FBA_MAX_NODES) {
-				setTimeout(_fba.run.bind(_fba, AUTO_FBA_WORK_TIME), AUTO_FBA_DELAY);
+				_auto_fba_delay = global.setTimeout(_fba.run.bind(_fba, AUTO_FBA_WORK_TIME), AUTO_FBA_DELAY);
 			}
 		};
 
@@ -180,10 +239,8 @@
 		 * @param num {Integer} 
 		 * @param pos {Vector3} [x,y,z]
 		 * @param vector {Vector3} child_pos - parent_pos
-		 * @param depth {Integer} how deep go in this direction
 		 *
 		 * TODO
-		 * * something is wrong with inclining from tree direction
 		 * * depth gives poor results - traverse while vertex has big
 		 * number of unnodes_done children
 		 */
@@ -319,7 +376,7 @@
 			_vertices = vertices; //fast swap
 		};
 
-		_calculateInclinationAngle = function (connsl, conns_out, conns_in) {
+		_calculateInclinationAngle = function _calculateInclinationAngle(connsl, conns_out, conns_in) {
 			// only one neighbour
 			if (
 					connsl === 1 ||
@@ -331,8 +388,16 @@
 			return deg2Rad(75 / Math.sqrt(connsl) + 4.9); 
 		};
 
-		_calculateRotationAngle = function (incl_angle) {
+		_calculateRotationAngle = function _calculateRotationAngle(incl_angle) {
 			return incl_angle;
+		};
+
+		_continuePath = function _continuePath(start_num, path, data) {
+			var node = _graph[start_num],
+				pos = node.pos,
+				vector = pos.clone().setLength(BASE);
+			
+			_runRecursiveVertexPos([path[0], pos.clone().addSelf(vector), vector]);
 		};
 	};
 

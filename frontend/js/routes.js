@@ -66,8 +66,38 @@
 		dispatcher.get('/paths/{from}/{to}/{type}', function routerPaths(request) {
 			var from = +request.get.from,
 				to = +request.get.to,
-				type = request.get.type;
+				type = request.get.type,
+				depth_left,
+				depth_right,
+				paths;
 
+			var _loadPaths = function _loadPaths() {
+				return that.db.get('structure/graph', {
+					number: to,
+					depth: depth_right
+				})
+				(function (graph_data) {
+					return [graph_data, paths];
+				});
+			};
+			
+			that.db.get('structure/paths', {
+				from: from,
+				to: to,
+				type: type
+			})
+			(function (data) {
+				paths = data.paths;
+				depth_left = data.depth_left;
+				depth_right = data.depth_right;
+
+				if (curr_number !== from || !curr_depth || curr_depth < depth_left) {
+					return _loadGraph(from, data.depth_left, 'paths', _loadPaths);
+				}
+				else {
+					console.log('TODO!');
+				}
+			}).end(that.err);
 		});		
 
 		dispatcher.get('/trees/{number}/{height}/{type}', function routerTrees(request) {
@@ -87,7 +117,10 @@
 				_loadGraph(number, height + 1, 'trees', _loadTrees).end(that.err);
 			}
 			else {
-				_loadTree().end(that.err);
+				_loadTrees()
+				(function (data) {
+					graph_w.additionalStructure('trees', data);					
+				}).end(that.err);
 			}
 		});		
 	
