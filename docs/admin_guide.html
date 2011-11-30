@@ -8,8 +8,6 @@
 <h2>Dokumentacja</h2>
 <h3>Podręcznik administratora</h3>
 
-
-
 <h4>Spis treści</h4>
 <ol>
 	<li><a href="#requirements">Wymagania</a></li>
@@ -18,25 +16,19 @@
 	<li><a href="#data">Dane</a></li>
 </ol>
 
-
-
-
-
 <ol>
 	<a name="requirements"></a>
 	<li><strong>Wymagania</strong>
 		<ul>
 			<li>Linux</li>
 			<li>JRE (Java Runtime Environment) >= 1.6</li>
-			<li>Apache >= 2.2</li>
+			<li>Apache >= 2.2 z włączonycm mod-deflate</li>
 			<li>PHP >= 5.3</li>
 			<li>MySQL</li>
 			<li>Zalecane przynajmniej 2GB pamięcie RAM</li>
 		</ul>
 		
-	</li>
-	
-	
+	</li>	
 	
 	<a name="installation"></a>
 	<li><strong>Instalacja</strong>
@@ -68,10 +60,18 @@
 		
 	</li>
 	
-	
-	
 	<a name="configuration"></a>
 	<li><strong>Konfiguracja</strong>
+		<p><strong>Konfiguracja Apache</strong></p>
+		<p>Należy skonfigurować mod-deflate aby ubsługiwał format application/json:</p>
+		<code><pre>&lt;IfModule mod_deflate.c&gt;
+	AddOutputFilterByType DEFLATE text/html text/plain text/xml
+	AddOutputFilterByType DEFLATE text/css
+	AddOutputFilterByType DEFLATE application/x-javascript application/javascript application/ecmascript
+	AddOutputFilterByType DEFLATE application/rss+xml
+	<strong>AddOutputFilterByType DEFLATE application/json</strong>
+&lt;/IfModule&gt;</pre></code>
+		
 		<p><strong>Konfiguracja Orient DB</strong></p>
 		<p>Ustalene ilości pamięcie RAM dostępnej dla bazy:W pliku db/orientdb/bin/server_prod.sh nalezy zmienić linię 29</p>
 		<p>Mało (0.5 GiB)</p>
@@ -93,10 +93,43 @@
         
 	</li>
 	
-	
-	
 	<a name="data"></a>
 	<li><strong>Dane</strong>
+		<p><strong>MySQL</strong></p>
+		<p>Dane w bazie MySQL są przechowywane w formie 4 tabel:</p>
+		<p>ASES - lista ASów</p>
+		<table>
+			<thead>
+				<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>
+			</thead>
+			<tbody>			
+				<tr><td>ASNum</td><td>int</td><td>Numer AS i jednocześnie primary key tabeli</td></tr>
+				<tr><td>ASName</td><td>text</td><td>Nazwa AS</td></tr>
+			</tbody>
+		</table>
+		
+		<p>ASPOOL - lista pól adresów sieciowych ASów</p>
+		<table>
+			<thead>
+				<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>
+			</thead>
+			<tbody>			
+				<tr><td>ASNum</td><td>int</td><td>Numer AS i jednocześnie primary key tabeli</td></tr>
+				<tr><td>ASNetwork</td><td>text</td><td>Adres IP zapisany jako int</td></tr>
+				<tr><td>ASNetmask</td><td>text</td><td>Maska sieciowa ASa (jako liczba bitów)</td></tr>				
+			</tbody>
+		</table>
+		
+		<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych ASach</p>
+		<table>
+			<thead>
+				<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>
+			</thead>
+			<tbody>			
+				<tr><td>ASNum</td><td>int</td><td>Numer AS na którym skonfigurowany jest up/down stream i jednocześnie primary key tabeli</td></tr>
+				<tr><td>ASNumDown/ASNumUp</td><td>int</td><td>Numer AS do którego skonfigurowany jest up/down stream i jednocześnie primary key tabeli</td></tr>			
+			</tbody>
+		</table>
 		<p>Aplikacja ASvis wykorzystuje obie bazy danych (MySQL i Orient DB) do działania. Ponieważ jednak dane aktualizowane są tylko w bazie MySQL konieczne jest czasowe synchronizowanie bazy Orient DB z baza MySQL. Do tego celu został przygotowany skrypt <code>scripts/import_to_orient.sh</code>. Można go dodać do crontaba aby wykonywał się w określonych odstępach czasu:</p>
 		<code>0 3 * * * sciezka_do_asvis/scripts/import_to_orient.sh</code>
 		<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a target="blank" href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a></p>
