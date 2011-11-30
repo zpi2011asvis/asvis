@@ -91,7 +91,7 @@ class GraphAlgorithms {
 			
 			if($distance > 1) {
 				$conns_up = array();
-				$conns_same = array();
+				//$conns_same = array();
 				$nums_up = array();
 				
 				if($dir === 'both') {
@@ -105,18 +105,19 @@ class GraphAlgorithms {
 					if($this->_structure[$num_up]->distance < $distance) {
 						$conns_up[] = $num_up;
 					}
-					else if($this->_structure[$num_up]->distance === $distance) {
+					/*else if($this->_structure[$num_up]->distance === $distance) {
 						if(!in_array($num_up, $checked)) {
 							$conns_same[] = $num_up;
 							$checked[] = $num;
 						}
-					}
+					}*/
 				}
 				//var_dump($conns_same);
-				$nodes = array_merge($nodes, $conns_up);
-				$nodes = array_merge($nodes, $conns_same);
+				//$nodes = array_merge($nodes, $conns_up);
+				//$nodes = array_merge($nodes, $conns_same);
+				$nodes = array_merge($nodes, $nums_up);
 				
-				$nodes = array_merge($nodes, $this->_findConnected($conns_same, $dir, $checked));
+				//$nodes = array_merge($nodes, $this->_findConnected($conns_same, $dir, $checked));
 				$nodes = array_merge($nodes, $this->_findConnected($conns_up, $dir));
 			}
 		}
