@@ -395,7 +395,7 @@
 			},
 			add_struct: function () {
 				return new T.LineBasicMaterial({
-					color: 0x0088DD,
+					color: 0x0077CC,
 					linewidth: 1.5,
 					opacity: 0.5
 				});
@@ -455,7 +455,8 @@
 				num, node, pos,
 				mesh,
 				queue,
-				nodes_done = {};
+				nodes_done = {},
+				edges_done = {};
 
 			line.type = T.LineStrip;
 	
@@ -481,12 +482,16 @@
 						);
 					}
 				});
-				node.in.forEach(function (num) {
-					if (!nodes_done[num]) {
-						queue.push(num);
+				node.in.forEach(function (next_num) {
+					if (!nodes_done[next_num]) {
+						queue.push(next_num);
+					}
+					if (!edges_done[num + '_' + next_num]) {
 						line_geometry.vertices.push(
-							pos.vertex, graph[num].pos.vertex
+							pos.vertex, graph[next_num].pos.vertex
 						);
+						edges_done[next_num + '_' + num] = true;
+						edges_done[num + '_' + next_num] = true;
 					}
 				});
 			}
