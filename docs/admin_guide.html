@@ -83,7 +83,10 @@
 	
 	<a name="data"></a>
 	<li><strong>Dane</strong>
-		<p><strong>
+		<p>Aplikacja ASvis wykorzystuje obie bazy danych (MySQL i Orient DB) do działania. Ponieważ jednak dane aktualizowane są tylko w bazie MySQL konieczne jest czasowe synchronizowanie bazy Orient DB z baza MySQL. Do tego celu został przygotowany skrypt <code>scripts/import_to_orient.sh</code>. Można go dodać do crontaba aby wykonywał się w określonych odstępach czasu:</p>
+		<code>0 3 * * * sciezka_do_asvis/scripts/import_to_orient.sh</code>
+		<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a target="blank" href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a></p>
+		<p>Import trwa około 5 minut, w zalezności od wydajności serwera. Na czas trwania importu aplikacja wstrzymuje swoje działanie - przy próbie otwarcia strony wyświetla komunikat o niedostepności.</p>
 	</li>
 	
 </ol>
