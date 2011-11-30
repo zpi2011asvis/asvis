@@ -14,6 +14,7 @@
 		_is_node_info_blocked: null,
 		_connection_mark_id: null,
 		_hovered_mark_id: null,
+		_buffered_additional_struct: null,
 		_additional_struct_id: null,
 
 		_init: function _init() {
@@ -67,6 +68,28 @@
 			that._children = [ controls, node_info ];
 		},
 
+		render: function render() {
+			if (this._sRender() === false) return;
+
+			var that = this,
+				add_struct = that._buffered_additional_struct;
+
+			that._buffered_additional_struct = null;
+
+			global.app.signals.graph_rendering.started.dispatch(that);
+			
+			setTimeout(function () {
+				that._renderer.setStructure(that._data.graph, that._data.root);
+				that._renderer.start();
+		
+				if (add_struct) {
+					that.additionalStructure(add_struct.type, add_struct.data);
+				}
+
+				global.app.signals.graph_rendering.ended.dispatch(that);
+			}, 1);			
+		},
+
 		markConnectionTo: function markConnectionTo(from, to) {
 			this._connection_mark_id = this._renderer.addComponents([
 				{
@@ -116,11 +139,18 @@
 			this._node_info.hide();
 		},
 
+		bufferStructure: function bufferStructure(type, data) {
+			this._buffered_additional_struct = {
+				type: type,
+				data: data
+			};
+		},
+
 		additionalStructure: function additionalStructure(type, data) {
 			if (type === 'trees') {
-				this._additional_struct_id = this._renderer.addComponents([
+				this._renderer.addComponents([
 					{
-						class: 'tree',
+						class: 'trees',
 						data: data
 					}
 				]);
@@ -198,14 +228,6 @@
 				that.signals.mouse_moved.dispatch(that._mouse_pos);
 				that.signals.action_performed.dispatch();
 			});
-
-			global.app.signals.graph_rendering.started.dispatch(that);
-			
-			setTimeout(function () {
-				renderer.setStructure(data['graph'], data['root'], true);
-				renderer.start();
-				global.app.signals.graph_rendering.ended.dispatch(that);
-			}, 1);
 		},
 
 		_getSize: function _getSize() {

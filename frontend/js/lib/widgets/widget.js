@@ -50,7 +50,7 @@ this.app.lib.widgets = {};
 		},
 
 		render: function render() {
-			if (!this._dirty) return;
+			if (!this._dirty) return false;
 
 			this._view.render(this._data, this._dirty_keys);
 			this._dirty = false;
@@ -59,6 +59,8 @@ this.app.lib.widgets = {};
 			this._children.forEach(function (child) {
 				child.render();
 			});
+
+			return true;
 		}
 	},
 	{

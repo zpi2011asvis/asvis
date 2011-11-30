@@ -64,15 +64,15 @@
 		});
 
 		dispatcher.get('/paths/{from}/{to}/{type}', function routerPaths(request) {
-			var from = request.get.from,
-				to = request.get.to,
+			var from = +request.get.from,
+				to = +request.get.to,
 				type = request.get.type;
 
 		});		
 
 		dispatcher.get('/trees/{number}/{height}/{type}', function routerTrees(request) {
-			var number = request.get.number,
-				height = request.get.height,
+			var number = +request.get.number,
+				height = +request.get.height,
 				type = request.get.type;
 
 			var _loadTrees = function () {
@@ -83,8 +83,8 @@
 				});
 			};
 
-			if (curr_number !== number || !curr_depth || curr_depth < height) {
-				_loadGraph(number, height, 'trees', _loadTrees).end(that.err);
+			if (curr_number !== number || !curr_depth || curr_depth < height + 1) {
+				_loadGraph(number, height + 1, 'trees', _loadTrees).end(that.err);
 			}
 			else {
 				_loadTree().end(that.err);
@@ -92,8 +92,8 @@
 		});		
 	
 		dispatcher.get('/node/{number}/{depth}', function routerNode(request) {
-			var number = request.get.number,
-				depth = request.get.depth;
+			var number = +request.get.number,
+				depth = +request.get.depth;
 
 			if (curr_number === number && curr_depth === depth) {
 				return;
@@ -134,11 +134,6 @@
 					graph_w.set('root', number);
 					graph_w.set('depth', depth);
 					that.widgets.add(graph_w);
-	
-					// no additional structures - render as fast as can
-					if (!add_struct_type) {
-						that.render();
-					}
 
 					var promises = [
 						that.db.get('connections/meta', {
@@ -169,9 +164,9 @@
 					info_w.set('root', number);
 					info_w.set('depth', depth);
 
-					// additional structure was set
+					// additional structure is set
 					if (add_struct_type) {
-						graph_w.additionalStructure(add_struct_type, add_struct);
+						graph_w.bufferStructure(add_struct_type, add_struct);
 					}
 					
 					that.widgets.add(info_w);

@@ -301,14 +301,18 @@
 
 		_generateVEObjects = function _generateVEObjects() {
 			var edges = [],
-				vertices = [];
-
-			for (var i = 0, il = _edges.length; i < il; ++i) {
-				edges[i] = new T_Vertex(_graph[_edges[i]].pos);
-			}
+				vertices = [],
+				pos, vert;
 
 			for (var i = 0, il = _vertices.length; i < il; ++i) {
-				vertices[i] = new T_Vertex(_vertices[i]);
+				pos = _vertices[i];
+				vert = new T_Vertex(pos);
+				pos.vertex = vert
+				vertices[i] = vert;
+			}
+
+			for (var i = 0, il = _edges.length; i < il; ++i) {
+				edges[i] = _graph[_edges[i]].pos.vertex;
 			}
 
 			_edges = edges; //fast swap
