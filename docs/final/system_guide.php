@@ -25,24 +25,26 @@
 </header>
 
 <section id="modules">	
-		<h1>Moduły</h1>
-		
-		<p>Aplikacja składa się z dwóch modułów: <a href="#backend">Backendu</a> i <a href="#frontend">Frontendu</a>.</p>
-		<p><a href="#backend">Backend</a> odpowiedzialny jest za dostarczanie danych <a href="#frontend">Frontendowi</a>. Realizuje to poprzez <a href="#rest">RESTowe API</a>.</p>
-		<p><a href="#frontend">Frontend</a> odpowiada za wyświetlanie GUI aplikacji. Żądania użytkownika realizuje odpytując <a href="#backend">Backend</a></p>
+	<h1>Moduły</h1>
+	
+	<p>Aplikacja składa się z dwóch podstawowych części składowych: <a href="#backend">Backendu</a> (czyli aplikacji działającej na serwerze) i <a href="#frontend">Frontendu</a> (aplikacja napisana w JavaScriptcie i działająca w przegladarce internetowej).</p>
+	<p><a href="#backend">Backend</a> odpowiedzialny jest za dostarczanie danych <a href="#frontend">Frontendowi</a>. Realizuje to poprzez <a href="#rest">REST-owe API</a>.</p>
+	<p><a href="#frontend">Frontend</a> odpowiada za wyświetlanie GUI aplikacji. Żądania użytkownika realizuje odpytując <a href="#backend">Backend</a>.</p>
 </section>
 
 <section id="backend">
 	<h1>Backend</h1>
 	
-	<p>Backend wykonuje się po stronie serwera. Jest to część napisana w całości w języku PHP. Backend odpytuje bazy danych, przetrwarza otrzymane wyniki, realizuje zadania przeszukiwania grafu.</p>
+	<p>Backend wykonuje się po stronie serwera. Jest to aplikacja napisana w języku PHP. Backend odpytuje bazy danych (MySQL i OrientDB), przetrwarza otrzymane wyniki i realizuje zadania przeszukiwania grafu.</p>
 </section>
 	
 <section id="rest">
 	<h1>REST API</h1>
 	
 	<p>Backend udostępnia zasoby za pomocą RESTowego API.</p>
-	<h2>ASy</h2>			
+
+	<h2>AS-y</h2>			
+
 	<h3>GET /nodes/find/[number]</h3>
 	<p>Wyszukuje ASy po numerze, zwraca w kolejności alfabetycznej.</p>
 	<ul>
@@ -58,9 +60,10 @@
     "34567": {"name":"AS34567"}
     "34579": {"name":"AS34579"}
     "345": {"name":"AS345"}
-}			</code></pre>
+}</code></pre>
 		</li>
 	</ul>
+
 	<h3>POST /nodes/meta</h3>
 	
 	<p>Podaje metadane ASów o numerach przekazanych w parametrze - pule adresów.</p>
@@ -76,7 +79,7 @@
 			<pre><code>{
     "1234": {"name":"AS1234", "pools":[{"ip":"193.110.32.0","netmask":21}, ...]},
     "4234": {"name":"AS4234", "pools":[{"ip":"198.136.146.0","netmask":12, ...}, ...]},
-}			</code></pre>
+}</code></pre>
 		</li>
 	</ul>
 
@@ -108,7 +111,7 @@
     },
     "weight_order":[306,575,...,343],
     "distance_order":[306,352,...,1733]
-}			</code></pre>
+}</code></pre>
 		</li>
 	</ul>
 
@@ -140,7 +143,7 @@
     },
     "weight_order":[306,575,...,343],
     "distance_order":[306,352,...,1733]
-}			</code></pre>
+}</code></pre>
 		</li>
 	</ul>
 	
@@ -161,7 +164,7 @@
 	"paths":[[306,575,27064,...,27066]],
 	"depth_left":3,
 	"depth_right":2
-}			</code></pre>
+}</code></pre>
 		</li>
 	</ul>
 
