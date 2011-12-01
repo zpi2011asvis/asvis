@@ -12,6 +12,7 @@
 <ol>
 	<li><a href="#requirements">Wymagania</a></li>
 	<li><a href="#start">Otwieranie aplikacji</a></li>
+	<li><a href="#screen">Ekran aplikacji</a></li>
 	<li><a href="#browsing">Przeglądanie połączeń</a></li>
 	<li><a href="#trees">Wyszukiwanie drzew</a></li>
 	<li><a href="#paths">Wyszukiwanie ścieżek</a></li>
@@ -31,6 +32,12 @@
 		<p>Aby otworzyć aplikację wystarczy w przeglądarce internetowej wpisać adres URL serwera aplikacji. Otworzy się stona aplikacji, z domyślnie otwartym zapytaniem o podanie numeru AS oraz głębokości wyszukiwania. (patrz <a href="#browsing">Przeglądanie połączeń</a>)</p>
 	</li>
 	
+	<a name="screen"></a>
+	<li><strong>Ekran aplikacji</strong>
+		<p>Ekran aplikacji podzielony jest na 2 części. Po lewej stronie znajduje się miejsce w którym wyświetlana jest trójwymiarowa reprezentacja połączeń pomiędzy ASami. Po prawej, na pionowym pasku, wyświetlane są informacje dotyczące wybranego ASa - jego numer, nazwa, lista połączeń (wraz z ich typem i stanem), i lista pól adresów.</p>
+		<p>Nawigacja w trójwymiarowym widoku jest bardzo prosta: aby obrócić widok należy przytrzymując lewy przycisk myszy i przeciągnąć.</p>
+	</li>
+	
 	<a name="browsing"></a>
 	<li><strong>Przeglądanie połączeń</strong>
 		<p>Przeglądanie połączeń pomiędzy ASami polega na przeglądaniu wycinka całej sieci połączeń. Wycinek taki zorientowany jest wokół wybranego ASa, nazywanego tutaj źródłowym. Połączenia wczytywane są w zależności od zadanej głębokości wyczukiwania. Głębokość wyszukiwania jest parametrem określającym jak dalecy sąsiedzi ASa źródłowego mają zostać pokazani. Głębokość 1 oznacza tylko bezpośrednich sąsiadów, bo tylko do nich można dotrzeć z ASa źródłowego przechodząc po maksymalnie 1 połączeniu. Głębokość 2 wyszuka sąsiadów do których można dotrzeć z ASa źródłowego przechodząc po maksymalnie 2 połączeniach, itd</p>
@@ -43,7 +50,8 @@
 	
 	<a name="paths"></a>
 	<li><strong>Wyszukiwanie ścieżek</strong>
-		<p></p>
+		<p>Wyszukiwanie ścieżek pozwala na znalezienie najkrótszych ścieżek łączących dane AS-y. Mając wybrany AS źródłowy (<a href="#browsing">Przeglądanie połączeń</a>) klikamy wyszukiwanie ścieżek i wprowadzamy nr ASa docelowego. Następnie wybieramy czy wyszukujemy ścieżkę prowadzącą DO ASa źródłowego (Downstram), OD (Upstream) czy w dowolnym kierunku (Downstream i Upstream)</p>
+		<p>W wyniku zostaje zaznaczona znaleziona ścieżka (lub ściezki, jeżeli jest więcej niż jedna o tej samej długości)</p>
 	</li>
 </ol>
 
