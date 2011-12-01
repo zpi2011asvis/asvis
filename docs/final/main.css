@@ -1,0 +1,41 @@
+body {
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	max-width: 700px;
+	margin: 0 auto;
+}
+
+header {
+	background-color: #06A;
+	color: #FFF;
+	padding: 20px;
+}
+header > hgroup > * {
+	margin: 0;
+	text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+}
+header > hgroup > h1 {
+	font-size: 40px;
+	line-height: 40px;
+}
+header > hgroup::after {
+	content: '';
+	display: block;
+	clear: both;
+}
+header > nav ol {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+header > nav a {
+	display: block;
+	background-color: rgba(255, 255, 255, 0.2);
+	margin-bottom: 5px;
+	padding: 5px;
+	color: #FFF;
+	text-decoration: none;
+}
+header > nav a:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
