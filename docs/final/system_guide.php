@@ -201,10 +201,37 @@
 ]			</code></pre>
 		</li>
 	</ul>
+</section>
 	
 <section id="frontend">
-	<li><strong>Frontend</strong>
-	</li>
+	<h1>Frontend</h1>
+
+	<p>Aplikacja frontendowa jest w napisana w JavaScriptcie (wersja ECMAScript 5) i wykorzystuje HTML5 + CSS3 do prezentacji. Podstawową ideą jest oparcie o HTML5 history w celu ograniczenia do jednego (inicjalnego) załadowania strony, by następne zmiany "podstron" prowadzić już w obrębie jednego stanu. W tym celu zostały wykorzystane zewnętrzne bibliteki oraz autorska implementacja dispatchera.</p>
+
+	<p>Wykorzystane zewnętrzne moduły:</p>
+
+	<ul>
+		<li><a href="https://github.com/mrdoob/three.js/">Three.js</a> &ndash; JavaScript 3D Engine</li>
+		<li><a href="http://millermedeiros.github.com/js-signals/">js-signals</a> &ndash; implementacja sygnałów</li>
+		<li><a href="http://millermedeiros.github.com/crossroads.js/">Crossroads.js</a> &ndash; router</li>
+		<li><a href="http://embeddedjs.com/">EJS</a> &ndash; system template'owy</li>
+		<li><a href="http://xuijs.com/">xui.js</a> &ndash; lekka biblioteka do DOM-a</li>
+		<li><a href="https://github.com/medikoo">pakiety wspierające autorstwa Mariusza Nowaka</a> &ndash; es5ext (rozszerzenie ES5), deferred (wsparcia dla pracy z asynchronicznymi wywołaniami), modules-webmake (opakowywanie modułów CommonJS do wersji zgodnej z ES5).</li>
+	</ul>
+
+	<p>Architektura:</p>
+
+	<ul>
+		<li><code>app.js</code> &ndash; główny obiekt aplikacji &ndash; scalający podstawowe kompomenty</li>
+		<li><code>util.js i xui_extends.js</code> &ndash; pomocne helpery</li>
+		<li><code>routes.js</code> &ndash; definicje routingu URL-i</li>
+		<li><code>lib/dispatcher_adapter.js</code> &ndash; delegacja kliknięć w linki oraz wysłań formularzy i skierowanie ich do wewnętrznego routingu</li>
+		<li><code>lib/resources/</code> &ndash; zasoby REST-owego API</li>
+		<li><code>lib/stores/</code> &ndash; "magazyny danych" (obecnie dwa &ndash; <code>remote</code>, czyli zewnętrzny zasób pobieranych przez XHR oraz <code>local</code>, czyli cache)</li>
+		<li><code>lib/widgets/</code> &ndash; implementacja architektury opartej o widgety; widgety skłają się z części właściwej oraz widoku (+ zewnętrzne template'y)</li>
+		<li><code>lib/fba.js</code> &ndash; implementacja forced based algorithm (algorytmu wykorzystującego siły odpychania do rozlokowania wierzchołków grafu)</li>
+		<li><code>lib/gods_finger.js, lib/camera_man.js, lib/renderer.js</code> &ndash; renderowanie 3D, obsługa kamery, obiektów itp.</li>
+	</ul>
 </section>
 
 </body>
