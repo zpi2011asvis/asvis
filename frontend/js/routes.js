@@ -95,7 +95,10 @@
 					return _loadGraph(from, data.depth_left, 'paths', _loadPaths);
 				}
 				else {
-					console.log('TODO!');
+					_loadPaths()
+					(function (data) {
+						graph_w.additionalStructure('paths', data);					
+					}).end(that.err);
 				}
 			}).end(that.err);
 		});		
@@ -106,11 +109,20 @@
 				type = request.get.type;
 
 			var _loadTrees = function () {
-				return that.db.get('structure/trees', {
-					number: number,
-					height: height,
-					type: type
-				});
+				return (
+					that.db.get('structure/trees', {
+						number: number,
+						height: height,
+						type: type
+					})
+					(function (data) {
+						if (data.distance_order.length === 0) {
+							alert('Brak drzew dla podanych kryteriów');
+						}
+
+						return data;
+					})
+				);
 			};
 
 			if (curr_number !== number || !curr_depth || curr_depth < height + 1) {

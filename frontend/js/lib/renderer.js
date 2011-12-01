@@ -216,16 +216,15 @@
 				sc = new SphereCollider(v.position, 3);
 				_colliders.push(sc);
 			}
-			verts_geometry.__dirtyVertices = true;
 
 			for (i = 0, il = edges.length; i < il; i++) {
 				edges_geometry.vertices.push(edges[i]);
 			}
 
 			line.type = T.LineStrip;
-//			_graph_object.add(psystem);
 			_graph_object.add(line);
 			_graph_objects.push(line);
+
 		};
 
 		this.addComponents = function addComponents(components) {
@@ -427,11 +426,18 @@
 					linewidth: 3,
 				});
 			},
-			add_struct: function () {
+			trees: function () {
 				return new T.LineBasicMaterial({
 					color: 0x0077CC,
 					linewidth: 1.5,
 					opacity: 0.5
+				});
+			},
+			paths: function () {
+				return new T.LineBasicMaterial({
+					color: 0x0077CC,
+					linewidth: 3,
+					opacity: 0.75
 				});
 			}
 		},
@@ -450,7 +456,7 @@
 			},
 			add_struct: function () {
 				return new T.Mesh(
-					new T.SphereGeometry(2, 10, 10),
+					new T.SphereGeometry(2.25, 10, 10),
 					new T.MeshBasicMaterial({ color: 0x2299FF })
 				);
 			}
@@ -476,7 +482,7 @@
 		},
 
 		trees: function tree(graph, params) {
-			var line_material = this.LINES.add_struct(),
+			var line_material = this.LINES.trees(),
 				mesh_constructor = this.NODES.add_struct,
 				line_geometry = new T.Geometry(),
 				line = new T.Line(line_geometry, line_material),
@@ -490,7 +496,7 @@
 
 			line.type = T.LineStrip;
 	
-			if (data.distance_order.length === 0) return object3d;
+			if (data.distance_order.length === 0) return [];
 
 			queue = [ data.distance_order[0] ];
 
@@ -504,15 +510,7 @@
 				//mesh.position = pos;
 				//object3d.add(mesh);
 
-				node.out.forEach(function (num) {
-					if (!nodes_done[num]) {
-						queue.push(num);
-						line_geometry.vertices.push(
-							pos.vertex, graph[num].pos.vertex
-						);
-					}
-				});
-				node.in.forEach(function (next_num) {
+				node.out.concat(node.in).forEach(function (next_num) {
 					if (!nodes_done[next_num]) {
 						queue.push(next_num);
 					}
@@ -529,8 +527,40 @@
 			return [ line ];
 		},
 
-		paths: function () {
-			return [ ];
+		paths: function (graph, params) {
+			var paths = params.data,
+				line_material = this.LINES.paths(),
+				line_geometry = new T.Geometry(),
+				line = new T.Line(line_geometry, line_material),
+				mesh_constructor = this.NODES.add_struct,
+				mesh,
+				edges_done = {},
+				num1, num2,
+				i, il;
+
+			paths.forEach(function (path) {
+				var i;
+
+				for (i = 1, il = path.length; i < il; ++i) {
+					num1 = path[i - 1];
+					num2 = path[i];
+
+					if (!edges_done[num1 + '_' + num2]) {
+						line_geometry.vertices.push(
+							graph[num1].pos.vertex, graph[num2].pos.vertex
+						);
+						edges_done[num1 + '_' + num2] = true;
+						edges_done[num2 + '_' + num1] = true;
+					}
+				}
+			});
+
+			if (num2) {
+				mesh = mesh_constructor();
+				mesh.position = graph[num2].pos;
+			}
+
+			return [ line, mesh ];
 		}
 	};
 	Components.constructor = function Components() {};
