@@ -1,4 +1,14 @@
-<html>
+<?
+
+function f($c) {
+	return htmlspecialchars(
+		preg_replace('/(^\n|\n$)/', '',
+			str_replace("\t", '    ', $c)
+		)
+	);
+}
+
+?><html>
 <head>
 	<meta charset="utf-8">
 	<title>ASvis &ndash; Admin guide</title>
@@ -41,21 +51,23 @@
 
 	<p>W celu zainstalowania aplikacji należy umieścić ją w wybranym katalogu na serwerze, np. <code>/srv/www/vhosts/asvis</code>.</p>
 	<p>Nastepnie należy skonfigurowac virtual host serwera Apache, tak aby document root wskazywal na główny katalog aplikacji. Przykadowa konfiguracja vhosta:</p>
-<pre>&lt;VirtualHost asvis.local.pl:80&gt;
+<pre><?= f("
+<VirtualHost asvis.local.pl:80>
 	ServerName asvis.local.pl
 	DocumentRoot /srv/www/vhosts/asvis/
 	DirectoryIndex index.php
 	
-	&lt;Directory /&gt;
+	<Directory />
 		Options FollowSymLinks
 		AllowOverride All
-	&lt;/Directory&gt;
+	</Directory>
 	
-	&lt;Directory /srv/www/vhosts/asvis/&gt;
+	<Directory /srv/www/vhosts/asvis/>
 		AllowOverride All
 		allow from all
-	&lt;/Directory&gt;	
-&lt;/VirtualHost&gt;</pre>
+	</Directory>	
+</VirtualHost>
+") ?></pre>
 
 	<p><strong>Po skonfigurowaniu vhosta trzeba zrestartowac Apache'a!</strong></p>
 	<p>Następnie należy uruchomić bazę danych Orient DB:</p>	
@@ -72,13 +84,17 @@
 
 	<h2>Konfiguracja Apache</h2>
 	<p>Należy skonfigurować mod-deflate aby ubsługiwał format application/json:</p>
-<pre>&lt;IfModule mod_deflate.c&gt;
+
+<pre><?= f("
+<IfModule mod_deflate.c>
 	AddOutputFilterByType DEFLATE text/html text/plain text/xml
 	AddOutputFilterByType DEFLATE text/css
 	AddOutputFilterByType DEFLATE application/x-javascript application/javascript application/ecmascript
 	AddOutputFilterByType DEFLATE application/rss+xml
-	<strong>AddOutputFilterByType DEFLATE application/json</strong>
-&lt;/IfModule&gt;</pre>
+	AddOutputFilterByType DEFLATE application/json
+</IfModule>
+") ?></pre>
+
 		<p>Powyższy wpis można dodać w <code>deflate.conf</code> lub w <code>.htaccess</code>.</p>
 		
 	<h2>Konfiguracja Orient DB</h2>
@@ -94,11 +110,12 @@
 	<h2>Konfiguracja aplikacji</h2>
 	<p>Aby stworzyć plik konfiguracyjny aplikacji należy zmienić nazwę pliku config.php-- na config.php. Następnie mozna w nim ustawić odpowiednie wartości:</p>
 
-<pre>
-'mysql_db_host'		=> 'localhost',		&lt;- adres URL bazy MySQL z danymi ASów
-'mysql_db_name'		=> 'asmap',		&lt;- nazwa bazy MySQL z danymi ASów
-'mysql_db_user'		=> 'user',		&lt;- nazwa uzytkownika bazy MySQL z danymi ASów
-'mysql_db_pass'		=> 'pass',		&lt;- hasło użytkownika bazy MySQL z danymi ASów</pre>
+<pre><?= f("
+'mysql_db_host'		=> 'localhost',	<- adres URL bazy MySQL z danymi ASów
+'mysql_db_name'		=> 'asmap',		<- nazwa bazy MySQL z danymi ASów
+'mysql_db_user'		=> 'user',		<- nazwa uzytkownika bazy MySQL z danymi ASów
+'mysql_db_pass'		=> 'pass',		<- hasło użytkownika bazy MySQL z danymi ASów
+") ?></pre>
 
 </section>    
 	
@@ -106,8 +123,8 @@
 	<h1>Dane</h1>
 	<h2>MySQL</h2>
 
-	<p>Dane w bazie MySQL są przechowywane w formie 4 tabel:</p>
-	<p>ASES - lista ASów</p>
+	<p>Dane w bazie MySQL są przechowywane w formie 4 tabel.</p>
+	<p>ASES - lista ASów:</p>
 	<table>
 		<thead>
 			<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>
@@ -118,7 +135,7 @@
 		</tbody>
 	</table>
 	
-	<p>ASPOOL - lista pól adresów sieciowych ASów</p>
+	<p>ASPOOL - lista pól adresów sieciowych ASów.</p>
 
 	<table>
 		<thead>
@@ -131,7 +148,7 @@
 		</tbody>
 	</table>
 	
-	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych ASach</p>
+	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych ASach.</p>
 
 	<table>
 		<thead>
@@ -147,7 +164,7 @@
 
 	<pre>0 3 * * * sciezka_do_asvis/scripts/import_to_orient.sh</pre>
 
-	<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a target="blank" href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a></p>
+	<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a>.</p>
 	<p>Import trwa około 5 minut, w zalezności od wydajności serwera. Na czas trwania importu aplikacja wstrzymuje swoje działanie - przy próbie otwarcia strony wyświetla komunikat o niedostepności.</p>
 </section>
 
