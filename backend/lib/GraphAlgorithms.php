@@ -113,22 +113,24 @@ class GraphAlgorithms {
 		$distance_order = array();
 		
 		foreach($this->_structure as $num=>$node) {
-			$structure[$num] = $node;
-			$structure[$num]->in = array();
-			$structure[$num]->out = array();
-								
+			$in_array = array();
+			$out_array = array();			
+											
 			foreach($node->in as $in) {
 				if(isset($this->_structure[$in])) {
-					echo $in;
-					$structure[$num]->in[] = $in;
+					$in_array[] = $in;
 				}
 			}
 				
 			foreach($node->out as $out) {	
 				if(isset($this->_structure[$out])) {
-					$structure[$num]->out[] = $out;
+					$out_array = $out;
 				}
 			}
+			
+			$node->in = $in_array;
+			$node->out = $out_array;
+			$structure[$num] = $node;
 		}   
 		
 		foreach($this->_weight_order as $num) {
