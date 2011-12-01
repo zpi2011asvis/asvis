@@ -55,6 +55,7 @@
     </users>
     <properties>
         <entry name="server.cache.file.static" value="false"/>
+        <entry name="network.http.sessionExpireTimeout" value="300"/>
         <entry name="log.console.level" value="info"/>
         <entry name="log.file.level" value="fine"/>
     </properties>
