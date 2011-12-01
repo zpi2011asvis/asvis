@@ -11,7 +11,7 @@ function f($c) {
 ?><html>
 <head>
 	<meta charset="utf-8">
-	<title>ASvis &ndash; Admin guide</title>
+	<title>ASvis &ndash; Podręcznik administratora</title>
 	<link rel="stylesheet" href="main.css">
 </head>
 <body>
@@ -71,9 +71,9 @@ function f($c) {
 
 	<p><strong>Po skonfigurowaniu vhosta trzeba zrestartowac Apache'a!</strong></p>
 	<p>Następnie należy uruchomić bazę danych Orient DB:</p>	
-	<pre>$ ./scripts/orient_server_prod.sh</pre>
+	<pre>$ ./scripts/orient_server.sh</pre>
 	<p>lub</p>
-	<pre>$ cd db/orientdb/bin$ ./server_prod.sh</pre>
+	<pre>$ cd db/orientdb/bin$ ./server.sh</pre>
 	<p>Następnie należy zainicjalizować baze danych asvis:</p>	
 	<pre>$ ./scripts/create_orient_db.sh</pre>
 	<p>Ten skrypt tworzy w bazie Orient DB schemat bazy asvis.</p>

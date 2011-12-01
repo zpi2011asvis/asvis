@@ -11,7 +11,7 @@ function f($c) {
 ?><html>
 <head>
 	<meta charset="utf-8">
-	<title>ASvis &ndash; User guide</title>
+	<title>ASvis &ndash; Podręcznik użytkownika</title>
 	<link rel="stylesheet" href="main.css">
 </head>
 <body>
@@ -72,13 +72,13 @@ function f($c) {
 	<h1>Opcje</h1>
 
 	<p>Panel opcji pozwala na zmianę sposobu wyświetlania AS-ów i połączeń.</p>
-	<p>Ustawienia mgły pozwalają na wygaszenie obiektów znajdujących się głębiej w polu widzenia - przydatne przy oglądaniu dużych grafów.</p>
+	<p>Ustawienia mgły pozwalają na wygaszenie obiektów znajdujących się głębiej w polu widzenia &ndash; przydatne przy oglądaniu dużych grafów.</p>
 
 	<a href="imgs/settings_fog_1.png"><img src="imgs/settings_fog_1.png"></a>
 	<a href="imgs/settings_fog_2.png"><img src="imgs/settings_fog_2.png"></a>
 
-	<p>Ustawienia grafu pozwalają na zmianę wielkości AS-ów (zielonych prostokątów) oraz na zmianę przezroczystości linii połączeń (aż do ich calkowitej przezroczystości).</p>
-	<p>Przycisk "uruchom siły odpychania" pozwala na uruchomienie algorytmu lepiej rozmieszczającego graf w przestrzeni, algorytm ten z powodu sowjej czasochłonności nie jest automatycznie uruchamiany dla dużych grafów. (powyżej 500 AS-ów).</p>
+	<p>Ustawienia grafu pozwalają na zmianę wielkości AS-ów (zielonych kwadratów) oraz na zmianę przezroczystości linii połączeń (aż do ich calkowitej przezroczystości).</p>
+	<p>Przycisk "uruchom siły odpychania" pozwala na uruchomienie algorytmu lepiej rozmieszczającego graf w przestrzeni. Algorytm ten z powodu sowjej czasochłonności nie jest automatycznie uruchamiany dla dużych grafów (powyżej 500 AS-ów). Nie radzimy uruchamiać algorytmu dla grafów powyżej 5000 wierzchołków, ponieważ ma złożoność N<sup>2</sup>/2.</p>
 </section>
 	
 <section id="browsing">
