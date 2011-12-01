@@ -11,7 +11,7 @@ function f($c) {
 ?><html>
 <head>
 	<meta charset="utf-8">
-	<title>ASvis &ndash; Admin guide</title>
+	<title>ASvis &ndash; Podręcznik administratora</title>
 	<link rel="stylesheet" href="main.css">
 </head>
 <body>
