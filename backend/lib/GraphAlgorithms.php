@@ -68,7 +68,7 @@ class GraphAlgorithms {
 		$leafs = $this->_findLeafs($height+1);
 		$conns = $this->_findConnected($leafs, $dir);
 		
-		return $this->_rebuildStructure(array_merge($leafs, $conns), $dir);
+		return $this->_rebuildStructure(array_merge($leafs, $conns));
 	}
 	
 	private function _findLeafs($distance) {
@@ -83,15 +83,14 @@ class GraphAlgorithms {
 		return $leafs;
 	}
 	
-	private function _findConnected($conns, $dir, $checked = array()) {
+	private function _findConnected($conns, $dir) {
 		$nodes = array();
 		
 		foreach($conns as $num) {
 			$distance = $this->_structure[$num]->distance;
 			
-			if($distance > 1) {
+			if($distance > 0) {
 				$conns_up = array();
-				//$conns_same = array();
 				$nums_up = array();
 				
 				if($dir === 'both') {
@@ -105,19 +104,14 @@ class GraphAlgorithms {
 					if($this->_structure[$num_up]->distance < $distance) {
 						$conns_up[] = $num_up;
 					}
-					/*else if($this->_structure[$num_up]->distance === $distance) {
-						if(!in_array($num_up, $checked)) {
-							$conns_same[] = $num_up;
-							$checked[] = $num;
-						}
-					}*/
 				}
-				//var_dump($conns_same);
-				//$nodes = array_merge($nodes, $conns_up);
-				//$nodes = array_merge($nodes, $conns_same);
-				$nodes = array_merge($nodes, $nums_up);
+		
+				foreach ($nums_up as $num_up) {
+					if($this->_structure[$num_up]->distance > 0) {
+						$nodes[] = $num_up;
+					}
+				}
 				
-				//$nodes = array_merge($nodes, $this->_findConnected($conns_same, $dir, $checked));
 				$nodes = array_merge($nodes, $this->_findConnected($conns_up, $dir));
 			}
 		}
@@ -125,26 +119,7 @@ class GraphAlgorithms {
 		return $nodes;
 	}
 	
-	private function _connsInTree($node, $conns, $dir) {
-		$inTree = true;
-		
-		if ($dir === 'both') {
-			$nums_up = array_merge($node->in, $node->out);
-		}
-		else {
-			$nums_up = $node->$dir;
-		}
-		
-		foreach ($nums_up as $num_up) {
-			if(in_array($num_up, $conns)) {
-				$inTree = false;
-			}
-		}
-	var_dump($inTree);
-		return $inTree;
-	}
-	
-	private function _rebuildStructure($conns, $dir) {
+	private function _rebuildStructure($conns) {
 		$structure = array();
 		$weight_order = array();
 		$distance_order = array();
@@ -188,6 +163,12 @@ class GraphAlgorithms {
 			if(!in_array($num, $conns)) {
 				$distance_order[] = $num;
 			}
+		}
+		
+		if(count($distance_order) === 1) {
+			$structure = array();
+			$weight_order = array();
+			$distance_order = array();			
 		}
 		
 		return array('structure'=>$structure, 'weight_order'=>$weight_order, 'distance_order'=>$distance_order);
