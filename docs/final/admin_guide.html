@@ -39,8 +39,8 @@
 <section id="installation">
 	<h1>Instalacja</h1>
 
-	<p>W celu zainstalowania aplikacji należy umieścić ją w wybranym katalogu na serwerze, np. <code>/srv/www/vhosts/asvis</code></p>
-	<p>Nastepnie należy skonfigurowac virtual host serwera Apache, tak aby document root wskazywal na główny katalog aplikacji.Przykadowa konfiguracja vhosta:</p>
+	<p>W celu zainstalowania aplikacji należy umieścić ją w wybranym katalogu na serwerze, np. <code>/srv/www/vhosts/asvis</code>.</p>
+	<p>Nastepnie należy skonfigurowac virtual host serwera Apache, tak aby document root wskazywal na główny katalog aplikacji. Przykadowa konfiguracja vhosta:</p>
 <pre>&lt;VirtualHost asvis.local.pl:80&gt;
 	ServerName asvis.local.pl
 	DocumentRoot /srv/www/vhosts/asvis/
@@ -59,18 +59,18 @@
 
 	<p><strong>Po skonfigurowaniu vhosta trzeba zrestartowac Apache'a!</strong></p>
 	<p>Następnie należy uruchomić bazę danych Orient DB:</p>	
-	<code>$ ./scripts/orient_server_prod.sh</code>
+	<pre>$ ./scripts/orient_server_prod.sh</pre>
 	<p>lub</p>
-	<code>$ cd db/orientdb/bin$ ./server_prod.sh</code>
+	<pre>$ cd db/orientdb/bin$ ./server_prod.sh</pre>
 	<p>Następnie należy zainicjalizować baze danych asvis:</p>	
-	<code>$ ./scripts/create_orient_db.sh</code>
+	<pre>$ ./scripts/create_orient_db.sh</pre>
 	<p>Ten skrypt tworzy w bazie Orient DB schemat bazy asvis.</p>
 </section>
 	
 <section id="configuration">
 	<h1>Konfiguracja</h1>
 
-	<p><strong>Konfiguracja Apache</strong></p>
+	<h2>Konfiguracja Apache</h2>
 	<p>Należy skonfigurować mod-deflate aby ubsługiwał format application/json:</p>
 <pre>&lt;IfModule mod_deflate.c&gt;
 	AddOutputFilterByType DEFLATE text/html text/plain text/xml
@@ -79,32 +79,33 @@
 	AddOutputFilterByType DEFLATE application/rss+xml
 	<strong>AddOutputFilterByType DEFLATE application/json</strong>
 &lt;/IfModule&gt;</pre>
-		<p>Powyższy wpis można dodać w <code>deflate.conf</code> lub w <code>.htaccess</code></p>
+		<p>Powyższy wpis można dodać w <code>deflate.conf</code> lub w <code>.htaccess</code>.</p>
 		
 	<h2>Konfiguracja Orient DB</h2>
 	<p>Ustalene ilości pamięcie RAM dostępnej dla bazy:W pliku db/orientdb/bin/server_prod.sh nalezy zmienić linię 29</p>
 	<p>Mało (0.5 GiB)</p>
-	<code>JAVA_OPTS=-Xms512m\ -Xmx512m</code>
+	<pre>JAVA_OPTS=-Xms512m\ -Xmx512m</pre>
 	<p>Średnio (1 GiB)</p>
-	<code>JAVA_OPTS=-Xms1024m\ -Xmx1024m</code>
+	<pre>JAVA_OPTS=-Xms1024m\ -Xmx1024m</pre>
 	<p>Dużo (2 GiB)</p>
-	<code>JAVA_OPTS=-Xms2048m\ -Xmx2048m</code>
+	<pre>JAVA_OPTS=-Xms2048m\ -Xmx2048m</pre>
 		
 		
 	<h2>Konfiguracja aplikacji</h2>
 	<p>Aby stworzyć plik konfiguracyjny aplikacji należy zmienić nazwę pliku config.php-- na config.php. Następnie mozna w nim ustawić odpowiednie wartości:</p>
 
 <pre>
-'mysql_db_host'				=> 'localhost',			&lt;- adres URL bazy MySQL z danymi ASów
-'mysql_db_name'				=> 'asmap',			&lt;- nazwa bazy MySQL z danymi ASów
-'mysql_db_user'				=> 'user',			&lt;- nazwa uzytkownika bazy MySQL z danymi ASów
-'mysql_db_pass'				=> 'pass',			&lt;- hasło użytkownika bazy MySQL z danymi ASów</pre>
+'mysql_db_host'		=> 'localhost',		&lt;- adres URL bazy MySQL z danymi ASów
+'mysql_db_name'		=> 'asmap',		&lt;- nazwa bazy MySQL z danymi ASów
+'mysql_db_user'		=> 'user',		&lt;- nazwa uzytkownika bazy MySQL z danymi ASów
+'mysql_db_pass'		=> 'pass',		&lt;- hasło użytkownika bazy MySQL z danymi ASów</pre>
 
 </section>    
 	
 <section id="data">
 	<h1>Dane</h1>
 	<h2>MySQL</h2>
+
 	<p>Dane w bazie MySQL są przechowywane w formie 4 tabel:</p>
 	<p>ASES - lista ASów</p>
 	<table>
@@ -142,9 +143,9 @@
 		</tbody>
 	</table>
 
-	<p>Aplikacja ASvis wykorzystuje obie bazy danych (MySQL i Orient DB) do działania. Ponieważ jednak dane aktualizowane są tylko w bazie MySQL konieczne jest czasowe synchronizowanie bazy Orient DB z baza MySQL. Do tego celu został przygotowany skrypt <code>scripts/import_to_orient.sh</code>. Można go dodać do crontaba aby wykonywał się w określonych odstępach czasu:</p>
+	<p>Aplikacja ASvis wykorzystuje obie bazy danych (MySQL i Orient DB) do działania. Ponieważ jednak dane aktualizowane są tylko w bazie MySQL konieczne jest czasowe synchronizowanie bazy Orient DB z baza MySQL. Do tego celu został przygotowany skrypt <pre>scripts/import_to_orient.sh</pre>. Można go dodać do crontaba aby wykonywał się w określonych odstępach czasu:</p>
 
-	<code>0 3 * * * sciezka_do_asvis/scripts/import_to_orient.sh</code>
+	<pre>0 3 * * * sciezka_do_asvis/scripts/import_to_orient.sh</pre>
 
 	<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a target="blank" href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a></p>
 	<p>Import trwa około 5 minut, w zalezności od wydajności serwera. Na czas trwania importu aplikacja wstrzymuje swoje działanie - przy próbie otwarcia strony wyświetla komunikat o niedostepności.</p>
