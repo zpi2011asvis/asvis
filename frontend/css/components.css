@@ -175,6 +175,7 @@ table.std.hoverable tr:hover td {
 }
 .autocomp .opts.opened {
 	display: block;
+	z-index: 200;
 }
 .autocomp .opts > li {
 	padding: 2px 10px;
