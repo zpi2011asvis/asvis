@@ -186,7 +186,7 @@
 				edges_geometry.vertices.push(edges[i]);
 			}
 
-			line.type = T.LineStrip;
+			line.type = T.LinePieces;
 			_graph_object.add(psystem);
 			_graph_object.add(line);
 			_graph_objects.push(psystem, line);
@@ -221,7 +221,7 @@
 				edges_geometry.vertices.push(edges[i]);
 			}
 
-			line.type = T.LineStrip;
+			line.type = T.LinePieces;
 			_graph_object.add(line);
 			_graph_objects.push(line);
 
@@ -308,7 +308,7 @@
 				_nver(0, -2000, 0), _nver(0, 2000, 0),
 				_nver(0, 0, -2000), _nver(0, 0, 2000)
 			);
-			line.type = T.LineStrip;
+			line.type = T.LinePieces;
 
 			// flat elipse
 			for (i = 0, il = Math.PI * 2 + 0.1; i < il; i += 0.1) {
@@ -470,7 +470,7 @@
 			line_geometry.vertices.push(
 				new T.Vertex(graph[params.fromNode].pos), new T.Vertex(graph[params.toNode].pos)
 			);
-			line.type = T.LineStrip;
+			line.type = T.LinePieces;
 
 			return [ line ];
 		},
@@ -494,7 +494,7 @@
 				nodes_done = {},
 				edges_done = {};
 
-			line.type = T.LineStrip;
+			line.type = T.LinePieces;
 	
 			if (data.distance_order.length === 0) return [];
 
