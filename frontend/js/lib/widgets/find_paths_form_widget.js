@@ -34,10 +34,7 @@
 			numfrom_auto.set('for', '#popup_form_from');
 			numto_auto.set('for', '#popup_form_to');
 
-			that._children = [ numto_auto ];
-			if (!that._data.from) {
-				that._children.push(numfrom_auto);
-			}
+			that._children = [ numto_auto, numfrom_auto ];
 		}
 	},
 	{
@@ -75,7 +72,7 @@
 			});
 			that._el.find('.submit > button').on('click', function (event) {
 				that.signals.submitted.dispatch({
-					from:		data.from || +that._el.find('#popup_form_from').first().dataset.value,
+					from:		+that._el.find('#popup_form_from').first().dataset.value,
 					to:			+that._el.find('#popup_form_to').first().dataset.value,
 					type:		that._el.find('#popup_form_type').first().value
 				});

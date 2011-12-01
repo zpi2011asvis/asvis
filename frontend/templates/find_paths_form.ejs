@@ -4,14 +4,10 @@
 			<h1>Wyszukaj ścieżki</h1>
 		</header>
 		<div class="content std_form">
-			<% if (from) { %>
-				<p><label>Z AS-a:</label> <%= from %></p>
-			<% } else { %>
-				<p>
-					<label for="popup_form_from">Z AS-a:</label>
-					<input type="text" id="popup_form_from">
-				</p>
-			<% } %>
+			<p>
+				<label for="popup_form_from">Z AS-a:</label>
+				<input type="text" id="popup_form_from" value="<%= from %>">
+			</p>
 			<p>
 				<label for="popup_form_to">Do AS-a:</label>
 				<input type="text" id="popup_form_to">

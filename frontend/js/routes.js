@@ -149,8 +149,8 @@
 
 
 		var _backToGraph = function _backToGraph(widget) {
+			widget.destroy();
 			if (curr_number && curr_depth) {
-				widget.destroy();
 				that.dispatcher.get('/node/{number}/{depth}', {
 					number: curr_number,
 					depth: curr_depth
