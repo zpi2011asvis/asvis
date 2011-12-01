@@ -36,6 +36,20 @@
 	<h1>Backend</h1>
 	
 	<p>Backend wykonuje się po stronie serwera. Jest to aplikacja napisana w języku PHP. Backend odpytuje bazy danych (MySQL i OrientDB), przetrwarza otrzymane wyniki i realizuje zadania przeszukiwania grafu.</p>
+	<p>Backend składa się z pakietów:</p>
+	<ul>
+		<li>
+			<h3>Orient</h3>
+			<p>Ten pakiet komunikuje się z bazą Orient DB, i przekształca otrzymane wyniki w ich reprezentację obiektową. Wszystkie zapytania i operacja na grafach są obslugiwane przez ten pakiet.</p>
+			<p>Najwazniejszymi klasami tego pakietu są OrientEngine oraz ObjectsMapper. OrientEngine, po odpytaniu bazy danych, przekazuje wynik zapytania do ObjectsMappera który przekształca je do postaci obiektowej. Po działaniach odpowiednich dla danego zasobu REST-owego generowny jest JSON który zwracany jest jako rezultat w REST API.</p>
+		</li>
+		<li>
+			<h3>MySQL</h3>
+			<p>Ten pakiet uzupełnia funkcjonalność pakietu Orient o obsługe tych zapytań które są szybciej wykonywane przez bazę relacyjną.</p>
+			<p>W tym pakiecie wykorzystywana jest tylko jedna klasa: MySQLEngine. Odpytuje ona bazę MySQL i generuje JSON który zwracany jest jako rezultat w REST API.</p>
+		</li>
+		<li></li>
+	</il>
 </section>
 	
 <section id="rest">
