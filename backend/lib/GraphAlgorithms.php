@@ -66,9 +66,9 @@ class GraphAlgorithms {
 	
 	public function getTree($height, $dir) {
 		$leafs = $this->_findLeafs($height+1);
-		$conns = $this->_findConnected($leafs, $dir);
+		$this->_removeConnected($leafs, $dir);
 		
-		return $this->_rebuildStructure(array_merge($leafs, $conns));
+		return $this->_rebuildTree();
 	}
 	
 	private function _findLeafs($distance) {
@@ -83,95 +83,74 @@ class GraphAlgorithms {
 		return $leafs;
 	}
 	
-	private function _findConnected($conns, $dir) {
-		$nodes = array();
+	private function _removeConnected($conns, $dir) {
 		
 		foreach($conns as $num) {
-			$distance = $this->_structure[$num]->distance;
 			
-			if($distance > 0) {
-				$conns_up = array();
-				$nums_up = array();
+			if(isset($this->_structure[$num])) {
+				$next_conns = array();	
+						
+				if($this->_structure[$num]->distance > 0) {
 				
-				if($dir === 'both') {
-					$nums_up = array_merge($this->_structure[$num]->in, $this->_structure[$num]->out);
-				}
-				else {
-					$nums_up = $this->_structure[$num]->$dir;
-				}
-				
-				foreach($nums_up as $num_up) {
-					if($this->_structure[$num_up]->distance < $distance) {
-						$conns_up[] = $num_up;
+					if($dir === 'both') {
+						$next_conns = array_merge($this->_structure[$num]->in, $this->_structure[$num]->out);
 					}
-				}
-		
-				foreach ($nums_up as $num_up) {
-					if($this->_structure[$num_up]->distance > 0) {
-						$nodes[] = $num_up;
+					else {
+						$next_conns = $this->_structure[$num]->$dir;
 					}
-				}
+					
+					unset($this->_structure[$num]);
+				} 
 				
-				$nodes = array_merge($nodes, $this->_findConnected($conns_up, $dir));
+				$this->_removeConnected($next_conns, $dir);
 			}
 		}
-		
-		return $nodes;
 	}
 	
-	private function _rebuildStructure($conns) {
+	private function _rebuildTree() {
 		$structure = array();
 		$weight_order = array();
 		$distance_order = array();
 		
 		foreach($this->_structure as $num=>$node) {
-			if(!in_array($num, $conns)) {
-
-				$structure[$num] = $node; 
-								
-				$in_array = array();
-				$out_array = array();
-				
-				foreach($this->_structure[$num]->in as $in) {
-				
-					if(!in_array($in, $conns)) {
-						$in_array[] = $in;
-					}
+			$in_array = array();
+			$out_array = array();			
+											
+			foreach($node->in as $in) {
+				if(isset($this->_structure[$in])) {
+					$in_array[] = $in;
 				}
-				
-				foreach($this->_structure[$num]->out as $out) {
-				
-					if(!in_array($out, $conns)) {
-						$out_array[] = $out;
-					}
-				}
-					
-				$structure[$num]->in = $in_array;
-				$structure[$num]->out = $out_array;
 			}
+				
+			foreach($node->out as $out) {	
+				if(isset($this->_structure[$out])) {
+					$out_array = $out;
+				}
+			}
+			
+			$node->in = $in_array;
+			$node->out = $out_array;
+			$structure[$num] = $node;
 		}   
 		
 		foreach($this->_weight_order as $num) {
-			
-			if(!in_array($num, $conns)) {
+			if(isset($this->_structure[$num])) {
 				$weight_order[] = $num;
 			}
 		}
 		
 		foreach($this->_distance_order as $num) {
-			
-			if(!in_array($num, $conns)) {
+			if(isset($this->_structure[$num])) {
 				$distance_order[] = $num;
 			}
 		}
 		
-		if(count($distance_order) === 1) {
+		if(count($distance_order) <= 1) {
 			$structure = array();
 			$weight_order = array();
 			$distance_order = array();			
 		}
 		
 		return array('structure'=>$structure, 'weight_order'=>$weight_order, 'distance_order'=>$distance_order);
-	}
-	
+	}	
 }
