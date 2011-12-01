@@ -68,8 +68,10 @@ function f($c) {
 	</Directory>	
 </VirtualHost>
 ") ?></pre>
-
+	
 	<p><strong>Po skonfigurowaniu vhosta trzeba zrestartowac Apache'a!</strong></p>
+	<p>Utworzenie katalogów dla bazy:</p>
+	<pre>$ mkdir ./db/orientdb/log ./db/orientdb/databases</pre>
 	<p>Następnie należy uruchomić bazę danych Orient DB:</p>	
 	<pre>$ ./scripts/orient_server.sh</pre>
 	<p>lub</p>
@@ -95,17 +97,25 @@ function f($c) {
 </IfModule>
 ") ?></pre>
 
-		<p>Powyższy wpis można dodać w <code>deflate.conf</code> lub w <code>.htaccess</code>.</p>
+	<p>Powyższy wpis można dodać w <code>deflate.conf</code> lub w <code>.htaccess</code>.</p>
+	<p>Warto też zmienić dostępną ilość pamięci dla PHP (<code>memory_limit</code>) do minimum 256 MB oraz wydłużyć maksymalny czas wykonania (<code>max_execution_time</code>) do 60 sekund.</p>
 		
 	<h2>Konfiguracja Orient DB</h2>
-	<p>Ustalene ilości pamięcie RAM dostępnej dla bazy:W pliku db/orientdb/bin/server_prod.sh nalezy zmienić linię 29</p>
-	<p>Mało (0.5 GiB)</p>
-	<pre>JAVA_OPTS=-Xms512m\ -Xmx512m</pre>
-	<p>Średnio (1 GiB)</p>
-	<pre>JAVA_OPTS=-Xms1024m\ -Xmx1024m</pre>
-	<p>Dużo (2 GiB)</p>
-	<pre>JAVA_OPTS=-Xms2048m\ -Xmx2048m</pre>
-		
+	<p>Ustalene ilości pamięcie RAM dostępnej dla bazy. W pliku db/orientdb/bin/server_prod.sh nalezy zmienić linię 29.</p>
+	<ul>
+		<li>
+			<p>Mało (0.5 GiB)</p>
+			<pre>JAVA_OPTS=-Xms512m\ -Xmx512m</pre>
+		</li>
+		<li>
+			<p>Średnio (1 GiB)</p>
+			<pre>JAVA_OPTS=-Xms1024m\ -Xmx1024m</pre>
+		</li>
+		<li>
+			<p>Dużo (2 GiB)</p>
+			<pre>JAVA_OPTS=-Xms2048m\ -Xmx2048m</pre>
+		</li>
+	</ul>
 		
 	<h2>Konfiguracja aplikacji</h2>
 	<p>Aby stworzyć plik konfiguracyjny aplikacji należy zmienić nazwę pliku config.php-- na config.php. Następnie mozna w nim ustawić odpowiednie wartości:</p>
@@ -115,6 +125,11 @@ function f($c) {
 'mysql_db_name'		=> 'asmap',		<- nazwa bazy MySQL z danymi ASów
 'mysql_db_user'		=> 'user',		<- nazwa uzytkownika bazy MySQL z danymi ASów
 'mysql_db_pass'		=> 'pass',		<- hasło użytkownika bazy MySQL z danymi ASów
+
+'orient_db_host'	=> 'localhost',	<- URL do hosta na którym uruchomiona została baza danych
+'orient_db_name'	=> 'asvis',		<- Nazwa bazy danych
+'orient_db_user'	=> 'admin',		<- Nazwa użytkownika bazy danych
+'orient_db_pass'	=> 'admin',		<- Hasło (można zmienić w db/orientdb/config/orientdb-server-config.xml)
 ") ?></pre>
 
 </section>    
