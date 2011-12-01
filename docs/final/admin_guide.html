@@ -106,8 +106,8 @@
 	<h1>Dane</h1>
 	<h2>MySQL</h2>
 
-	<p>Dane w bazie MySQL są przechowywane w formie 4 tabel:</p>
-	<p>ASES - lista ASów</p>
+	<p>Dane w bazie MySQL są przechowywane w formie 4 tabel.</p>
+	<p>ASES - lista ASów:</p>
 	<table>
 		<thead>
 			<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>
@@ -118,7 +118,7 @@
 		</tbody>
 	</table>
 	
-	<p>ASPOOL - lista pól adresów sieciowych ASów</p>
+	<p>ASPOOL - lista pól adresów sieciowych ASów.</p>
 
 	<table>
 		<thead>
@@ -131,7 +131,7 @@
 		</tbody>
 	</table>
 	
-	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych ASach</p>
+	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych ASach.</p>
 
 	<table>
 		<thead>
@@ -147,7 +147,7 @@
 
 	<pre>0 3 * * * sciezka_do_asvis/scripts/import_to_orient.sh</pre>
 
-	<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a target="blank" href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a></p>
+	<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a target="blank" href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a>.</p>
 	<p>Import trwa około 5 minut, w zalezności od wydajności serwera. Na czas trwania importu aplikacja wstrzymuje swoje działanie - przy próbie otwarcia strony wyświetla komunikat o niedostepności.</p>
 </section>
 
