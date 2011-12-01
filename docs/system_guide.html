@@ -1,0 +1,224 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+</head>
+<body>
+<h1>ASvis</h1>
+<h2>Dokumentacja</h2>
+<h3>Opis systemu</h3>
+
+<h4>Spis treści</h4>
+<ol>
+	<li><a href="#modules">Moduły</a></li>
+	<li><a href="#backend">Backend</a></li>
+	<li><a href="#rest">REST API</a></li>
+	<li><a href="#frontend">Frontend</a></li>
+</ol>
+
+<ol>
+	<a name="modules"></a>
+	<li><strong>Moduły</strong>
+		<p>Aplikacja składa się z dwóch modułów: <a href="#backend">Backendu</a> i <a href="#frontend">Frontendu</a>.</p>
+		<p><a href="#backend">Backend</a> odpowiedzialny jest za dostarczanie danych <a href="#frontend">Frontendowi</a>. Realizuje to poprzez <a href="#rest">RESTowe API</a>.</p>
+		<p><a href="#frontend">Frontend</a> odpowiada za wyświetlanie GUI aplikacji. Żądania użytkownika realizuje odpytując <a href="#backend">Backend</a></p>
+	</li>
+	
+	<a name="backend"></a>
+	<li><strong>Backend</strong>
+		<p>Backend wykonuje się po stronie serwera. Jest to część napisana w całości w języku PHP. Backend odpytuje bazy danych, przetrwarza otrzymane wyniki, realizuje zadania przeszukiwania grafu.</p>
+	</li>
+	
+	<a name="rest"></a>
+	<li><strong>REST API</strong>
+		<p>Backend udostępnia zasoby za pomocą RESTowego API.</p>
+		<p><strong>ASy</strong></p>
+				
+		<strong><code>GET /nodes/find/[number]</code></strong>
+		<p>Wyszukuje ASy po numerze, zwraca w kolejności alfabetycznej.</p>
+		<ul>
+			<li>parametry:
+				<ul>
+					<li>number [int] - wyszukuje na zasadzie LIKE value%</li>
+				</ul>
+			</li>
+			<li>
+				<p>przykład: GET /node/find/345 - wyszukuje wszystkie numery wierzchołków rozpoczynające się od "345"</p>
+				<p>odpowiedź:</p>
+				<pre><code>{
+    "34567": {"name":"AS34567"}
+    "34579": {"name":"AS34579"}
+    "345": {"name":"AS345"}
+}</code></pre>
+			</li>
+		</ul>
+	
+	
+		<strong><code>POST /nodes/meta</code></strong>
+		<p>Podaje metadane ASów o numerach przekazanych w parametrze - pule adresów.</p>
+		<ul>
+			<li>parametry:
+				<ul>
+					<li>numbers [str] - przykład: "[1234,2345,52345,234523]"</li>
+				</ul>
+			</li>
+			<li>
+				<p>przykład: POST /nodes/meta</p>
+				<p>odpowiedź:</p>
+				<pre><code>{
+    "1234": {"name":"AS1234", "pools":[{"ip":"193.110.32.0","netmask":21}, ...]},
+    "4234": {"name":"AS4234", "pools":[{"ip":"198.136.146.0","netmask":12, ...}, ...]},
+}</code></pre>
+			</li>
+		</ul>
+
+	<p><strong>Struktury</strong></p>
+	<strong><code>GET /structure/graph/[node_number]/[depth]</code></strong>
+	<p>Podaje strukturę połączeń grafu ASów, dodatkowo listę numerów znalezionych ASów posortowaną wg ilości połączeń oraz listę numerów znalezionych ASów posortowaną wg odległości od ASa źródłowego</p>
+	<ul>
+		<li>parametry:
+			<ul>
+				<li>node_number [int]</li>
+				<li>depth [int]</li>
+			</ul>
+		</li>
+		<li>
+			<p>przykład: POST /structure/graph/345/3 - pobierz strukturę grafu od wierzchołka 345 do 3 połączeń wgłąb</p>
+			<p>odpowiedź:</p>
+			<pre><code>{
+    "structure":{
+        "306":{
+            "out":[316,317,...,575],
+            "in":[316,317,...,575],
+            "distance":0,
+            "weight":68
+        },
+        "306":{
+            ...
+        },
+        ...
+    },
+    "weight_order":[306,575,...,343],
+    "distance_order":[306,352,...,1733]
+}</code></pre>
+		</li>
+	</ul>
+
+	<strong><code>GET /structure/tree/[node_number]/[height]/[dir]</code></strong>
+	<p>Pobiera strukturę drzewa od ASa o podanym numerze o danej wysokości i kierunku. Patrz rozdział "Wyszukiwanie drzew" w podręczniku użytkownika.</p>
+	<ul>
+		<li>parametry:
+			<ul>
+				<li>node_number [int]</li>
+				<li>height [int]</li>
+				<li>dir [string] - przyjmowane wartości: "in", "out", "both"</li>
+			</ul>
+		</li>
+		<li>
+			<p>example: GET /structure/tree/306/2/out - zwraca strukturę nodów, do których download danych spoza struktury odbywa się jedynie poprzez główny wierzchołek</p>
+			<p>odpowiedź:</p>
+			<pre><code>{
+    "structure":{
+        "306":{
+            "out":[316,317,...,575],
+            "in":[316,317,...,575],
+            "distance":0,
+            "weight":68
+        },
+        "306":{
+            ...
+        },
+        ...
+    },
+    "weight_order":[306,575,...,343],
+    "distance_order":[306,352,...,1733]
+}</code></pre>
+		</li>
+	</ul>
+	
+
+	<strong><code>GET /structure/path/[num_start]/[num_end]/[dir]</code></strong>
+	<p>Podaj ścieżkę pomiędzy podanym ASem startowym i docelowym szukając w zadanym kierunku.</p>
+	<ul>
+		<li>params:
+			<ul>
+				<li>node_start [int]</li>
+				<li>num_stop [int]</li>
+				<li>dir [string] - przyjmowane wartości: "in", "out", "both"</li>
+			</ul>
+		</li>
+		<li>
+			<p>przykład: GET /structure/path/306/27066/out - zwraca tablicę zawierającą struktury nodów, które reprezentują najkrótsze znalezione ścieżki połączeń "up" od noda końcowego do początkowego.</p>
+
+			<p>odpowiedź:</p>
+			<pre><code>[
+    {
+        "structure":{
+             "306":{"out":[575],"in":[575],"distance":0,"weight":68},
+             "575":{...},
+            ...
+        },
+        "weight_order":[306,...,575],
+        "distance_order":[306,...,27066]
+    },
+    {
+        "structure":{
+             "306":{"out":[270],"in":[270],"distance":0,"weight":68},
+             "270":{...},
+            ...
+        },
+        "weight_order":[306,...,270],
+        "distance_order":[306,...,27066]
+    },
+    ...
+]</code></pre>
+		</li>
+	</ul>
+
+	<strong>Połączenia</strong>
+	<strong><code>GET /connections/meta/[num_for]</code></strong>
+	<p>Wyszukuje informacje na temat połączeń podanego wierzchołka.</p>
+	<ul>
+		<li>parametry:
+			<ul>
+				<li>num_for [int]</li>
+			</ul>
+		</li>
+	
+		<li>
+			<p>przykład: GET /connections/meta/345 - wyszukuje informacje na temat połączeń wierzchołka "345"</p>
+			<p>odpowiedź:</p>
+			<pre><code>[
+	{"with":306,"status":0,"dir":"up"},
+	....
+]</code></pre>
+		</li>
+	</ul>
+	
+	<a name="frontend"></a>
+	<li><strong>Frontend</strong>
+	</li>
+	
+</ol>
+<br/>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

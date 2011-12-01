@@ -124,7 +124,7 @@ class GraphAlgorithms {
 				
 			foreach($node->out as $out) {	
 				if(isset($this->_structure[$out])) {
-					$out_array = $out;
+					$out_array[] = $out;
 				}
 			}
 			
