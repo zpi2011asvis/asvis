@@ -25,4 +25,4 @@ export ORIENTDB_HOME
 
 # Only set ORIENTDB_HOME if not already set correctly
 
-java -client -Dorientdb.build.number=@BUILD@ -jar $ORIENTDB_HOME/lib/orientdb-tools-1.0rc7-SNAPSHOT.jar $*
+java -client -Dfile.encoding=utf-8 -Dorientdb.build.number=@BUILD@ -jar $ORIENTDB_HOME/lib/orientdb-tools-1.0rc7-SNAPSHOT.jar $*
