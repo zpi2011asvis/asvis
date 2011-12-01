@@ -76,4 +76,14 @@ table thead th {
 	font-size: 12px;
 }
 
-
+img {
+	display: block;
+	max-width: 80%;
+	margin: 10px auto;
+	border: solid 1px #AAA;
+	border-radius: 2px;
+	padding: 1px;
+}
+a:hover > img {
+	border-color: #06A;
+}
