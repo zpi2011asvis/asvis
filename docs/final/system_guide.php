@@ -195,6 +195,7 @@
 	<p>Aplikacja frontendowa jest w napisana w JavaScriptcie (wersja ECMAScript 5) i wykorzystuje HTML5 + CSS3 do prezentacji. Podstawową ideą jest oparcie o HTML5 history w celu ograniczenia do jednego (inicjalnego) załadowania strony, by następne zmiany "podstron" prowadzić już w obrębie jednego stanu. W tym celu zostały wykorzystane zewnętrzne bibliteki oraz autorska implementacja dispatchera.</p>
 
 	<p>Wykorzystane zewnętrzne moduły:</p>
+
 	<ul>
 		<li><a href="https://github.com/mrdoob/three.js/">Three.js</a> &ndash; JavaScript 3D Engine</li>
 		<li><a href="http://millermedeiros.github.com/js-signals/">js-signals</a> &ndash; implementacja sygnałów</li>
@@ -205,6 +206,7 @@
 	</ul>
 
 	<p>Architektura:</p>
+
 	<ul>
 		<li><code>app.js</code> &ndash; główny obiekt aplikacji &ndash; scalający podstawowe kompomenty</li>
 		<li><code>util.js i xui_extends.js</code> &ndash; pomocne helpery</li>
