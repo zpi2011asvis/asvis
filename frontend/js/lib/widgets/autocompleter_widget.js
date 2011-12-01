@@ -40,7 +40,6 @@
 			});
 			that._view.signals.blured.add(function () {
 				that._closePopup();
-				that._view._hidden_input_el.first().value = '';
 			});
 		},
 
@@ -137,6 +136,9 @@
 			text_input_el = x('#autocompleter_query_' + data.id);
 			text_input_el.on('keyup', function (event) {
 				var v = text_input_el.first().value;
+
+				that._hidden_input_el.first().value = v;
+				that._hidden_input_el.first().dataset.value = v;
 
 				if (event.keyCode === 13) {
 					that.signals.enter_pressed.dispatch(v);
