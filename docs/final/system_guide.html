@@ -144,34 +144,19 @@
 			<ul>
 				<li>node_start [int]</li>
 				<li>num_stop [int]</li>
-				<li>dir [string] - przyjmowane wartości: "in", "out", "both"</li>
+				<li>dir [string] - przyjmowane wartości: "up", "down", "both"</li>
 			</ul>
 		</li>
 		<li>
-			<p>przykład: GET /structure/path/306/27066/out - zwraca tablicę zawierającą struktury nodów, które reprezentują najkrótsze znalezione ścieżki połączeń "up" od noda końcowego do początkowego.</p>
+			<p>przykład: GET /structure/paths/306/27066/both - zwraca tablicę zawierającą struktury nodów, które reprezentują najkrótsze znalezione ścieżki połączeń "up" i "down" od noda końcowego do początkowego.</p>
 
 			<p>odpowiedź:</p>
-			<pre><code>[
-    {
-        "structure":{
-             "306":{"out":[575],"in":[575],"distance":0,"weight":68},
-             "575":{...},
-            ...
-        },
-        "weight_order":[306,...,575],
-        "distance_order":[306,...,27066]
-    },
-    {
-        "structure":{
-             "306":{"out":[270],"in":[270],"distance":0,"weight":68},
-             "270":{...},
-            ...
-        },
-        "weight_order":[306,...,270],
-        "distance_order":[306,...,27066]
-    },
-    ...
-]</code></pre>
+			<pre><code>{
+	"paths":[[306,575,27064,...,27066]],
+	"depth_left":3,
+	"depth_right":2
+}
+			</code></pre>
 		</li>
 	</ul>
 
@@ -204,21 +189,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
