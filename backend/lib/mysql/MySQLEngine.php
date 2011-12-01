@@ -33,7 +33,7 @@ class MySQLEngine implements Engine {
 	}
 	
 	public function nodesFind($num) {
-		$query = 'SELECT asnum, asname FROM ases WHERE asnum LIKE "'.$num.'%"';
+		$query = 'SELECT asnum, asname FROM ases WHERE asnum LIKE "'.$num.'%" OR asname LIKE "%' .$num. '%" ORDER BY asnum';
 		
 		$result = mysql_query($query, $this->_connection);
 		
