@@ -8,22 +8,30 @@
 	<h1>ASvis</h1>
 	<h2>Dokumentacja</h2>
 	<h3>Sprawozdanie z postępów prac</h3>
-</hgoup>
+</hgroup>
 
 <h2>Początki</h2>
-<p>Na etapie projektowania aplikacji zdecydowaliśmy się na podział aplikacji na dwa moduły &ndash; Backend i Frontend. Frontend to moduł zajmujący się wyświetlaniem danych dostarczonych brzez Backend</p>
 
+<p>W początkowej fazie projektu otrzymaliśmy relacyjną baze reprezntująca strukturę powiązanych ze sobą sieci autonomicznych</p> 
+<p>Ze względu na charakter danych jakie mieliśmy przetwarzać, rozpoczęliśmy poszukiwanie odpowiedniej bazy grafowej. Po zapoznaniu się z dokumentacją kilku projektów oraz przeprowadzeniem wstępnych testów zdecydowaliśmy sie na bazę OrientDB.</p>
+<p>Nie wiedzieliśmy wtedy, że pochopnie podjęta decyzja będzie fatalnie rzutować na całą naszą pracę. 
+<p>Baza OrientDB pomimo posiadania dość dobrej dokumentacji i będąc ciągle rozwijana, zawiera jeszcze zbyt wiele niedociągnięć by mogła sprostać zadaniu jakie przed nią postwaliśmy</p>
+<p>Drugą zastosowaną przez nas technologią był WebGL, który okazał dużo mniej problemowy. Ponadto biblioteka ThreeJS pomimo braku dobrej dokumentacji okazała się wygodnym i skutecznym narzędziem.</p>
+<p>Na etapie projektowania aplikacji zdecydowaliśmy się na jej podział na dwa moduły &ndash; Backend i Frontend. Frontend to moduł zajmujący się wyświetlaniem danych z dostarczonych brzez Backend</p>
+<p>We frontendzie dane wizualizowane są za pomocą WebGL. Test wydajności pod przeglądarką Google Chrome pokazał, że technologia ta pozwoli nam atrakcyjne prezentowanie grafu zawierającego do kilkudziesięciu wierzchołków.</p>
+<p>Backend przed przekazaniem odpowiednich zasobów pobiera i przetwarza dane z bazy OrientDB</p>
+<p>Po zaprojektowaniu struktury i migracji rekordów do bazy grafowej zaczeła się nasza długa podróż pociągiem OrientDB, który z każdą kolejną milą i stacją zdawał się jechać coraz wolniej</p>
 
-		<ol>
-			<li>inwigilacja :)</li>
-			<li class="slide">zmiana interpretacji bazy MySQL &ndash; zmiana schematu
-				<img src="imgs/asvis_schema_current_final.svg" width="600" alt="Schema final" class="current-only">
-			</li>
-			<li class="slide">kolejny kontakt &ndash; jednak im się nie udało &ndash; poprawiają!</li>
-			<li class="slide">kolejny kontakt &ndash; wydajność spadła &gt;10x &ndash; poprawiają!</li>
-			<li class="slide">kolejny kontakt (tym razem również z twórcą drivera)</li>
-			<li class="slide">...dzisiaj</li>
-			<li class="slide">wnioski</li>
-		</ol>
+<ol>
+	<li>inwigilacja :)</li>
+	<li class="slide">zmiana interpretacji bazy MySQL &ndash; zmiana schematu
+		<img src="imgs/asvis_schema_current_final.svg" width="600" alt="Schema final" class="current-only">
+	</li>
+	<li class="slide">kolejny kontakt &ndash; jednak im się nie udało &ndash; poprawiają!</li>
+	<li class="slide">kolejny kontakt &ndash; wydajność spadła &gt;10x &ndash; poprawiają!</li>
+	<li class="slide">kolejny kontakt (tym razem również z twórcą drivera)</li>
+	<li class="slide">...dzisiaj</li>
+	<li class="slide">wnioski</li>
+</ol>
 </body>
 </html>
