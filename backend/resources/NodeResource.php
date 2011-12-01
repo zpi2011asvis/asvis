@@ -14,13 +14,9 @@ class NodesFindResource extends Resource {
 	function get($request, $number) {
 		$response = new Response($request);
 		
-		$number = (int) $number;
-		$response->s404Unless($number, 'Nie przekazano prawidłowego numeru AS.');
-		
 		if ($response->code === 200) {
 			$mysqlEngine = new MySQLEngine();
 			$forJSON = $mysqlEngine->nodesFind($number);
-			$response->s404If(empty($forJSON), 'Nie istnieje AS o podanym numerze.');
 			$response->s500If(is_null($forJSON), 'Błąd pobierania danych z bazy.');
 		
 			$response->json($forJSON);

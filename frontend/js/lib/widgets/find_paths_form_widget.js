@@ -12,7 +12,9 @@
 		},
 
 		_init: function _init() {
-			var that = this;
+			var that = this,
+				numfrom_auto = lib.widgets.AutocompleterWidget.new(),
+				numto_auto = lib.widgets.AutocompleterWidget.new();
 
 			that.signals = {
 				destroyed: new Signal(),
@@ -28,6 +30,14 @@
 				that.destroy();
 				that.signals.submitted.dispatch(params);
 			});
+
+			numfrom_auto.set('for', '#popup_form_from');
+			numto_auto.set('for', '#popup_form_to');
+
+			that._children = [ numto_auto ];
+			if (!that._data.from) {
+				that._children.push(numfrom_auto);
+			}
 		}
 	},
 	{
@@ -65,8 +75,8 @@
 			});
 			that._el.find('.submit > button').on('click', function (event) {
 				that.signals.submitted.dispatch({
-					from:		data.from || +that._el.find('#popup_form_from').first().value,
-					to:			+that._el.find('#popup_form_to').first().value,
+					from:		data.from || +that._el.find('#popup_form_from').first().dataset.value,
+					to:			+that._el.find('#popup_form_to').first().dataset.value,
 					type:		that._el.find('#popup_form_type').first().value
 				});
 				event.preventDefault();

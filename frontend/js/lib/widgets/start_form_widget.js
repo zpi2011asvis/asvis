@@ -12,7 +12,8 @@
 		},
 
 		_init: function _init() {
-			var that = this;
+			var that = this,
+				num_auto = lib.widgets.AutocompleterWidget.new();				
 
 			that.signals = {
 				destroyed: new Signal(),
@@ -28,6 +29,9 @@
 				that.destroy();
 				that.signals.submitted.dispatch(params);
 			});
+			
+			num_auto.set('for', '#popup_form_num');
+			that._children = [ num_auto ];
 		}
 	},
 	{
@@ -65,7 +69,7 @@
 			});
 			that._el.find('.submit > button').on('click', function (event) {
 				that.signals.submitted.dispatch({
-					number: +that._el.find('input[name=number]').first().value,
+					number: +that._el.find('input[name=number]').first().dataset.value,
 					depth: +that._el.find('input[name=depth]').first().value
 				});
 				event.preventDefault();

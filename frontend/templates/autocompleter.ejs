@@ -1,5 +1,5 @@
-<ul id="autocompleter">
-	<% positions.forEach(function (pos) { %>
-		<li data-id="<%= pos.id %>"><%= pos.name %></li>
-	<% }) %>
-</ul>
+<input type="text" id="autocompleter_query_<%= id %>" class="autocomp_query">
+<div id="autocompleter_<%= id %>" class="autocomp">
+	<ul class="opts">
+	</ul>
+</div>
