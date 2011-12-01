@@ -23,7 +23,7 @@
 	<a name="requirements"></a>
 	<li><strong>Wymagania</strong>
 		<p>Do prawidłowego działania aplikacja ASvis wymaga przeglądarki internetowej wspierającej wspierającjej WebGL, oraz karty graficznej kompatybilnej z WebGL (czyli zasadniczo każdej nowszej niż 6 lat).</p>
-		<p>W chwili pisania dokumentacji przeglądarkami wspierającymi WebGL są Google Chrome i Mozilla Firefox, a z tych dwóch Chrome ma wyraźnie lepszą wydajność przetwarzania JavaScriptu w którym napisana jest większość aplikacji, dlatego polecamy Chrome'a jako przeglądarkę do pracy z ASvis. Jedynym mankamentem Chroma jest brak supportu WebGL dla kart graficznych AMD/ATI pod Linuxem.</p>
+		<p>W chwili pisania dokumentacji przeglądarkami wspierającymi WebGL są Google Chrome w wersji 15 lub nowszej i Mozilla Firefox w wersji 8 lub nowszej, a z tych dwóch Chrome ma wyraźnie lepszą wydajność przetwarzania JavaScriptu w którym napisana jest większość aplikacji, dlatego polecamy Chrome'a jako przeglądarkę do pracy z ASvis. Jedynym mankamentem Chroma jest brak supportu WebGL dla kart graficznych AMD/ATI pod Linuxem.</p>
 		<p>Jeżeli WebGL nie będzie dostępny, aplikacja będzie działać w trybie kompatybilności, DUŻO wolniejszym, i nie wyświetlającym wszystkich elementów graficznych, lecz wystarczającym do pracy z aplikacją</p>
 	</li>
 	
@@ -34,30 +34,37 @@
 	
 	<a name="screen"></a>
 	<li><strong>Ekran aplikacji</strong>
-		<p>Ekran aplikacji podzielony jest na 2 części. Po lewej stronie znajduje się miejsce w którym wyświetlana jest trójwymiarowa reprezentacja połączeń pomiędzy ASami. Po prawej, na pionowym pasku, wyświetlane są informacje dotyczące wybranego ASa - jego numer, nazwa, lista połączeń (wraz z ich typem i stanem), i lista pól adresów.</p>
+		<p>Ekran aplikacji podzielony jest na 2 części. Po lewej stronie znajduje się miejsce w którym wyświetlana jest trójwymiarowa reprezentacja połączeń pomiędzy ASami. Aktualnie wybrany AS jest zaznaczany jako czerwone koło. Po prawej, na pionowym pasku, wyświetlane są informacje dotyczące wybranego ASa - jego numer, nazwa, lista połączeń (wraz z ich typem i stanem), i lista pól adresów.</p>
+		<img src="user_guide_overview.png"/>
 		<p>Nawigacja w trójwymiarowym widoku jest bardzo prosta:</p>
 		<ul>
 			<li>aby obrócić widok należy przytrzymać lewy przycisk myszy i przeciągnąć</li>
 			<li>aby przesunąć widok należy przytrzymać jednocześnie CTRL oraz lewy przycisk myszy i przeciągnąć</li>
 			<li>aby przybliżyć/oddalić widok należy przekręcić rolkę myszy</li>
 		</ul>
-		<p>Po najechaniu kursorem na któryś z wyświetlanych ASów pojawi się dymek z jego numerem i nazwą. Kliknięcie na numerze spowoduje przeniesienie do przeglądania połoczeń z tym ASem jako źródłowym. (patrz <a href="#browsing">Przeglądanie połączeń</a>)</p>
+		<p>Po najechaniu kursorem na któryś z wyświetlanych ASów pojawi się dymek z jego numerem i nazwą. Kliknięcie na numerze spowoduje przeniesienie do przeglądania połączeń z tym ASem jako źródłowym. (patrz <a href="#browsing">Przeglądanie połączeń</a>)</p>
+		<p></p>
+		<p>Panel z prawej strony, oprócz wyswietlania informacji o wybranym ASie pozwala nawigować po połączeniach - kliknięcie na numer ASa z listy połączeń spowoduje jego wybranie. (patrz <a href="#browsing">Przeglądanie połączeń</a>) Ponadto przytrzymanie kursora nad danym połączeniem powoduje oznaczenie tego połączenia na grafie czerwoną linią.</p>
 	</li>
 	
 	<a name="browsing"></a>
 	<li><strong>Przeglądanie połączeń</strong>
-		<p>Przeglądanie połączeń pomiędzy ASami polega na przeglądaniu wycinka całej sieci połączeń. Wycinek taki zorientowany jest wokół wybranego ASa, nazywanego tutaj źródłowym. Połączenia wczytywane są w zależności od zadanej głębokości wyczukiwania. Głębokość wyszukiwania jest parametrem określającym jak dalecy sąsiedzi ASa źródłowego mają zostać pokazani. Głębokość 1 oznacza tylko bezpośrednich sąsiadów, bo tylko do nich można dotrzeć z ASa źródłowego przechodząc po maksymalnie 1 połączeniu. Głębokość 2 wyszuka sąsiadów do których można dotrzeć z ASa źródłowego przechodząc po maksymalnie 2 połączeniach, itd</p>
+		<p>Przeglądanie połączeń pomiędzy ASami polega na przeglądaniu wycinka całej sieci połączeń. Wycinek taki zorientowany jest wokół wybranego ASa, nazywanego tutaj źródłowym. Połączenia wczytywane są w zależności od zadanej głębokości wyczukiwania.</p>
+		<img src="user_guide_graph_prompt.png"/>
+		<p>Głębokość wyszukiwania jest parametrem określającym jak dalecy sąsiedzi ASa źródłowego mają zostać pokazani. Głębokość 1 oznacza tylko bezpośrednich sąsiadów, bo tylko do nich można dotrzeć z ASa źródłowego przechodząc po maksymalnie 1 połączeniu. Głębokość 2 wyszuka sąsiadów do których można dotrzeć z ASa źródłowego przechodząc po maksymalnie 2 połączeniach, itd</p>
 	</li>
 	
 	<a name="trees"></a>
 	<li><strong>Wyszukiwanie drzew</strong>
-		<p>Ja sam nie rozumiem co tu się dzieje więc to będzie musiał opisać ktoś inny.</p>
+		<p style="color: red;">Ja sam nie rozumiem co tu się dzieje więc to będzie musiał opisać ktoś inny.</p>
 	</li>
 	
 	<a name="paths"></a>
 	<li><strong>Wyszukiwanie ścieżek</strong>
 		<p>Wyszukiwanie ścieżek pozwala na znalezienie najkrótszych ścieżek łączących dane AS-y. Mając wybrany AS źródłowy (<a href="#browsing">Przeglądanie połączeń</a>) klikamy wyszukiwanie ścieżek i wprowadzamy nr ASa docelowego. Następnie wybieramy czy wyszukujemy ścieżkę prowadzącą DO ASa źródłowego (Downstram), OD (Upstream) czy w dowolnym kierunku (Downstream i Upstream)</p>
-		<p>W wyniku zostaje zaznaczona znaleziona ścieżka (lub ściezki, jeżeli jest więcej niż jedna o tej samej długości)</p>
+		<img src="user_guide_path_prompt.png"/>
+		<p>W wyniku zostaje zaznaczona na niebiesko znaleziona ścieżka (lub ściezki, jeżeli jest więcej niż jedna o tej samej długości)</p>
+		<img src="user_guide_path_found.png"/>
 	</li>
 </ol>
 
