@@ -128,7 +128,7 @@ function includeTemplates() {
 	<? includeTemplates() ?>
 	<script>
 		// light version
-		this.DEBUG = true; // <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
+		this.DEBUG = false; // <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
 		// heavy version (highly verbose)
 		this.DEBUG2 = false; // <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
 		app.start({

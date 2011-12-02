@@ -2,6 +2,9 @@
 
 namespace asvis\lib;
 
+/**
+ * This class implements algorithms that can be performed on graph; path search, tree search, etc.
+ */
 class GraphAlgorithms {
 
 	private $_structure = null;
@@ -14,6 +17,11 @@ class GraphAlgorithms {
 		$this->_distance_order = $graph['distance_order'];
 	}
 	
+	/**
+	 * Returns shortest path(s) between root node and given node
+	 * @param int $num_end node number
+	 * @param string $dir 'up', 'down', or 'both'
+	 */
 	public function getShortestPath($num_end, $dir) {
 		$structure = array();
 		
@@ -64,6 +72,11 @@ class GraphAlgorithms {
 		return $paths;
 	}
 	
+	/**
+	 * Returns tree-like structure beginning in root node with given max height.
+	 * @param int $height max tree height
+	 * @param string $dir 'up', 'down', or 'both'
+	 */
 	public function getTree($height, $dir) {
 		$leafs = $this->_findLeafs($height+1);
 		$this->_removeConnected($leafs, $dir);

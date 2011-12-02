@@ -1,0 +1,89 @@
+body {
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	max-width: 650px;
+	margin: 0 auto;
+	line-height: 1.5;
+}
+
+header {
+	background-color: #06A;
+	color: #FFF;
+	padding: 20px;
+	margin-bottom: 40px;
+}
+header > hgroup > * {
+	margin: 0;
+	text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+}
+header > hgroup > h1 {
+	font-size: 40px;
+	line-height: 40px;
+}
+header > hgroup::after {
+	content: '';
+	display: block;
+	clear: both;
+}
+header > nav ol {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+header > nav a {
+	display: block;
+	background-color: rgba(255, 255, 255, 0.2);
+	margin-bottom: 5px;
+	padding: 5px;
+	color: #FFF;
+	text-decoration: none;
+}
+header > nav a:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+body > section {
+	margin-bottom: 30px;
+	border-bottom: solid 4px #06A;
+	padding-bottom: 30px;
+}
+body > section > h1 {
+	font-size: 24px;
+}
+body > section > h2 {
+	font-size: 16px;
+	margin-top: 40px;
+}
+
+pre {
+	border: solid 1px #AAA;
+	border-radius: 2px;
+	padding: 2px 5px;
+	font-size: 12px;
+	overflow: auto;
+}
+
+table {
+	border-collapse: collapse;
+	border: solid 1px #AAA;
+	width: 100%;
+}
+table tbody td,
+table thead th {
+	padding: 2px 5px;
+	border: solid 1px #AAA;
+	font-size: 12px;
+}
+
+img {
+	display: block;
+	max-width: 80%;
+	margin: 10px auto;
+	border: solid 1px #AAA;
+	border-radius: 2px;
+	padding: 1px;
+}
+a:hover > img {
+	border-color: #06A;
+}
