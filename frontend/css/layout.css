@@ -171,8 +171,8 @@ body {
 	box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
 	color: #FFF;
 	text-shadow: 0 0 1px #000;
-	white-space: nowrap;
-	min-width: 100px;
+	min-width: 200px;
+	max-width: 300px;
 }
 #node_info.visible {
 	opacity: 1;
