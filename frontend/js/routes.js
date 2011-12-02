@@ -18,6 +18,8 @@
 		dispatcher.get('/', function routerRoot() {
 			var w = widgets.StartFormWidget.new(that._container_el);
 
+			w.set('from', curr_number);
+
 			w.signals.submitted.add(function routerRoot_onSubmit(params) {
 				curr_depth = null;
 				curr_number = null;

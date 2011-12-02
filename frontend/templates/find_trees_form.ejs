@@ -6,21 +6,22 @@
 		<div class="content std_form">
 			<p>
 				<label for="popup_form_from">Z AS-a (korzeń):</label>
-				<input type="text" value="1456" id="popup_form_from" value="<%= from %>">
+				<input type="text" id="popup_form_from" value="<%= from %>">
 			</p>
 			<p>
 				<label for="popup_form_height">Wysokość:</label>
 				<input type="number" value="2" min="1" max="5" id="popup_form_height">
 			</p>
-			<p>
+			<!--p>
 				<label for="popup_form_type">Typ połączeń:</label>
 				<select id="popup_form_type">
 					<option value="both">Upstream i Downstream</option>
 					<option value="up">Upstream</option>
 					<option value="down">Downstream</option>
 				</select>
-			</p>
+			</p-->
 			<p class="submit">
+				<input type="hidden" value="both" id="popup_form_type">
 				<button type="submit">Szukaj</button>
 			</p>
 		</div>

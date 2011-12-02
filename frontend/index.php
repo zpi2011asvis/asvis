@@ -74,7 +74,7 @@ function includeTemplates() {
 
 		<nav id="menu">
 			<ul>
-				<li><a href="/">wyszukaj AS</a></li>
+				<li><a href="/">pokaż AS</a></li>
 				<li><a href="/find/trees">wyszukaj drzewa</a></li>
 				<li><a href="/find/paths">wyszukaj ścieżki</a></li>
 			</ul>

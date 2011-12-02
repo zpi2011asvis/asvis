@@ -167,7 +167,7 @@ body {
 #node_info .box {
 	background-color: rgba(100, 100, 100, 0.75);
 	border-radius: 3px;
-	padding: 2px 3px;
+	padding: 4px 5px;
 	box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
 	color: #FFF;
 	text-shadow: 0 0 1px #000;
@@ -185,4 +185,13 @@ body {
 }
 #node_info .hidden {
 	display: none;
+}
+
+#node_info .gotos {
+	margin: 5px -4px 0;
+	border-top: solid 1px rgba(0, 0, 0, 0.25);
+	padding: 4px 4px 0;
+}
+#node_info .gotos h1 {
+	font-weight: bold;
 }
