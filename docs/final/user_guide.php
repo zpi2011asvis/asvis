@@ -69,7 +69,7 @@ function f($c) {
 	<p>W menu dymka dostępne są polecenia "pokaż z głębokością" oraz "pokaż ścieżki".</p>
 	<p>Polecenie "pokaż z głębokością" spowoduje przejście do danego AS-a i wyświetlenie jego otoczenia z wybraną głębokością. (patrz <a href="#browsing">Przeglądanie połączeń</a>)</p>
 	<p>Polecenie "pokaż ścieżki" spowoduje wyszukanie i wyświetlenie ścieżek pomiędzy aktualnie wybranym (na czerwono) AS-em i AS-em zaznaczonym. (patrz <a href="#paths">Wyszukiwanie ścieżek</a>)</p>
-	<p>Panel z prawej strony, oprócz wyswietlania informacji o wybranym AS-ie pozwala nawigować po połączeniach - kliknięcie na numer ASa z listy połączeń spowoduje jego wybranie. (patrz <a href="#browsing">Przeglądanie połączeń</a>) Ponadto przytrzymanie kursora nad danym połączeniem powoduje oznaczenie tego połączenia na grafie czerwoną linią.</p>
+	<p>Panel z prawej strony, oprócz wyswietlania informacji o wybranym AS-ie pozwala nawigować po połączeniach - kliknięcie na numer ASa z listy połączeń spowoduje jego wybranie. (patrz <a href="#browsing">Przeglądanie połączeń</a>). Zachowanie to rozciąga się na całą aplikację: każdy numer poprzedzony znakiem "#" (np #12312) stanowi skrót do wyświetlenia AS-a o danym numerze wraz z jego otoczeniem. Ponadto przytrzymanie kursora nad danym połączeniem powoduje oznaczenie tego połączenia na grafie czerwoną linią.</p>
 </section>
 	
 <section id="options">
