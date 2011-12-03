@@ -48,7 +48,7 @@ function f($c) {
 <section id="start">
 	<h1>Otwieranie aplikacji</h1>
 
-	<p>Aby otworzyć aplikację wystarczy w przeglądarce internetowej wpisać adres URL serwera aplikacji. Otworzy się stona aplikacji, z domyślnie otwartym zapytaniem o podanie numeru AS oraz głębokości wyszukiwania. (patrz <a href="#browsing">Przeglądanie połączeń</a>).</p>
+	<p>Aby otworzyć aplikację wystarczy w przeglądarce internetowej wpisać adres URL serwera aplikacji. Otworzy się strona aplikacji, z domyślnie otwartym zapytaniem o podanie numeru AS oraz głębokości wyszukiwania. (patrz <a href="#browsing">Przeglądanie połączeń</a>).</p>
 </section>
 	
 <section id="screen">
@@ -80,7 +80,7 @@ function f($c) {
 	<p>Ustawienia grafu pozwalają na zmianę wielkości AS-ów (zielonych kwadratów) oraz na zmianę przezroczystości wszystkich linii połączeń (aż do ich calkowitej przezroczystości). To ustawienie jest szczególnie przydatne przy <a href="#paths">wyszukiwaniu ścieżek</a> ponieważ nawet przy wyłączonym wyświetlaniu linii połączeń ściezki są wyświetlane. Można w ten sposób prześledzić ścieżkę bez innych, zasłaniajacych widok, połączeń.</p>
 	<a href="imgs/tree_highlight_1.png"><img src="imgs/path_with_conns.png"></a>
 	<a href="imgs/tree_highlight_1.png"><img src="imgs/path_without_conns.png"></a>
-	<p>Przycisk "uruchom siły odpychania" pozwala na uruchomienie algorytmu lepiej rozmieszczającego graf w przestrzeni. Algorytm ten włącza się automatycznie przy otwieraniu grafów połączeń i zwieksza ich czytelność poprzez zmiane rozkładu węzłów grafu w przestrzeni. Algorytm ten z powodu sowjej czasochłonności nie jest automatycznie uruchamiany dla dużych grafów (powyżej 500 AS-ów). Nie radzimy uruchamiać algorytmu dla grafów powyżej 5000 wierzchołków, ponieważ ma złożoność N<sup>2</sup>/2.</p>
+	<p>Przycisk "uruchom siły odpychania" pozwala na uruchomienie algorytmu lepiej rozmieszczającego graf w przestrzeni. Algorytm ten włącza się automatycznie przy otwieraniu grafów połączeń i zwieksza ich czytelność poprzez zmiane rozkładu węzłów grafu w przestrzeni. Algorytm ten z powodu swojej czasochłonności nie jest automatycznie uruchamiany dla dużych grafów (powyżej 500 AS-ów). Nie radzimy uruchamiać algorytmu dla grafów powyżej 5000 wierzchołków, ponieważ ma złożoność N<sup>2</sup>/2.</p>
 </section>
 	
 <section id="browsing">
