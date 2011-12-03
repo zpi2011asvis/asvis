@@ -13,12 +13,14 @@ var Graph = function Graph(node_key_name) {
 	this._nodes = [];
 	this._nodes_by_key = {};
 	this._node_key_name = node_key_name;
+	this._size = 0;
 };
 Graph.prototype = {
 	constructor: Graph,
 	add: function add(node) {
 		this._nodes[node.id] = node;
 		this._nodes_by_key[node[this._node_key_name]] = node;
+		this._size += 1;
 	},
 
 	get: function get(key) {
@@ -27,6 +29,10 @@ Graph.prototype = {
 
 	getByID: function getByID(id) {
 		return this._nodes[id];
+	},
+
+	size: function size() {
+		return this._size;
 	}
 };
 
