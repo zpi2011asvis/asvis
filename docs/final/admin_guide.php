@@ -164,7 +164,7 @@ function f($c) {
 	</table>
 	<p>* wartość  adresu IP jako integer jest wyliczana ze wzoru: ASNetwork = (l1*16777216) + (l2*65536) + (l3*256) + (l4) gdzie adres IP to l1.l2.l3.l4.</p>
 	
-	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych ASach. </p>
+	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych AS-ach. </p>
 	<table>
 		<thead>
 			<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>

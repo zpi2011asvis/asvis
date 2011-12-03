@@ -77,8 +77,8 @@ function f($c) {
 	<a href="imgs/settings_fog_1.png"><img src="imgs/settings_fog_1.png"></a>
 	<a href="imgs/settings_fog_2.png"><img src="imgs/settings_fog_2.png"></a>
 
-	<p>Ustawienia grafu pozwalają na zmianę wielkości AS-ów (zielonych kwadratów) oraz na zmianę przezroczystości linii połączeń (aż do ich calkowitej przezroczystości).</p>
-	<p>Przycisk "uruchom siły odpychania" pozwala na uruchomienie algorytmu lepiej rozmieszczającego graf w przestrzeni. Algorytm ten z powodu sowjej czasochłonności nie jest automatycznie uruchamiany dla dużych grafów (powyżej 500 AS-ów). Nie radzimy uruchamiać algorytmu dla grafów powyżej 5000 wierzchołków, ponieważ ma złożoność N<sup>2</sup>/2.</p>
+	<p>Ustawienia grafu pozwalają na zmianę wielkości AS-ów (zielonych kwadratów) oraz na zmianę przezroczystości wszystkich linii połączeń (aż do ich calkowitej przezroczystości). To ustawienie jest szczególnie przydatne przy <a href="#paths">wyszukiwaniu ścieżek</a> ponieważ nawet przy wyłączonym wyświetlaniu linii połączeń ściezki są wyświetlane. Można w ten sposób prześledzić ścieżkę bez innych, zasłaniajacych widok, połączeń.</p>
+	<p>Przycisk "uruchom siły odpychania" pozwala na uruchomienie algorytmu lepiej rozmieszczającego graf w przestrzeni. Algorytm ten włącza się automatycznie przy otwieraniu grafów połączeń i zwieksza ich czytelność poprzez zmiane rozkładu węzłów grafu w przestrzeni. Algorytm ten z powodu sowjej czasochłonności nie jest automatycznie uruchamiany dla dużych grafów (powyżej 500 AS-ów). Nie radzimy uruchamiać algorytmu dla grafów powyżej 5000 wierzchołków, ponieważ ma złożoność N<sup>2</sup>/2.</p>
 </section>
 	
 <section id="browsing">
