@@ -64,8 +64,15 @@ function f($c) {
 		<li>aby przybliżyć/oddalić widok należy przekręcić rolkę myszy</li>
 	</ul>
 
-	<p>Po najechaniu kursorem na któryś z wyświetlanych ASów pojawi się dymek z jego numerem i nazwą (w przypadku wyświetlania większych grafów nie wszystkie nazwy mogą być załadowane). Kliknięcie w numer spowoduje przeniesienie do przeglądania połączeń z tym AS-em jako źródłowym. (patrz <a href="#browsing">Przeglądanie połączeń</a>).</p>
-	<p>Panel z prawej strony, oprócz wyswietlania informacji o wybranym AS-ie pozwala nawigować po połączeniach - kliknięcie na numer ASa z listy połączeń spowoduje jego wybranie. (patrz <a href="#browsing">Przeglądanie połączeń</a>) Ponadto przytrzymanie kursora nad danym połączeniem powoduje oznaczenie tego połączenia na grafie czerwoną linią.</p>
+	<p>Po najechaniu kursorem na któryś z wyświetlanych ASów pojawi się dymek z jego numerem i nazwą (w przypadku wyświetlania większych grafów nie wszystkie nazwy mogą być załadowane).</p>
+	<a href="imgs/node_popup.png"><img src="imgs/node_popup.png"></a>
+	<p>W menu dymka dostępne są polecenia "pokaż z głębokością" oraz "pokaż ścieżki".</p>
+	<p>Polecenie "pokaż z głębokością" spowoduje przejście do danego AS-a i wyświetlenie jego otoczenia z wybraną głębokością. (patrz <a href="#browsing">Przeglądanie połączeń</a>)</p>
+	<p>Polecenie "pokaż ścieżki" spowoduje wyszukanie i wyświetlenie ścieżek pomiędzy aktualnie wybranym (na czerwono) AS-em i AS-em zaznaczonym. (patrz <a href="#paths">Wyszukiwanie ścieżek</a>)</p>
+	<p>Panel z prawej strony, oprócz wyswietlania informacji o wybranym AS-ie pozwala nawigować po połączeniach - kliknięcie na numer ASa z listy połączeń spowoduje jego wybranie. (patrz <a href="#browsing">Przeglądanie połączeń</a>). Zachowanie to rozciąga się na całą aplikację: każdy numer poprzedzony znakiem "#" (np #12312) stanowi skrót do wyświetlenia AS-a o danym numerze wraz z jego otoczeniem. Ponadto przytrzymanie kursora nad danym połączeniem powoduje oznaczenie tego połączenia na grafie czerwoną linią.</p>
+	
+	<a href="imgs/connection_highlight.png"><img src="imgs/connection_highlight.png"></a>
+	<a href="imgs/conn_highlight.png"><img src="imgs/conn_highlight.png"></a>
 </section>
 	
 <section id="options">
@@ -78,8 +85,8 @@ function f($c) {
 	<a href="imgs/settings_fog_2.png"><img src="imgs/settings_fog_2.png"></a>
 
 	<p>Ustawienia grafu pozwalają na zmianę wielkości AS-ów (zielonych kwadratów) oraz na zmianę przezroczystości wszystkich linii połączeń (aż do ich calkowitej przezroczystości). To ustawienie jest szczególnie przydatne przy <a href="#paths">wyszukiwaniu ścieżek</a> ponieważ nawet przy wyłączonym wyświetlaniu linii połączeń ściezki są wyświetlane. Można w ten sposób prześledzić ścieżkę bez innych, zasłaniajacych widok, połączeń.</p>
-	<a href="imgs/tree_highlight_1.png"><img src="imgs/path_with_conns.png"></a>
-	<a href="imgs/tree_highlight_1.png"><img src="imgs/path_without_conns.png"></a>
+	<a href="imgs/path_with_conns.png"><img src="imgs/path_with_conns.png"></a>
+	<a href="imgs/path_without_conns.png"><img src="imgs/path_without_conns.png"></a>
 	<p>Przycisk "uruchom siły odpychania" pozwala na uruchomienie algorytmu lepiej rozmieszczającego graf w przestrzeni. Algorytm ten włącza się automatycznie przy otwieraniu grafów połączeń i zwieksza ich czytelność poprzez zmiane rozkładu węzłów grafu w przestrzeni. Algorytm ten z powodu swojej czasochłonności nie jest automatycznie uruchamiany dla dużych grafów (powyżej 500 AS-ów). Nie radzimy uruchamiać algorytmu dla grafów powyżej 5000 wierzchołków, ponieważ ma złożoność N<sup>2</sup>/2.</p>
 </section>
 	
