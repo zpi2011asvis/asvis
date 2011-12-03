@@ -8,6 +8,18 @@ var _log = function _log() {
 	DEBUG && console.log.apply(console, arguments);
 };
 
+var _int2ip = function _int2ip(ip) {
+	var str = [], r;
+
+	while (ip > 0) {
+		r = ip % 256;
+		ip -= r;
+		ip /= 256;
+		str.push(r);
+	}
+	return str.reverse().join('.');
+};
+
 var mysql_db = (function () {
 	var MYSQL_DB = {
 		HOST:	'localhost',
@@ -52,7 +64,7 @@ var mysql_db = (function () {
 
 	var getPools = function getPools() {
 		_log('Querying for pools...');
-		return _query('SELECT * FROM aspool');
+		return _query('SELECT * FROM aspool LIMIT 100');
 	};
 
 	var end = function end() {
@@ -71,8 +83,8 @@ var mysql_db = (function () {
 
 var Importer = function Importer() {
 	var _graph = new Graph('num'),
-		_conn_up,
-		_conn_down;
+		_conns_up,
+		_conns_down;
 
 	var _getNodes = function _getNodes() {
 		return (
@@ -84,8 +96,9 @@ var Importer = function Importer() {
 					node_data = data[i];
 					_graph.add(
 						new Node({
-							'num':		node_data.ASNum,
-							'name':		node_data.ASName,
+							num:		node_data.ASNum,
+							name:		node_data.ASName,
+							pools:		[]
 						})
 					);
 				}
@@ -97,12 +110,12 @@ var Importer = function Importer() {
 		return deferred.all(
 			mysql_db.getConnections('up')
 			(function (data) {
-				_conn_up = data;
+				_conns_up = data;
 			}),
 
 			mysql_db.getConnections('down')
 			(function (data) {
-				_conn_down = data;
+				_conns_down = data;
 			})
 		);
 	};
@@ -111,9 +124,63 @@ var Importer = function Importer() {
 		return (
 			mysql_db.getPools()
 			(function (pools) {
-				console.log(pools[0]);
+				var i, il, pool, node;
+
+				for (i = 0, il = pools.length; i < il; ++i) {
+					pool = pools[i];
+					node = _graph.get(pool.ASNum);
+					node.pools.push({
+						ip:			_int2ip(pool.ASNetwork),
+						netmask:	pool.ASNetmask
+					});
+				}
 			})
 		);
+	};
+
+	var _addConnection = function _addConnection(node1, node2, dir) {
+		var conns;
+
+		conns = node1.getAllTo(node2);
+
+		if (conns.length === 0) {
+			node1.addTo(node2, {
+				type: dir,
+				status: 1
+			});
+		}
+		else {
+			conns.forEach(function (conn) {
+				conn.edge.status = 0;
+			});
+		}
+
+		conns = node2.getAllTo(node1);
+
+		if (conns.length === 0) {
+			node2.addTo(node1, {
+				type: dir,
+				status: 2
+			});
+		}
+		else {
+			conns.forEach(function (conn) {
+				conn.edge.status = 0;
+			});
+		}
+	};
+
+	var _addConnections = function _addConnections() {
+		var i, il, conn;
+
+		for (i = 0, il = _conns_up.length; i < il; ++i) {
+			conn = _conns_up[i];
+			_addConnection(_graph.get(conn.ASNum), _graph.get(conn.ASNumUp), 'up');
+		}
+		for (i = 0, il = _conns_down.length; i < il; ++i) {
+			conn = _conns_down[i];
+			_addConnection(_graph.get(conn.ASNum), _graph.get(conn.ASNumDown), 'down');
+		}
 	};
 
 	mysql_db.connect();
@@ -122,10 +189,11 @@ var Importer = function Importer() {
 		_getNodes(),
 		_getConnections()
 	)
+	(_addConnections)
 	(_getPools)
 	(function () {
 		_log(_graph.size());
-		_log(_conn_up.length, _conn_down.length);
+		_log(_conns_up.length, _conns_down.length);
 		_log(process.memoryUsage());
 		mysql_db.end();
 	})

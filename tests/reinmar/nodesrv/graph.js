@@ -46,7 +46,20 @@ var Node = function Node(data) {
 };
 Node.prototype = {
 	constructor: Node,
+	
+	addTo: function addTo(to, edge_data) {
+		var edge = new Edge(this, to, edge_data);
+		this._out.push({ node: to, edge: edge });
+		to._in.push({ node: this, edge: edge });
+	},
 
+	getAllTo: function getAllTo(to) {
+		var i, il;
+
+		return this._out.filter(function (edge) {
+			return to.id === edge.node.id;
+		});
+	}
 };
 
 var Edge = function Edge(from, to, data) {
