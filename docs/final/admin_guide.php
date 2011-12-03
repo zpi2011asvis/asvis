@@ -139,7 +139,7 @@ function f($c) {
 	<h2>MySQL</h2>
 
 	<p>Dane w bazie MySQL są przechowywane w formie 4 tabel.</p>
-	<p>ASES - lista ASów:</p>
+	<p>ASES - lista AS-ów. Ta tabel zawiera wszyskie znane AS-y.</p>
 	<table>
 		<thead>
 			<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>
@@ -150,7 +150,7 @@ function f($c) {
 		</tbody>
 	</table>
 	
-	<p>ASPOOL - lista pól adresów sieciowych ASów.</p>
+	<p>ASPOOL - lista pól adresów sieciowych AS-ów. Każdemu wpisowi w ASES zazwyczaj odpowiada kilka w ASPOOL.</p>
 
 	<table>
 		<thead>
@@ -158,13 +158,13 @@ function f($c) {
 		</thead>
 		<tbody>			
 			<tr><td>ASNum</td><td>int</td><td>Numer AS i jednocześnie primary key tabeli</td></tr>
-			<tr><td>ASNetwork</td><td>text</td><td>Adres IP zapisany jako int</td></tr>
-			<tr><td>ASNetmask</td><td>text</td><td>Maska sieciowa ASa (jako liczba bitów)</td></tr>				
+			<tr><td>ASNetwork</td><td>int</td><td>Adres IP zapisany jako int *</td></tr>
+			<tr><td>ASNetmask</td><td>int</td><td>Maska sieciowa ASa (liczba bitów)</td></tr>				
 		</tbody>
 	</table>
+	<p>* wartość  adresu IP jako integer jest wyliczana ze wzoru: ASNetwork = (l1*16777216) + (l2*65536) + (l3*256) + (l4) gdzie adres IP to l1.l2.l3.l4.</p>
 	
-	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych ASach.</p>
-
+	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych AS-ach. </p>
 	<table>
 		<thead>
 			<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>

@@ -18,6 +18,8 @@
 		dispatcher.get('/', function routerRoot() {
 			var w = widgets.StartFormWidget.new(that._container_el);
 
+			w.set('from', curr_number);
+
 			w.signals.submitted.add(function routerRoot_onSubmit(params) {
 				curr_depth = null;
 				curr_number = null;
@@ -149,8 +151,8 @@
 
 
 		var _backToGraph = function _backToGraph(widget) {
+			widget.destroy();
 			if (curr_number && curr_depth) {
-				widget.destroy();
 				that.dispatcher.get('/node/{number}/{depth}', {
 					number: curr_number,
 					depth: curr_depth

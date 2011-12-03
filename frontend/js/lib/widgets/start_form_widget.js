@@ -51,13 +51,13 @@
 			};
 		},
 
-		render: function render() {
+		render: function render(data) {
 			if (this._el) return;
 
 			var that = this;
 			that._cel.html(
 				that._position, 
-				that._tpls.render('start_form')
+				that._tpls.render('start_form', data)
 			);
 			that._el = that._cel.find('#start_form');
 			that._el.on('click', function (event) {

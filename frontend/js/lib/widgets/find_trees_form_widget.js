@@ -32,9 +32,7 @@
 
 			numfrom_auto.set('for', '#popup_form_from');
 
-			if (!that._data.from) {
-				that._children = [ numfrom_auto ];
-			}
+			that._children = [ numfrom_auto ];
 		}
 	},
 	{
@@ -72,7 +70,7 @@
 			});
 			that._el.find('.submit > button').on('click', function (event) {
 				that.signals.submitted.dispatch({
-					from:		data.from || +that._el.find('#popup_form_from').first().dataset.value,
+					from:		+that._el.find('#popup_form_from').first().dataset.value,
 					height:		+that._el.find('#popup_form_height').first().value,
 					type:		that._el.find('#popup_form_type').first().value
 				});

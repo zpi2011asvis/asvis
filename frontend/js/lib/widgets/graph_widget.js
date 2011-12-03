@@ -130,6 +130,7 @@
 		showNodeInfoFor: function showNodeInfoFor(node_num) {
 			this.unmarkHoveredNode();
 			this.markHoveredNode(node_num);
+			this._node_info.set('root', this._data.root);
 			this._node_info.set('node_num', node_num);
 			this._node_info.set('depth', this._data.depth);
 			this._node_info.set('node_meta', this._data.nodes_meta && this._data.nodes_meta[node_num]);

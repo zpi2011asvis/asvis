@@ -134,6 +134,9 @@
 			that._el.html('top', hidden_input_el);
 
 			text_input_el = x('#autocompleter_query_' + data.id);
+			text_input_el.first().value = hidden_input_el.first().value;
+			hidden_input_el.first().dataset.value = hidden_input_el.first().value;
+
 			text_input_el.on('keyup', function (event) {
 				var v = text_input_el.first().value;
 

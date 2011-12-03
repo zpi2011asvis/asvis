@@ -75,11 +75,32 @@
 		},
 
 		update: function update(data) {
-			var as_name_el = this._el.find('.as_name');
+			var as_name_el = this._el.find('.as_name'),
+				el;
 
-			this._el.find('.as_num')
+			this._el.find('.as_num.this')
 				.html('#' + data.node_num)
 				.attr('href', '/node/' + data.node_num + '/' + data.depth);
+
+			el = this._el.find('.depth_shallower')
+				.html(data.depth - 1 + ' (-1)')
+				.attr('href', '/node/' + data.node_num + '/' + (data.depth - 1));
+			this._el.find('.depth_equal')
+				.html(data.depth + ' (+0)')
+				.attr('href', '/node/' + data.node_num + '/' + data.depth);
+			this._el.find('.depth_deeper')
+				.html(data.depth + 1 + ' (+1)')
+				.attr('href', '/node/' + data.node_num + '/' + (data.depth + 1));
+			if (data.depth <= 1) {
+				el.addClass('hidden');
+			}
+			else {
+				el.removeClass('hidden');
+			}
+
+			this._el.find('.paths')
+				.attr('href', '/paths/' + data.root + '/' + data.node_num + '/both')
+				.html('#' + data.root);
 
 			if (data.node_meta) {
 				as_name_el.html(data.node_meta.name);
