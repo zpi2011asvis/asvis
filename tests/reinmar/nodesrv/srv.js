@@ -1,8 +1,14 @@
 var mysql = require('mysql'),
-	deferred = require('deferred');
+	deferred = require('deferred'),
+	Graph = require('./graph'),
+	Node = Graph.Node,
+	DEBUG = true;
 
-var importer = (function () {
-	var DEBUG = true;
+var _log = function _log() {
+	DEBUG && console.log.apply(console, arguments);
+};
+
+var mysql_db = (function () {
 	var MYSQL_DB = {
 		HOST:	'localhost',
 		NAME:	'asmap',
@@ -12,7 +18,7 @@ var importer = (function () {
 	var _client;
 
 	var connect = function connect() {
-		DEBUG && console.log('Connecting to MySQL db...');
+		_log('Connecting to MySQL db...');
 		_client = mysql.createClient({
 			user:		MYSQL_DB.USER,
 			password:	MYSQL_DB.PASSWD,
@@ -22,13 +28,13 @@ var importer = (function () {
 	};
 
 	var getASes = function getASes() {
-		DEBUG && console.log('Querying...');
+		_log('Querying...');
 
 		var d = deferred();
 
 		_client.query(
-			'SELECT * FROM ases LIMIT 100',
-			function sel(err, results, fields) {
+			'SELECT * FROM ases',
+			function (err, results, fields) {
 				d.resolve(err || results);
 			}
 		);
@@ -37,6 +43,7 @@ var importer = (function () {
 	};
 
 	var end = function end() {
+		_log('Bye...');
 		_client.end();
 	};
 
@@ -47,11 +54,33 @@ var importer = (function () {
 	};
 }());
 
+var Importer = function Importer() {
+	var _graph = new Graph('num');
 
-importer.connect();
-importer.getASes()
-(function (data) {
-	console.log(data);
-	importer.end();
-}).end(importer.end);
+	mysql_db.connect();
+	mysql_db.getASes()
+	(function (data) {
+		var i, il, node, node_data;
 
+		for (i = 0, il = data.length; i < il; ++i) {
+			node_data = data[i];
+			_graph.add(
+				new Node({
+					'num':		node_data.ASNum,
+					'name':		node_data.ASName,
+				})
+			);
+		}
+	})
+	(function () {
+		_log(process.memoryUsage());
+		mysql_db.end();
+	})
+	.end(function (err) {
+		_log('FUCK!');
+		_log(err);
+		mysql_db.end();
+	});
+};
+
+Importer();
