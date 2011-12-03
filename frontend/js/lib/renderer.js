@@ -367,8 +367,9 @@
 				clearAlpha: 0
 			});
 			alert(
-				'Your browser doesn\'t support WebGL. ' +
-				'Visualization\'s going to burn your CPU!'
+				'Twoja przeglądarka nie obsługuje WebGL-a. ' +
+				'Wyświetlanie zostanie obsłużone przez Canvas, jednak ' +
+				'jest on wspierany połowicznie'
 			);
 		}
 		_scene = new T.Scene();
