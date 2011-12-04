@@ -83,6 +83,7 @@ var mysql_db = (function () {
 
 var Importer = function Importer() {
 	var _graph = new Graph('num'),
+		_main_d = deferred(),
 		_conns_up,
 		_conns_down;
 
@@ -193,15 +194,33 @@ var Importer = function Importer() {
 	(_getPools)
 	(function () {
 		_log(_graph.size());
-		_log(_conns_up.length, _conns_down.length);
 		_log(process.memoryUsage());
 		mysql_db.end();
+
+		_main_d.resolve(_graph);
 	})
 	.end(function (err) {
 		_log('FUCK!');
 		_log(err);
 		mysql_db.end();
+
+		_main_d.resolve(new Error('Error while importing graph'));
 	});
+
+	return _main_d.promise;
 };
 
-Importer();
+Importer()
+(function (graph) {
+	var d = +new Date();
+	var q = new Graph.BFSQuery(graph);
+
+	q.root(graph.get(3)).depth(2).execute();
+
+	_log('Time: ' + (new Date() - d) + 'ms');
+})
+.end(function (err) {
+	_log(err);
+});
+
+

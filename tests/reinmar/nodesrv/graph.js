@@ -33,7 +33,7 @@ Graph.prototype = {
 
 	size: function size() {
 		return this._size;
-	}
+	},
 };
 
 
@@ -71,6 +71,90 @@ var Edge = function Edge(from, to, data) {
 };
 
 
+var BFSQuery = function BFSQuery(graph) {
+	var that = {},
+		_root = null,
+		_depth = -1,
+
+		_nodes_queued = {},
+		_queue = [],
+		_queue_l = 0,
+		_queue_i = 0;
+
+	var root = function root(r) {
+		_root = r;
+		return that;
+	};
+
+	var depth = function depth(d) {
+		_depth = d;
+		return that;
+	};
+
+	var execute = function execute() {
+		var item, current, depth, conns,
+			next_conn, next_node,
+			i, il;
+
+		_nodes_queued[_root.id] = true;
+		_queue.push({ next: _root, depth: _depth });
+		_queue_l += 1;
+
+		while (_queue_i < _queue_l) {
+			item = _queue[_queue_i];
+			current = item.next;
+			depth = item.depth;
+			conns = current._out;
+
+			if (depth > 0 || depth === -1) {
+				for (i = 0, il = conns.length; i < il; ++i) {
+					next_conn = conns[i];
+					next_node = next_conn.node;
+
+					if (!_nodes_queued[next_node.id]) {
+						_nodes_queued[next_node.id] = true;
+						_queue.push({ next: next_node, depth: depth - 1 });
+						_queue_l += 1;
+					}
+				}
+			}
+
+			_queue_i += 1;
+		}
+
+		return that;
+	};
+
+	var toObject = function toObject() {
+	};
+
+	var toPlainObject = function toPlainObject(cut) {
+		var obj = {}, keys;
+		if (cut) {
+
+		}
+		else {
+			keys = Object.keys(_nodes_queued);
+			//.map(function (node_id) {
+			//	return graph._nodes[+node_id];
+			//});
+		}
+
+		return obj;
+	};
+
+	_extend.call(that, {
+		root: root,
+		depth: depth,
+		execute: execute,
+		toObject: toObject,
+		toArray: toArray
+	});
+	return that;
+};
+
+
 Graph.Node = Node;
 Graph.Edge = Edge;
+Graph.BFSQuery = BFSQuery;
 module.exports = Graph;
