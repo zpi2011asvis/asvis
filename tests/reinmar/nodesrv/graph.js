@@ -135,6 +135,11 @@ var BFSQuery = function BFSQuery(graph) {
 		}
 		else {
 			keys = Object.keys(_nodes_queued);
+			obj = keys.reduce(function (node_id, acc) {
+				acc[node_id] = graph._nodes[+node_id];
+				
+				return acc;
+			}, {});
 			//.map(function (node_id) {
 			//	return graph._nodes[+node_id];
 			//});
