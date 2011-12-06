@@ -7,7 +7,7 @@
 		widget_id = 0;
 
 	var AutocompleterWidget = Widget.create(function AutocompleterWidget() {}, {
-		MIN_LEN: 3,
+		MIN_LEN: 2,
 		_value: '',
 		_selected: 0,
 		_size: 0,

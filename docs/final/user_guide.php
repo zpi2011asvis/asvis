@@ -29,6 +29,7 @@ function f($c) {
 			<li><a href="#requirements">Wymagania</a></li>
 			<li><a href="#start">Otwieranie aplikacji</a></li>
 			<li><a href="#screen">Ekran aplikacji</a></li>
+			<li><a href="#sidebar">Prawy pasek nawigacji</a></li>
 			<li><a href="#options">Opcje</a></li>
 			<li><a href="#browsing">Przeglądanie połączeń</a></li>
 			<li><a href="#trees">Wyszukiwanie drzew</a></li>
@@ -54,7 +55,7 @@ function f($c) {
 <section id="screen">
 	<h1>Ekran aplikacji</h1>
 
-	<p>Ekran aplikacji podzielony jest na 2 części. Po lewej stronie znajduje się miejsce, w którym wyświetlana jest trójwymiarowa reprezentacja połączeń pomiędzy ASami. Aktualnie wybrany AS jest zaznaczany jako czerwone koło. Po prawej, na pionowym pasku, wyświetlane są informacje dotyczące wybranego ASa - jego numer, nazwa, lista połączeń (wraz z ich typem i stanem), i lista pól adresów.</p>
+	<p>Ekran aplikacji podzielony jest na 2 części. Po lewej stronie znajduje się miejsce, w którym wyświetlana jest trójwymiarowa reprezentacja połączeń pomiędzy AS-ami. Aktualnie wybrany AS jest zaznaczany jako czerwone koło. Po prawej, na pionowym pasku, wyświetlane są informacje dotyczące wybranego AS-a - jego numer, nazwa, lista połączeń (wraz z ich typem i stanem), i lista pól adresów.</p>
 	<a href="imgs/overview.png"><img src="imgs/overview.png"></a>
 
 	<p>Nawigacja w trójwymiarowym widoku:</p>
@@ -69,10 +70,23 @@ function f($c) {
 	<p>W menu dymka dostępne są polecenia "pokaż z głębokością" oraz "pokaż ścieżki".</p>
 	<p>Polecenie "pokaż z głębokością" spowoduje przejście do danego AS-a i wyświetlenie jego otoczenia z wybraną głębokością. (patrz <a href="#browsing">Przeglądanie połączeń</a>)</p>
 	<p>Polecenie "pokaż ścieżki" spowoduje wyszukanie i wyświetlenie ścieżek pomiędzy aktualnie wybranym (na czerwono) AS-em i AS-em zaznaczonym. (patrz <a href="#paths">Wyszukiwanie ścieżek</a>)</p>
-	<p>Panel z prawej strony, oprócz wyswietlania informacji o wybranym AS-ie pozwala nawigować po połączeniach - kliknięcie na numer ASa z listy połączeń spowoduje jego wybranie. (patrz <a href="#browsing">Przeglądanie połączeń</a>). Zachowanie to rozciąga się na całą aplikację: każdy numer poprzedzony znakiem "#" (np #12312) stanowi skrót do wyświetlenia AS-a o danym numerze wraz z jego otoczeniem. Ponadto przytrzymanie kursora nad danym połączeniem powoduje oznaczenie tego połączenia na grafie czerwoną linią.</p>
+	<p>Panel z prawej strony, oprócz wyswietlania informacji o wybranym AS-ie pozwala nawigować po połączeniach - kliknięcie na numer AS-a z listy połączeń spowoduje jego wybranie. (patrz <a href="#browsing">Przeglądanie połączeń</a>). Zachowanie to jest konwencją w całej aplikacji: każdy numer poprzedzony znakiem "#" (np #12312) stanowi skrót do wyświetlenia AS-a o danym numerze wraz z jego otoczeniem. Ponadto przytrzymanie kursora nad danym połączeniem powoduje oznaczenie tego połączenia na grafie czerwoną linią.</p>
 	
 	<a href="imgs/connection_highlight.png"><img src="imgs/connection_highlight.png"></a>
 	<a href="imgs/conn_highlight.png"><img src="imgs/conn_highlight.png"></a>
+
+</section>
+
+<section id="sidebar">
+	<h1>Prawy pasek nawigacji</h1>
+	
+	<p>W prawym pasku nawigacji znajdują się następujące elementy:</p>
+
+	<ul>
+		<li>Aktualnie prezetowany AS - jego podstawowe dane (nazwa, numer)</li>
+		<li>Połączenia tego AS-a z innymi AS-ami. U (upstream) oznacza iż ten AS (docelowy) znajduje się w tablicy routingu ponad obecnym. D (downstream) oznacza iż ten AS znajduje się poniżej. B (both) iż poniżej i powyżej jednocześnie (występuje dwukrotnie). Dodatkowo stan połączenia może być OK - połączenie skonfigurowane w jednym i drugim AS-ie. Oraz Bad - jeśli w jednym jest skonfigurowane, a w drugim brak takowiego wpisu.</li>
+		<li>Lista puli adresów przypisanych do bierzącego AS-a</lo>
+	</ul>
 </section>
 	
 <section id="options">
@@ -117,7 +131,7 @@ function f($c) {
 <section id="paths">
 	<h1>Wyszukiwanie ścieżek</h1>
 
-	<p>Wyszukiwanie ścieżek pozwala na znalezienie najkrótszych ścieżek łączących dane AS-y. Mając wybrany AS źródłowy (<a href="#browsing">Przeglądanie połączeń</a>) klikamy wyszukiwanie ścieżek i wprowadzamy nr ASa docelowego. Następnie wybieramy czy wyszukujemy ścieżkę prowadzącą DO ASa źródłowego (Downstram), OD (Upstream) czy w dowolnym kierunku (Downstream i Upstream).</p>
+	<p>Wyszukiwanie ścieżek pozwala na znalezienie najkrótszych ścieżek łączących dane AS-y. Mając wybrany AS źródłowy (<a href="#browsing">Przeglądanie połączeń</a>) klikamy wyszukiwanie ścieżek i wprowadzamy nr ASa docelowego.</p>
 	<p>W wyniku zostaje zaznaczona na niebiesko znaleziona ścieżka (lub ściezki, jeżeli jest więcej niż jedna o tej samej długości).</p>
 	<a href="imgs/path_highlight.png"><img src="imgs/path_highlight.png"></a>
 </section>

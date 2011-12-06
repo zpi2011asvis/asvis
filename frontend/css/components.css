@@ -35,6 +35,10 @@
 	padding: 10px 20px;
 }
 
+.popup input[type=text] {
+	width: 300px;
+}
+
 
 /*
  * SECTIONS -------------------------------------------------------------------
@@ -166,11 +170,11 @@ table.std.hoverable tr:hover td {
 	position: absolute;
 	left: 105px;
 	top: 0;
-	width: 200px;
+	width: 350px;
 	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
 	background: #FFF;
 	border: solid 2px #555;
-	max-height: 300px;
+	max-height: 400px;
 	overflow: auto;
 }
 .autocomp .opts.opened {
