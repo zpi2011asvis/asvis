@@ -9,3 +9,4 @@ config.php
 .buildpath
 .settings/*
 tests/gloowa/outdated/*
+tests/reinmar/nodesrv/node_modules/*
