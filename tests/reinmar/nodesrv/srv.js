@@ -4,18 +4,28 @@ var Importer = require('./lib/importer'),
 	Query = require('./lib/graphdb/query.js'),
 	config = require('./config'),
 	utils = require('./lib/utils'),
-	log = utils.log;
+	log = utils.log('SERVER'),
+	serializer = require('./lib/graph_serializer'),
+	restify = require('restify');
 
 utils.setDebug(config.debug);
 
 Importer(config.mysql)
 (function (graph) {
-	var d = +new Date();
-	var q = new Query.BFS(graph);
+	var srv = restify.createServer();
 
-	q.root(graph.get(3)).depth(2).execute();
+	srv.get('/graph/:number/:depth', function (req, res) {
+		var number = +req.uriParams.number,
+			depth = +req.uriParams.depth;
 
-	log(q.getNodes());
+		var q = new Query.BFS(graph);
+		q.root(graph.get(number)).depth(depth).execute();
+		
+		res.send(200, serializer.structure(q.getNodes()));
+	});
+
+	srv.listen(8080);
+	log('Listening on port 8080');
 })
 .end(function (err) {
 	log('ERROR!');

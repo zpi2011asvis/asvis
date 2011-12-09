@@ -4,7 +4,7 @@ var mysql = require('mysql'),
 	deferred = require('deferred'),
 	Graph = require('./graphdb/graph'),
 	Node = Graph.Node,
-	log = require('./utils').log;
+	log = require('./utils').log('IMPORTER');
 
 /*
 var _int2ip = function _int2ip(ip) {
@@ -62,7 +62,7 @@ var MySQLDB = function (config) {
 	};*/
 
 	var end = function end() {
-		log('Importer: Bye...');
+		log('Bye...');
 		_client.end();
 	};
 
@@ -139,7 +139,7 @@ var Importer = function Importer(mysql_config) {
 	var _addConnection = function _addConnection(node1, node2, dir) {
 		var conns;
 
-		conns = node1.getAllTo(node2);
+		conns = node1.getTo(node2);
 
 		if (conns.length === 0) {
 			node1.addTo(node2, {
@@ -153,7 +153,7 @@ var Importer = function Importer(mysql_config) {
 			});
 		}
 
-		conns = node2.getAllTo(node1);
+		conns = node2.getTo(node1);
 
 		if (conns.length === 0) {
 			node2.addTo(node1, {
@@ -191,14 +191,14 @@ var Importer = function Importer(mysql_config) {
 	(_addConnections)
 	// (_getPools)
 	(function () {
-		log('Importer: SUCCESS!')
-		log('Graph size: ' + _graph.size());
+		log('SUCCESS!')
+		log('Graph size: ' + _graph.getSize());
 		_mysql_db.end();
 
 		_main_d.resolve(_graph);
 	})
 	.end(function (err) {
-		log('Importer: ERROR!');
+		log('ERROR!');
 		log(err);
 		_mysql_db.end();
 

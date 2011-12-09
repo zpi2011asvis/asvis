@@ -28,6 +28,11 @@ var BFS = function BFS(graph) {
 			next_conn, next_node,
 			i, il;
 
+		if (!_root) {
+			_result = [];
+			return that;
+		}
+
 		_nodes_queued[_root.id] = true;
 		_queue.push({ next: _root, depth: _depth });
 		_queue_l += 1;

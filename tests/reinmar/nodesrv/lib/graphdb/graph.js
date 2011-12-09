@@ -35,7 +35,7 @@ Graph.prototype = {
 		return this._nodes[id];
 	},
 
-	size: function size() {
+	getSize: function size() {
 		return Object.keys(this._nodes_by_key).length;
 	},
 };
@@ -57,11 +57,31 @@ Node.prototype = {
 		to._in.push({ node: this, edge: edge });
 	},
 
-	getAllTo: function getAllTo(to) {
+	getTo: function getTo(to) {
 		var i, il;
 
 		return this._out.filter(function (edge) {
 			return to.id === edge.node.id;
+		});
+	},
+
+	getOut: function getOut() {
+		return this._out;
+	},
+
+	getIn: function getIn() {
+		return this._in;
+	},
+
+	getNodesOut: function getNodesOut() {
+		return this._out.map(function (conn) {
+			return conn.edge._to;
+		});
+	},
+
+	getNodesIn: function getNodeIn() {
+		return this._in.map(function (conn) {
+			return conn.edge._from;
 		});
 	}
 };

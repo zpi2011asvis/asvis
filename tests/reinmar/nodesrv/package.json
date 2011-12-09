@@ -4,6 +4,7 @@
 	"private": true,
 	"dependencies": {
 		"deferred": ">= 0.2.5",
-		"mysql": ">= 0.6.5"
+		"mysql": ">= 0.6.5",
+		"restify": ">= 0.5.5"
 	}
 }
