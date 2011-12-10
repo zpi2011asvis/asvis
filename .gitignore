@@ -1,12 +1,9 @@
 db/orientdb/databases/*
 db/orientdb/log/*
 db/orientdb/bin/.orientdb_history
-db/orientdb_testing/databases/*
-db/orientdb_testing/log/*
-db/orientdb_testing/bin/.orientdb_history
 config.php
+db/nodedb/node_modules/*
+db/nodedb/config.js
 .project
 .buildpath
 .settings/*
-tests/gloowa/outdated/*
-tests/reinmar/nodesrv/node_modules/*

@@ -37,8 +37,8 @@ Importer(config.mysql)
 		}
 	});
 
-	srv.listen(8080);
-	log('Listening on port 8080');
+	srv.listen(config.server.port);
+	log('Listening on port ' + config.server.port);
 })
 .end(function (err) {
 	log('ERROR!');

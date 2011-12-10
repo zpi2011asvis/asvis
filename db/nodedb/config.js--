@@ -5,6 +5,10 @@ module.exports = {
 		name:		'asmap',
 		user:		'root',
 		password:	'root',
+	},
+	server: {
+		port:		8080
 	}
+
 };
 
