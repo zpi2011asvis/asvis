@@ -53,5 +53,22 @@ exports.connections = function connections(node) {
 
 	return Object.keys(conns).map(function (num) {
 		return conns[num];
+	}).sort(function (conn1, conn2) {
+		if (
+			conn1.status !== conn2.status &&
+			(conn1.status === 0 || conn2.status === 0)
+		) {
+			// sort by status only if pairs: (0,1) (0,2) (1,0) (2,0)
+			return conn1.status - conn2.status;
+		}
+
+		if (conn1.dir !== conn2.dir) {
+			if (conn1.dir === 'both') return -1;
+			if (conn2.dir === 'both') return 1;
+			if (conn1.dir === 'up') return -1;
+			return 1;
+		}
+
+		return conn1.with - conn2.with;
 	});
 };
