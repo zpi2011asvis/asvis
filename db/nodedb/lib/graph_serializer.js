@@ -35,3 +35,23 @@ exports.structure = function structure(nodes) {
 
 	return result;
 };
+
+exports.connections = function connections(node) {
+	var conns = node.getOut().reduce(function (conns, edge) {
+		var node = edge.to(),
+			conn = conns[node.num];
+
+		if (conn) {
+			conn.dir = 'both';
+		}
+		else {
+			conns[node.num] = { with: node.num, dir: edge.dir, status: edge.status };
+		}
+
+		return conns;
+	}, {});
+
+	return Object.keys(conns).map(function (num) {
+		return conns[num];
+	});
+};

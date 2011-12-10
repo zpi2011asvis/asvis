@@ -37,6 +37,20 @@ Importer(config.mysql)
 		}
 	});
 
+	srv.get('/connections/meta/:num_for', function (req, res) {
+		var num_for = +req.uriParams.num_for,
+			node = graph.get(num_for),
+			conns;
+
+		if (!node) {
+			res.send(404, 'Brak AS-a o podanym numerze');
+		}
+		else {
+			conns = serializer.connections(node);
+			res.send(200, conns);
+		}
+	});
+
 	srv.listen(config.server.port);
 	log('Listening on port ' + config.server.port);
 })

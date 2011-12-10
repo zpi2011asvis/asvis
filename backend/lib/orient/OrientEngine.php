@@ -119,7 +119,7 @@ class OrientEngine implements Engine {
 			return null;
 		}
 
-		return $this->getConnectionMetaFor($result[0]->{'@rid'});
+		return $this->getConnectionsMetaFor($result[0]->{'@rid'});
 	}
 	
 	/**
@@ -308,9 +308,9 @@ class OrientEngine implements Engine {
 	}
 	
 
-	protected function getConnectionMetaFor($rid) {
-		$conns_up = $this->getConnectionMetaForDir($rid, 'up');
-		$conns_down = $this->getConnectionMetaForDir($rid, 'down');
+	protected function getConnectionsMetaFor($rid) {
+		$conns_up = $this->getConnectionsMetaForDir($rid, 'up');
+		$conns_down = $this->getConnectionsMetaForDir($rid, 'down');
 		$conns = array();
 
 		// merge connections
@@ -331,7 +331,7 @@ class OrientEngine implements Engine {
 		return $conns;		
 	}
 
-	protected function getConnectionMetaForDir($rid, $dir) {
+	protected function getConnectionsMetaForDir($rid, $dir) {
 		$conns = array();
 		$field = ($dir === 'up' ? 'from' : 'to');
 		$field2 = ($dir === 'up' ? 'to' : 'from');
