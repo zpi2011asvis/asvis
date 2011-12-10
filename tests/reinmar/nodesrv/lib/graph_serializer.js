@@ -1,5 +1,6 @@
 'use strict';
 
+
 exports.structure = function structure(nodes) {
 	var result = {},
 		ids = Object.keys(nodes),
@@ -27,7 +28,7 @@ exports.structure = function structure(nodes) {
 		obj = {
 			out: node.getOut().reduce(_connectionsReduce('up'), []),
 			in: node.getOut().reduce(_connectionsReduce('down'), []),
-			distance: 0
+			distance: -1 // set this so the objects' shapes are not changed in the future
 		};
 		obj.weight = obj.out.length + obj.in.length;
 		result[node.num] = obj;

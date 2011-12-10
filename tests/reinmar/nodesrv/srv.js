@@ -16,12 +16,25 @@ Importer(config.mysql)
 
 	srv.get('/graph/:number/:depth', function (req, res) {
 		var number = +req.uriParams.number,
-			depth = +req.uriParams.depth;
+			depth = +req.uriParams.depth,
+			root = graph.get(number),
+			q, structure, order_w, order_d;
 
-		var q = new Query.BFS(graph);
-		q.root(graph.get(number)).depth(depth).execute();
-		
-		res.send(200, serializer.structure(q.getNodes()));
+		if (!root) {
+			res.send(404, 'Brak AS-a o podanym numerze');
+		}
+		else {
+			q = new Query.BFS(graph);
+			q.root(root).depth(depth).execute();
+
+			structure = serializer.structure(q.getNodes());
+			utils.calculateDistances(root, structure);
+
+			order_w = utils.getWeightOrder(structure);
+			order_d = utils.getDistanceOrder(structure);
+
+			res.send(200, { structure: structure, weight_order: order_w, distance_order: order_d });
+		}
 	});
 
 	srv.listen(8080);
