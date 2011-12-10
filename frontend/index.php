@@ -128,9 +128,9 @@ function includeTemplates() {
 	<? includeTemplates() ?>
 	<script>
 		// light version
-		this.DEBUG = false; // <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
+		this.DEBUG = <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
 		// heavy version (highly verbose)
-		this.DEBUG2 = false; // <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
+		this.DEBUG2 = false;
 		app.start({
 			root: '<?= Config::get('frontend_base_uri') ?>/'
 		});
