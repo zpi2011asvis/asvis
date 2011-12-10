@@ -53,15 +53,23 @@ Node.prototype = {
 	
 	addTo: function addTo(to, edge_data) {
 		var edge = new Edge(this, to, edge_data);
-		this._out.push({ node: to, edge: edge });
-		to._in.push({ node: this, edge: edge });
+		this._out.push(edge);
+		to._in.push(edge);
 	},
 
 	getTo: function getTo(to) {
 		var i, il;
 
 		return this._out.filter(function (edge) {
-			return to.id === edge.node.id;
+			return to.id === edge._to.id;
+		});
+	},
+
+	getFrom: function getFrom(from) {
+		var i, il;
+
+		return this._in.filter(function (edge) {
+			return from.id === edge._from.id;
 		});
 	},
 
@@ -74,14 +82,14 @@ Node.prototype = {
 	},
 
 	getNodesOut: function getNodesOut() {
-		return this._out.map(function (conn) {
-			return conn.edge._to;
+		return this._out.map(function (edge) {
+			return edge._to;
 		});
 	},
 
 	getNodesIn: function getNodeIn() {
-		return this._in.map(function (conn) {
-			return conn.edge._from;
+		return this._in.map(function (edge) {
+			return edge._from;
 		});
 	}
 };
@@ -92,6 +100,17 @@ var Edge = function Edge(from, to, data) {
 	this._to = to;
 	this.id = _last_edge_id;
 	_last_edge_id += 1;
+};
+Edge.prototype = {
+	constructor: Edge,
+
+	to: function to() {
+		return this._to;
+	},
+
+	from: function from() {
+		return this._from;
+	}
 };
 
 Graph.Node = Node;

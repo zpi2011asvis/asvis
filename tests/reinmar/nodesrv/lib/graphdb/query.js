@@ -6,6 +6,7 @@ var BFS = function BFS(graph) {
 	var that = {},
 		_root = null,
 		_depth = -1,
+		_traverse_in = false,		// traverse also input edges
 
 		_nodes_queued = {},
 		_result,
@@ -24,9 +25,16 @@ var BFS = function BFS(graph) {
 	};
 
 	var execute = function execute() {
-		var item, current, depth, conns,
-			next_conn, next_node,
+		var item, current, depth, edges,
 			i, il;
+
+		var _queueNode = function _queueNode(next_node, depth) {
+			if (!_nodes_queued[next_node.id]) {
+				_nodes_queued[next_node.id] = true;
+				_queue.push({ next: next_node, depth: depth });
+				_queue_l += 1;
+			}			
+		};
 
 		if (!_root) {
 			_result = [];
@@ -41,17 +49,17 @@ var BFS = function BFS(graph) {
 			item = _queue[_queue_i];
 			current = item.next;
 			depth = item.depth;
-			conns = current._out;
 
 			if (depth > 0 || depth === -1) {
-				for (i = 0, il = conns.length; i < il; ++i) {
-					next_conn = conns[i];
-					next_node = next_conn.node;
+				edges = current._out;
+				for (i = 0, il = edges.length; i < il; ++i) {
+					_queueNode(edges[i].to(), depth - 1);
+				}
 
-					if (!_nodes_queued[next_node.id]) {
-						_nodes_queued[next_node.id] = true;
-						_queue.push({ next: next_node, depth: depth - 1 });
-						_queue_l += 1;
+				if (_traverse_in) {
+					edges = current._in;
+					for (i = 0, il = edges.length; i < il; ++i) {
+						_queueNode(edges[i].from(), depth - 1);
 					}
 				}
 			}

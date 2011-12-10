@@ -7,9 +7,14 @@ exports.structure = function structure(nodes) {
 		i, il;
 
 	var _connectionsReduce = function (dir) {
-		return function _connectionsReduce(acc, conn) {
-			if (conn.edge.type === dir && nodes[conn.node.id]) {
-				acc.push(conn.node.num);
+		var method = { up: 'to', down: 'to' }[dir],
+			node;
+
+		return function _connectionsReduce(acc, edge) {
+			node = edge[method]();
+
+			if (edge.dir === dir && nodes[node.id]) {
+				acc.push(node.num);
 			}
 			return acc;
 		};
@@ -21,7 +26,8 @@ exports.structure = function structure(nodes) {
 
 		obj = {
 			out: node.getOut().reduce(_connectionsReduce('up'), []),
-			in: node.getOut().reduce(_connectionsReduce('down'), [])
+			in: node.getOut().reduce(_connectionsReduce('down'), []),
+			distance: 0
 		};
 		obj.weight = obj.out.length + obj.in.length;
 		result[node.num] = obj;

@@ -137,34 +137,24 @@ var Importer = function Importer(mysql_config) {
 	*/
 
 	var _addConnection = function _addConnection(node1, node2, dir) {
-		var conns;
+		var dir_opp = { up: 'down', down: 'up' }[dir],
+			// check if this connections are already set
+			edge1 = node1.getTo(node2).filter(function (edge) { return edge.dir === dir; })[0],
+			edge2 = node2.getTo(node1).filter(function (edge) { return edge.dir === dir_opp; })[0];
 
-		conns = node1.getTo(node2);
-
-		if (conns.length === 0) {
+		if (!edge1 && !edge2) {
 			node1.addTo(node2, {
-				type: dir,
+				dir: dir,
 				status: 1
 			});
-		}
-		else {
-			conns.forEach(function (conn) {
-				conn.edge.status = 0;
-			});
-		}
-
-		conns = node2.getTo(node1);
-
-		if (conns.length === 0) {
 			node2.addTo(node1, {
-				type: dir,
+				dir: dir_opp,
 				status: 2
 			});
 		}
 		else {
-			conns.forEach(function (conn) {
-				conn.edge.status = 0;
-			});
+			edge1.status = 0;
+			edge2.status = 0;
 		}
 	};
 
@@ -199,7 +189,8 @@ var Importer = function Importer(mysql_config) {
 	})
 	.end(function (err) {
 		log('ERROR!');
-		log(err);
+		log(err.message);
+		log(err.stack);
 		_mysql_db.end();
 
 		_main_d.resolve(new Error('Error while importing graph'));
