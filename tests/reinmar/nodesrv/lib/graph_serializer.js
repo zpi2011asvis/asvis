@@ -8,11 +8,8 @@ exports.structure = function structure(nodes) {
 		i, il;
 
 	var _connectionsReduce = function (dir) {
-		var method = { up: 'to', down: 'to' }[dir],
-			node;
-
 		return function _connectionsReduce(acc, edge) {
-			node = edge[method]();
+			var node = edge.to();
 
 			if (edge.dir === dir && nodes[node.id]) {
 				acc.push(node.num);
@@ -28,7 +25,9 @@ exports.structure = function structure(nodes) {
 		obj = {
 			out: node.getOut().reduce(_connectionsReduce('up'), []),
 			in: node.getOut().reduce(_connectionsReduce('down'), []),
-			distance: -1 // set this so the objects' shapes are not changed in the future
+			// set this so the objects' shapes are not changed in the future
+			distance: -1,
+			weight: -1
 		};
 		obj.weight = obj.out.length + obj.in.length;
 		result[node.num] = obj;
