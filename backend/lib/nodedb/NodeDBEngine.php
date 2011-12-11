@@ -46,19 +46,7 @@ class NodeDBEngine implements Engine {
 	 * @see asvis\lib.Engine::nodesFind()
 	 */
 	public function nodesFind($num) {
-		$result = $this->_orient->query("SELECT FROM ASNode WHERE num_as_string LIKE '{$num}%'")->getBody();
-		$result = json_decode($result);
-		$result = $result->result;
-		
-		$nodes = array();
-		
-		foreach ($result as $asNode) {			
-			$nodes[$asNode->num] = array(
-				'name' => $asNode->name
-			);
-		}
-		
-		return $nodes;
+
 	}
 	
 	/**
@@ -66,35 +54,7 @@ class NodeDBEngine implements Engine {
 	 * @see asvis\lib.Engine::nodesMeta()
 	 */
 	public function nodesMeta($numbers) {
-		$nodes = array();
 
-		$query = "SELECT num, name, pools FROM ASNode WHERE num IN [" . implode(',', $numbers) . "]";
-		$fetchplan = "*:2 out:0 in:0";
-		
-		$json = $this->_orient->query($query, null, -1, $fetchplan);	
-		$result = json_decode($json->getBody())->result;
-
-		if (count($result) < count($numbers)) {
-			return array();
-		}
-
-		foreach ($result as $node) {
-			$num = $node->num;
-			$name = $node->name;
-
-			$pools = array();
-
-			foreach ($node->pools as $pool) {
-				$network = $pool->network_as_string;
-				$netmask = $pool->netmask;
-
-				$pools[] = array('ip' => $network, 'mask' => $netmask);	
-			}
-
-			$nodes[$num] = array('name' => $name, 'pools' => $pools); 
-		}	
-
-		return $nodes;
 	}
 
 
@@ -103,15 +63,12 @@ class NodeDBEngine implements Engine {
 	 * @see asvis\lib.Engine::connectionsMeta()
 	 */
 	public function connectionsMeta($for_node) {
-		$query = "SELECT FROM ASNode WHERE num = {$for_node}";
-		$json = $this->_orient->query($query);	
-		$result = json_decode($json->getBody())->result;
+		$query = "connections/meta/{$for_node}";
+		
+		$json = $this->_nodedb->query($query);	
+		$result = json_decode($json->getBody());
 
-		if (!count($result)) {
-			return null;
-		}
-
-		return $this->getConnectionsMetaFor($result[0]->{'@rid'});
+		return $result;
 	}
 	
 	/**
