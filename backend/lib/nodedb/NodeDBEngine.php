@@ -124,21 +124,8 @@ class NodeDBEngine implements Engine {
 		
 		$json = $this->_nodedb->query($query);	
 		$result = json_decode($json->getBody());
-		var_dump($result); die;
-		if(is_null($result)) {
-			return null;
-		} else {
-			$result = $result->result;
-		}
 
-		if (!count($result)) {
-			return null;
-		}
-		
-		$objectMapper = new ObjectsMapper($result[0], $nodeNum);		
-		$graph = $objectMapper->parse();
-
-		return $graph->forJSON();
+		return $result;
 	}
 	
 	/**
