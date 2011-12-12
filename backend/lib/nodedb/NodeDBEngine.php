@@ -4,7 +4,7 @@ namespace asvis\lib\nodedb;
 
 require_once __DIR__.'/../Engine.php';
 require_once __DIR__.'/../GraphAlgorithms.php';
-require_once __DIR__.'/../orient/ObjectsMapper.php';
+require_once __DIR__.'/ObjectsMapper.php';
 require_once __DIR__.'/../H.php';
 require_once __DIR__.'/../../../config.php';
 require_once __DIR__.'/../../vendor/nodedb-driver/Binding.php';
@@ -15,7 +15,7 @@ use asvis\Config as Config;
 use NodeDBDriver\Binding as Binding;
 use NodeDBDriver\Curl as Curl;
 use NodeDBDriver\Response as Response;
-use asvis\lib\orient\ObjectsMapper as ObjectsMapper;
+use asvis\lib\nodedb\ObjectsMapper as ObjectsMapper;
 use asvis\lib\Engine as Engine;
 use asvis\lib\GraphAlgorithms as GraphAlgorithms;
 use asvis\lib\H as H;
@@ -67,6 +67,10 @@ class NodeDBEngine implements Engine {
 		
 		$json = $this->_nodedb->query($query);	
 		$result = json_decode($json->getBody());
+		
+		if (is_null($result) || !count($result)) {
+			return null;
+		}
 
 		return $result;
 	}
@@ -81,6 +85,10 @@ class NodeDBEngine implements Engine {
 		
 		$json = $this->_nodedb->query($query);	
 		$result = json_decode($json->getBody());
+		
+		if (is_null($result) || !count($result)) {
+			return null;
+		}
 
 		return $result;
 	}
@@ -94,20 +102,19 @@ class NodeDBEngine implements Engine {
 		// +2 because we want maximum distance to be equal with $height+1
 		$fp = $height + 2;
 		
-		$query = "SELECT FROM ASNode WHERE num = {$nodeNum}";
-		$fetchplan = "*:{$fp} ASNode.pools:0";
+		$query = "graph/{$nodeNum}/{$fp}";
 		
-		$json = $this->_orient->query($query, null, 1, $fetchplan);		
-		$result = json_decode($json->getBody())->result;
+		$json = $this->_nodedb->query($query);	
+		$result = json_decode($json->getBody());
 
-		if (!count($result)) {
+		if (is_null($result) || !count($result)) {
 			return null;
 		}
-		
-		$objectMapper = new ObjectsMapper($result[0], $nodeNum);		
+		echo '<pre>';print_r($result);
+		$objectMapper = new ObjectsMapper($result, $nodeNum);		
 		$graph = $objectMapper->parse();
 		
-		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
+		$graphAlgorithms = new GraphAlgorithms($result);
 
 		return $graphAlgorithms->getTree($height, $dir);
 	}

@@ -171,10 +171,10 @@ class OrientEngine implements Engine {
 		if (!count($result)) {
 			return null;
 		}
-		
+		//echo '<pre>';print_r($result[0]);
 		$objectMapper = new ObjectsMapper($result[0], $nodeNum);		
 		$graph = $objectMapper->parse();
-		
+		//echo '<pre>';print_r($graph);
 		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
 
 		return $graphAlgorithms->getTree($height, $dir);
