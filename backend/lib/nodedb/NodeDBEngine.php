@@ -63,6 +63,7 @@ class NodeDBEngine implements Engine {
 	 * @see asvis\lib.Engine::connectionsMeta()
 	 */
 	public function connectionsMeta($for_node) {
+		
 		$query = "connections/meta/{$for_node}";
 		
 		$json = $this->_nodedb->query($query);	
@@ -99,8 +100,8 @@ class NodeDBEngine implements Engine {
 	 */
 	public function structureTree($nodeNum, $height, $dir) {
 		
-		// +2 because we want maximum distance to be equal with $height+1
-		$fp = $height + 2;
+		// +1 because we want maximum distance to be equal with $height+1
+		$fp = $height + 1;
 		
 		$query = "graph/{$nodeNum}/{$fp}";
 		
@@ -110,11 +111,11 @@ class NodeDBEngine implements Engine {
 		if (is_null($result) || !count($result)) {
 			return null;
 		}
-		echo '<pre>';print_r($result);
+
 		$objectMapper = new ObjectsMapper($result, $nodeNum);		
 		$graph = $objectMapper->parse();
-		
-		$graphAlgorithms = new GraphAlgorithms($result);
+
+		$graphAlgorithms = new GraphAlgorithms($graph->forJSON());
 
 		return $graphAlgorithms->getTree($height, $dir);
 	}
