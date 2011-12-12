@@ -2,7 +2,7 @@
 
 namespace asvis\lib\orient;
 
-require_once __DIR__.'/../orient/Graph.php';
+require_once 'Graph.php';
 
 use asvis\lib\orient\Graph as Graph;
 
