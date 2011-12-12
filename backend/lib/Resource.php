@@ -7,7 +7,7 @@ require_once __DIR__.'/nodedb/NodeDBEngine.php';
 
 use \Resource as TonicResource;
 use asvis\lib\nodedb\NodeDBEngine as Engine;
-//use asvis\lib\orient\OrientEngine as OrientEngine;
+//use asvis\lib\orient\OrientEngine as Engine;
 
 class Resource extends TonicResource {
 	protected $_request = null;

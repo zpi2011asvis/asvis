@@ -125,93 +125,46 @@ class NodeDBEngine implements Engine {
 		$depth_left = 1;
 		$depth_right = 1;
 		
-		$regexp = '/"@rid": "(#\d:\d+)".*,\ $/m';
-		
 		if ($dir === 'in') {
 			$opp_dir = 'out';
-			$dir_fetchplan = ' ASNode.out:0';
-			$opp_dir_fetchplan = ' ASNode.in:0';
 		}
 		elseif ($dir === 'out') {
 			$opp_dir = 'in';
-			$dir_fetchplan = ' ASNode.in:0';
-			$opp_dir_fetchplan = ' ASNode.out:0';
 		}
 		else {
 			$opp_dir = 'both';
-			$dir_fetchplan = '';
-			$opp_dir_fetchplan = '';
 		}
 		
 		while ($depth_left <= Config::get('orient_max_fetch_depth')) {	
 			
-			$fetchplan = "*:{$depth_left} ASNode.pools:0" . $dir_fetchplan;
-			$query_root = "SELECT FROM ASNode WHERE num = {$num_start}";		
-			$json_root = $this->_orient->query($query_root, null, 1, $fetchplan)->getBody();
-			
-			$fetchplan = "*:{$depth_right} ASNode.pools:0" . $opp_dir_fetchplan;
-			$query_target = "SELECT FROM ASNode WHERE num = {$num_end}";		
-			$json_target = $this->_orient->query($query_target, null, 1, $fetchplan)->getBody();
-
-			preg_match_all($regexp, $json_root, $rids_root);
-			preg_match_all($regexp, $json_target, $rids_target);
-			$rids_root = $rids_root[1];
-			$rids_target = $rids_target[1];
-
-			if ($this->hasCommonRids($rids_root, $rids_target)) {
-				$result_root = json_decode($json_root)->result;
-				$result_target = json_decode($json_target)->result;
-
-				if (!count($result_root) || !count($result_target)) {
-					return null;
-				}
+			$query_root = "graph/{$num_start}/{$depth_left}";
+			$json_root = $this->_nodedb->query($query_root);	
+			$result_root = json_decode($json_root->getBody());
+			$objectMapper = new ObjectsMapper($result_root, $num_start);		
+			$graph_root = $objectMapper->parse()->forJSON();
 		
-				$objectMapper = new ObjectsMapper($result_root[0], $num_start);		
-				$graph = $objectMapper->parse();
-				$start_graph = $graph->forJSON();
-		
-				$objectMapper = new ObjectsMapper($result_target[0], $num_end);		
-				$graph = $objectMapper->parse();
-				$end_graph = $graph->forJSON();
+			$query_target = "graph/{$num_end}/{$depth_right}";
+			$json_target = $this->_nodedb->query($query_target);	
+			$result_target = json_decode($json_target->getBody());
+			$objectMapper = new ObjectsMapper($result_target, $num_end);		
+			$graph_target = $objectMapper->parse()->forJSON();
 			
-				$both_nodes = array_intersect_key($start_graph['structure'], $end_graph['structure']);
-			
-				foreach ($both_nodes as $num => $node) {
-					// pobierz struktury jeszcze raz ale z otoczeniem
-					// wymagane niestety przez getShortestPath
+			$both_nodes = array_intersect_key($graph_root['structure'], $graph_target['structure']);
 
-					$fetchplan = "*:" . ($depth_left + 1) . " ASNode.pools:0";
-					$query_root = "SELECT FROM ASNode WHERE num = {$num_start}";
-					$json_root = $this->_orient->query($query_root, null, 1, $fetchplan)->getBody();
-					
-					$fetchplan = "*:" . ($depth_right + 1) . " ASNode.pools:0";
-					$query_target = "SELECT FROM ASNode WHERE num = {$num_end}";
-					$json_target = $this->_orient->query($query_target, null, 1, $fetchplan)->getBody();
+			foreach ($both_nodes as $num => $node) {
 
-					$result_root = json_decode($json_root)->result;
-					$result_target = json_decode($json_target)->result;
+				// znajdz najkrotsze sciezki do wezla koncowego do roota
+				// i od wezla poczatkowego do roota
 
-					$objectMapper = new ObjectsMapper($result_root[0], $num_start);		
-					$graph = $objectMapper->parse();
-					$start_graph = $graph->forJSON();
-			
-					$objectMapper = new ObjectsMapper($result_target[0], $num_end);		
-					$graph = $objectMapper->parse();
-					$end_graph = $graph->forJSON();
+				$graphAlgorithms = new GraphAlgorithms($graph_root);
+				$structure_root = $graphAlgorithms->getShortestPath($num, $opp_dir);
+				
+				$graphAlgorithms = new GraphAlgorithms($graph_target);
+				$structure_target = $graphAlgorithms->getShortestPath($num, $dir);
 
-					// znajdz najkrotsze sciezki do wezla koncowego do roota
-					// i od wezla poczatkowego do roota
-
-					$graphAlgorithms = new GraphAlgorithms($start_graph);
-					$start_structure = $graphAlgorithms->getShortestPath($num, $opp_dir);
-					
-					$graphAlgorithms = new GraphAlgorithms($end_graph);
-					$end_structure = $graphAlgorithms->getShortestPath($num, $dir);
-
-					foreach ($start_structure as $start_path) {
-						foreach($end_structure as $end_path) {
-							$structure[] = $this->_mergePaths($start_path, $end_path);
-						}	
+				foreach ($structure_root as $path_root) {
+					foreach($structure_target as $path_target) {
+						$structure[] = $this->_mergePaths($path_root, $path_target);		
 					}
 				}
 
@@ -243,72 +196,4 @@ class NodeDBEngine implements Engine {
 		return $result;
 	}
 	
-	protected function hasCommonRids($rids_root, $rids_target) {
-		return count(array_intersect($rids_root, $rids_target)) > 0;
-	}
-	
-
-	protected function getConnectionsMetaFor($rid) {
-		$conns_up = $this->getConnectionsMetaForDir($rid, 'up');
-		$conns_down = $this->getConnectionsMetaForDir($rid, 'down');
-		$conns = array();
-
-		// merge connections
-		foreach ($conns_up as $with => $conn) {
-			if (array_key_exists($with, $conns_down)) {
-				$conn['dir'] = 'both';
-			}
-			$conns[] = $conn;
-		}
-		foreach ($conns_down as $with => $conn) {
-			if (!array_key_exists($with, $conns_up)) {
-				$conns[] = $conn;
-			}
-		}
-		
-		usort($conns, array('asvis\lib\orient\OrientEngine', 'compareConnections'));
-
-		return $conns;		
-	}
-
-	protected function getConnectionsMetaForDir($rid, $dir) {
-		$conns = array();
-		$field = ($dir === 'up' ? 'from' : 'to');
-		$field2 = ($dir === 'up' ? 'to' : 'from');
-
-		$query = "SELECT FROM ASConn WHERE {$field} = " . $rid;
-		$fetchplan = "*:1 ASConn.{$field}:0 ASNode.in:0 ASNode.out:0 ASNode.pools:0";
-		
-		$response = $this->_orient->query($query, null, -1, $fetchplan);
-		$json = $response->getBody();
-		$result = json_decode($json)->result;
-
-		foreach ($result as $conn) {
-			$status = $conn->status;
-			$with = $conn->{$field2};
-
-			$conns[$with->num] = array('with' => $with->num, 'status' => $status, 'dir' => $dir); 
-		}
-
-		return $conns;
-	}
-
-	private function compareConnections($conn1, $conn2) {
-		if (
-			$conn1['status'] !== $conn2['status'] &&
-			($conn1['status'] === 0 || $conn2['status'] === 0)
-		) {
-			// sort by status only if pairs: (0,1) (0,2) (1,0) (2,0)
-			return $conn1['status'] - $conn2['status'];
-		}
-
-		if ($conn1['dir'] !== $conn2['dir']) {
-			if ($conn1['dir'] === 'both') return -1;
-			if ($conn2['dir'] === 'both') return 1;
-			if ($conn1['dir'] === 'up') return -1;
-			return 1;
-		}
-
-		return $conn1['with'] - $conn2['with'];
-	}
 }
