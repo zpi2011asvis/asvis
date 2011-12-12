@@ -2,9 +2,9 @@
 
 namespace asvis\lib\nodedb;
 
-require_once 'Graph.php';
+require_once 'Structure.php';
 
-use asvis\lib\nodedb\Graph as Graph;
+use asvis\lib\nodedb\Structure as Structure;
 
 /**
  * Mapper class, responsible for transforming JSON to Objects.
@@ -34,13 +34,13 @@ class ObjectsMapper {
 	 */
 	public function parse() {
 		if ($this->_isParsed) {
-			return new Graph($this->_structure);
+			return new Structure($this->_structure);
 		}
 		
 		$this->_parseNode($this->_json->structure);
 		$this->_isParsed = true;
 		
-		return new Graph($this->_structure, $this->_json->weight_order, $this->_json->distance_order);
+		return new Structure($this->_structure, $this->_json->weight_order, $this->_json->distance_order);
 	}
 	
 	

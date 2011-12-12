@@ -1,6 +1,6 @@
 <?php
 
-namespace asvis\lib\orient;
+namespace asvis\lib\nodedb;
 
 require_once 'Node.php';
 
