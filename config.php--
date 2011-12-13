@@ -7,7 +7,7 @@ namespace asvis;
  */
 class Config {
 	private static $opts = array(
-		'env'						=> 'dev', //or 'prod'
+		'env'						=> 'prod', //or 'dev'
 
 		'frontend_base_uri'			=> '/frontend',
 		'backend_base_uri'			=> '/backend',
@@ -17,12 +17,7 @@ class Config {
 		'mysql_db_user'				=> 'username',
 		'mysql_db_pass'				=> 'password',
 
-		'orient_db_host'			=> 'localhost',
-		'orient_db_name'			=> 'asvis',
-		'orient_db_user'			=> 'admin',
-		'orient_db_pass'			=> 'admin',
-
-		'orient_max_fetch_depth'	=> 5,
+		'orient_max_fetch_depth'	=> 6,
 	);
 
 	public static function get($name) {

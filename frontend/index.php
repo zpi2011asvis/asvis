@@ -9,6 +9,11 @@ if (Config::get('env') === 'dev') {
 	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', 1);
 }
+elseif (Config::get('env') === 'prod') {
+	// Report all PHP errors (see changelog)
+	error_reporting(E_ALL | E_STRICT);
+	ini_set('display_errors', 0);
+}
 
 function getSubdirFiles($main_dir) {
 	$result = array();
@@ -61,7 +66,6 @@ function includeTemplates() {
 ?><!DOCTYPE html>
 <html>
 <head>
-	<script>console.log('*********************** RELOAD ****************************');</script>
 	<meta charset="utf-8">
 	<title>ASvis</title>
 	<link rel="stylesheet" href="<?= Config::get('frontend_base_uri') ?>/css/init.css">

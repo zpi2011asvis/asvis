@@ -16,8 +16,7 @@ if (Config::get('env') === 'dev') {
 	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', 1);
 }
-
-if (Config::get('env') === 'prod') {
+elseif (Config::get('env') === 'prod') {
 	// Report all PHP errors (see changelog)
 	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', 0);
