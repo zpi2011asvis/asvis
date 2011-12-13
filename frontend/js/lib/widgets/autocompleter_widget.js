@@ -41,6 +41,10 @@
 			that._view.signals.blured.add(function () {
 				that._closePopup();
 			});
+			that._view.signals.pos_clicked.add(function (index) {
+				that._selected = index;
+				that._confirmSelected();
+			});
 		},
 
 		_confirmSelected: function _confirmSelected() {
@@ -104,7 +108,8 @@
 			up_pressed: null,
 			down_pressed: null,
 			changed: null,
-			blured: null
+			blured: null,
+			pos_clicked: null
 		},
 	
 		_init: function _init() {
@@ -113,7 +118,8 @@
 				up_pressed: new Signal(),
 				down_pressed: new Signal(),
 				changed: new Signal(),
-				blured: new Signal()
+				blured: new Signal(),
+				pos_clicked: new Signal()
 			};
 		},
 
@@ -122,7 +128,8 @@
 
 			var that = this,
 				text_input_el,
-				hidden_input_el;
+				hidden_input_el,
+				opts_el;
 
 			hidden_input_el = x(data.for);
 			hidden_input_el.html(
@@ -136,6 +143,8 @@
 			text_input_el = x('#autocompleter_query_' + data.id);
 			text_input_el.first().value = hidden_input_el.first().value;
 			hidden_input_el.first().dataset.value = hidden_input_el.first().value;
+
+			opts_el = that._el.find('.opts');
 
 			text_input_el.on('keyup', function (event) {
 				var v = text_input_el.first().value;
@@ -162,10 +171,14 @@
 			text_input_el.on('blur', function (event) {
 				that.signals.blured.dispatch();
 			});
+			// not click - because blur is triggered earlier
+			opts_el.delegate('mousedown', 'li', function (event) {
+				that.signals.pos_clicked.dispatch(event.target.dataset.index);
+			});
 
 			that._text_input_el = text_input_el;
 			that._hidden_input_el = hidden_input_el;
-			that._opts_el = that._el.find('.opts');
+			that._opts_el = opts_el;
 		},
 
 		loading: function loading(yes_no) {
@@ -182,12 +195,14 @@
 				opts_el = that._opts_el,
 				opts_html = '';
 
-			Object.keys(opts).forEach(function (opt_num) {
-				opts_html += '<li>(#' + opt_num + ') ' + opts[opt_num].name + '</li>';
+			Object.keys(opts).forEach(function (opt_num, i) {
+				opts_html += '<li data-index="' + i + '">(#' + opt_num + ') ' + opts[opt_num].name + '</li>';
 			});
 
 			opts_el.html(opts_html);
 			opts_el.addClass('opened');
+
+			return opts_el.first().innerHeight; // force reflow - Chrome was randomly forgetting about that
 		},
 
 		close: function close() {
@@ -205,7 +220,6 @@
 
 			this._hidden_input_el.first().value = value; // wtf - this is unreadable in another widget
 			this._hidden_input_el.first().dataset.value = value;
-
 		}
 	});
 

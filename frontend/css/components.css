@@ -187,3 +187,7 @@ table.std.hoverable tr:hover td {
 .autocomp li.selected {
 	background-color: #DDD;
 }
+.autocomp li:hover {
+	background-color: #DDD;
+	cursor: pointer;
+}

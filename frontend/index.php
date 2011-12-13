@@ -86,8 +86,9 @@ function includeTemplates() {
 	</div>
 	<aside id="sidebar">
 	</aside>
-	
+
 	<? includeJS(array(
+		'compatibility.js',
 		'vendor/three.js',
 		'vendor/signals.js',
 		'vendor/crossroads.js',
@@ -131,9 +132,11 @@ function includeTemplates() {
 		this.DEBUG = <?= Config::get('env') === 'dev' ? 'true' : 'false' ?>;
 		// heavy version (highly verbose)
 		this.DEBUG2 = false;
-		app.start({
-			root: '<?= Config::get('frontend_base_uri') ?>/'
-		});
+		if (this.browser_compatible) {
+			app.start({
+				root: '<?= Config::get('frontend_base_uri') ?>/'
+			});
+		}
 	</script>
 </body>
 </html>

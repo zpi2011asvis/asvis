@@ -50,7 +50,7 @@ var calculateDistances = function calculateDistances(root, nodes) {
 var getWeightOrder = function getWeightOrder(nodes) {
 	var nums = Object.keys(nodes);
 	nums.sort(function (a, b) {
-		return nodes[a].weight - nodes[b].weight;
+		return nodes[b].weight - nodes[a].weight;
 	});
 
 	return nums.map(function (s) { return +s; });
