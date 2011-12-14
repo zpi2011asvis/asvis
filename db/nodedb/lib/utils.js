@@ -34,7 +34,7 @@ var calculateDistances = function calculateDistances(root, nodes) {
 
 		node.distance = item.distance;
 
-		conns = node.out.concat(node.in)
+		conns = node.out.concat(node.in);
 		for (i = 0, il = conns.length; i < il; ++i) {
 			num = conns[i];
 			if (!nodes_queued[num]) {

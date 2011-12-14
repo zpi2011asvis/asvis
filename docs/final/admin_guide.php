@@ -29,6 +29,7 @@ function f($c) {
 			<li><a href="#requirements">Wymagania</a></li>
 			<li><a href="#installation">Instalacja</a></li>
 			<li><a href="#configuration">Konfiguracja</a></li>
+			<li><a href="#run">Uruchomienie</a></li>
 			<li><a href="#data">Dane</a></li>
 		</ol>
 	</nav>
@@ -42,7 +43,8 @@ function f($c) {
 		<li>Apache &gt;= 2.2 z włączonycm mod-deflate</li>
 		<li>PHP &gt;= 5.3</li>
 		<li>MySQL</li>
-		<li>Zalecane przynajmniej 2GB pamięcie RAM</li>
+		<li>Node.JS &gt;= 0.6.x</li>
+		<li>Zalecane przynajmniej 512MB pamięci RAM</li>
 	</ul>
 </section>
 
@@ -50,7 +52,7 @@ function f($c) {
 	<h1>Instalacja</h1>
 
 	<p>W celu zainstalowania aplikacji należy umieścić ją w wybranym katalogu na serwerze, np. <code>/srv/www/vhosts/asvis</code>.</p>
-	<p>Nastepnie należy skonfigurowac virtual host serwera Apache, tak aby document root wskazywal na główny katalog aplikacji. Przykadowa konfiguracja vhosta:</p>
+	<p>Nastepnie należy skonfigurowac virtual host serwera Apache, tak aby document root wskazywał na główny katalog aplikacji. Przykadowa konfiguracja virtual hosta:</p>
 <pre><?= f("
 <VirtualHost asvis.local.pl:80>
 	ServerName asvis.local.pl
@@ -69,23 +71,14 @@ function f($c) {
 </VirtualHost>
 ") ?></pre>
 	
-	<p><strong>Po skonfigurowaniu vhosta trzeba zrestartowac Apache'a!</strong></p>
-	<p>Utworzenie katalogów dla bazy:</p>
-	<pre>$ mkdir ./db/orientdb/log ./db/orientdb/databases</pre>
-	<p>Następnie należy uruchomić bazę danych Orient DB:</p>	
-	<pre>$ ./scripts/orient_server.sh</pre>
-	<p>lub</p>
-	<pre>$ cd db/orientdb/bin$ ./server.sh</pre>
-	<p>Następnie należy zainicjalizować baze danych asvis:</p>	
-	<pre>$ ./scripts/create_orient_db.sh</pre>
-	<p>Ten skrypt tworzy w bazie Orient DB schemat bazy asvis.</p>
+	<p><strong>Po skonfigurowaniu virtual hosta trzeba zrestartowac Apache'a!</strong></p>
 </section>
 	
 <section id="configuration">
 	<h1>Konfiguracja</h1>
 
 	<h2>Konfiguracja Apache</h2>
-	<p>Należy skonfigurować mod-deflate aby ubsługiwał format application/json:</p>
+	<p>Należy skonfigurować <code>mod-deflate</code> aby ubsługiwał format <code>application/json</code>:</p>
 
 <pre><?= f("
 <IfModule mod_deflate.c>
@@ -100,46 +93,51 @@ function f($c) {
 	<p>Powyższy wpis można dodać w <code>deflate.conf</code> lub w <code>.htaccess</code>.</p>
 	<p>Warto też zmienić dostępną ilość pamięci dla PHP (<code>memory_limit</code>) do minimum 256 MB oraz wydłużyć maksymalny czas wykonania (<code>max_execution_time</code>) do 60 sekund.</p>
 		
-	<h2>Konfiguracja Orient DB</h2>
-	<p>Ustalene ilości pamięcie RAM dostępnej dla bazy. W pliku db/orientdb/bin/server_prod.sh nalezy zmienić linię 29.</p>
-	<ul>
-		<li>
-			<p>Mało (0.5 GiB)</p>
-			<pre>JAVA_OPTS=-Xms512m\ -Xmx512m</pre>
-		</li>
-		<li>
-			<p>Średnio (1 GiB)</p>
-			<pre>JAVA_OPTS=-Xms1024m\ -Xmx1024m</pre>
-		</li>
-		<li>
-			<p>Dużo (2 GiB)</p>
-			<pre>JAVA_OPTS=-Xms2048m\ -Xmx2048m</pre>
-		</li>
-	</ul>
+	<h2>Konfiguracja grafowej bazy danych NodeDB</h2>
+
+	<p>Aby stworzyć plik konfiguracyjny bazy danych należy w katalogu bazy (<code>db/nodedb/</code>) zmienić nazwę pliku <code>config.js--</code> na <code>config.js</code>. Następnie należy w nim ustawić odpowiednie wartości:</p>
+	
+<pre><?= f("
+mysql: {
+	host:       'localhost',    <- adres URL bazy MySQL z danymi ASów
+	name:       'asmap',        <- nazwa bazy MySQL z danymi ASów
+	user:       'user',         <- nazwa uzytkownika bazy MySQL z danymi ASów
+	password:   'pass',         <- hasło użytkownika bazy MySQL z danymi ASów
+}
+") ?></pre>
 		
 	<h2>Konfiguracja aplikacji</h2>
-	<p>Aby stworzyć plik konfiguracyjny aplikacji należy zmienić nazwę pliku config.php-- na config.php. Następnie mozna w nim ustawić odpowiednie wartości:</p>
+	<p>Aby stworzyć plik konfiguracyjny aplikacji należy zmienić nazwę pliku <code>config.php--</code> na <code>config.php</code>. Następnie należy w nim ustawić odpowiednie wartości:</p>
 
 <pre><?= f("
-'mysql_db_host'		=> 'localhost',	<- adres URL bazy MySQL z danymi ASów
-'mysql_db_name'		=> 'asmap',		<- nazwa bazy MySQL z danymi ASów
-'mysql_db_user'		=> 'user',		<- nazwa uzytkownika bazy MySQL z danymi ASów
-'mysql_db_pass'		=> 'pass',		<- hasło użytkownika bazy MySQL z danymi ASów
-
-'orient_db_host'	=> 'localhost',	<- URL do hosta na którym uruchomiona została baza danych
-'orient_db_name'	=> 'asvis',		<- Nazwa bazy danych
-'orient_db_user'	=> 'admin',		<- Nazwa użytkownika bazy danych
-'orient_db_pass'	=> 'admin',		<- Hasło (można zmienić w db/orientdb/config/orientdb-server-config.xml)
+'mysql_db_host'		=> 'localhost', <- adres URL bazy MySQL z danymi ASów
+'mysql_db_name'		=> 'asmap',     <- nazwa bazy MySQL z danymi ASów
+'mysql_db_user'		=> 'user',      <- nazwa uzytkownika bazy MySQL z danymi ASów
+'mysql_db_pass'		=> 'pass',      <- hasło użytkownika bazy MySQL z danymi ASów
 ") ?></pre>
 
-</section>    
+</section>
+
+<section id="run">
+	<h1>Uruchomienie aplikacji</h1>
+	
+	<p>Aby uruchomić aplikację należy włączyć serwery Apache, MySQL oraz bazę NodeDB. Aby uruchomić bazę NodeDB można skorzystać ze skryptu:</p>
+	
+	<pre>$ ./scripts/start_nodedb.sh</pre>
+	
+	<p>Użyć można również skryptów do odpowiednio wyłączenia bazy oraz jej zrestartowania:</p>
+	
+<pre>$ ./scripts/stop_nodedb.sh
+$ ./scripts/restart_nodedb.sh</pre>
+
+</section>
 	
 <section id="data">
 	<h1>Dane</h1>
 	<h2>MySQL</h2>
 
 	<p>Dane w bazie MySQL są przechowywane w formie 4 tabel.</p>
-	<p>ASES - lista AS-ów. Ta tabel zawiera wszyskie znane AS-y.</p>
+	<p><code>ases</code> &ndash; lista AS-ów. Ta tabel zawiera wszyskie znane AS-y.</p>
 	<table>
 		<thead>
 			<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>
@@ -150,7 +148,7 @@ function f($c) {
 		</tbody>
 	</table>
 	
-	<p>ASPOOL - lista pól adresów sieciowych AS-ów. Każdemu wpisowi w ASES zazwyczaj odpowiada kilka w ASPOOL.</p>
+	<p><code>aspool</code> &ndash; lista pól adresów sieciowych AS-ów. Każdemu wpisowi w ASES zazwyczaj odpowiada kilka w ASPOOL.</p>
 
 	<table>
 		<thead>
@@ -164,7 +162,7 @@ function f($c) {
 	</table>
 	<p>* wartość  adresu IP jako integer jest wyliczana ze wzoru: ASNetwork = (l1*16777216) + (l2*65536) + (l3*256) + (l4) gdzie adres IP to l1.l2.l3.l4.</p>
 	
-	<p>ASUP oraz ASDOWN - 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych AS-ach. </p>
+	<p><code>asup</code> oraz <code>asdown</code> &ndash; 2 tabele o tym samym schemacie, przechowują informację o skonfigurowanych UP- i DOWN- streamach na poszczególnych AS-ach. </p>
 	<table>
 		<thead>
 			<tr><th>nazwa</th><th>typ</th><th>rola</th></tr>
@@ -175,12 +173,11 @@ function f($c) {
 		</tbody>
 	</table>
 
-	<p>Aplikacja ASvis wykorzystuje obie bazy danych (MySQL i Orient DB) do działania. Ponieważ jednak dane aktualizowane są tylko w bazie MySQL konieczne jest czasowe synchronizowanie bazy Orient DB z baza MySQL. Do tego celu został przygotowany skrypt <pre>scripts/import_to_orient.sh</pre>. Można go dodać do crontaba aby wykonywał się w określonych odstępach czasu:</p>
+	<p>Aplikacja ASvis wykorzystuje obie bazy danych (MySQL i bazę grafową NodeDB) do działania. Ponieważ jednak dane aktualizowane są tylko w bazie MySQL konieczne jest czasowe synchronizowanie bazy NodeDB z baza MySQL. W tym celu można użyć skryptu restartującego bazę NodeDB: <code>scripts/restart_nodedb.sh</code>. Można go dodać do crontaba aby wykonywał się w określonych odstępach czasu:</p>
 
-	<pre>0 3 * * * sciezka_do_asvis/scripts/import_to_orient.sh</pre>
+	<pre>0 3 * * * sciezka_do_asvis/scripts/restart_nodedb.sh</pre>
 
-	<p>Ten wpis spowoduje że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do Orient DB. <a href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a>.</p>
-	<p>Import trwa około 5 minut, w zalezności od wydajności serwera. Na czas trwania importu aplikacja wstrzymuje swoje działanie - przy próbie otwarcia strony wyświetla komunikat o niedostepności.</p>
+	<p>Ten wpis spowoduje, że każdej nocy o godz. 3.00 zostanie rozpoczęty import z MySQL do NodeDB. <a href="http://en.wikipedia.org/wiki/Cron">Więcej o cronie</a>.</p>
 </section>
 
 </body>

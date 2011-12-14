@@ -100,8 +100,8 @@ body {
 }
 #flash > .message {
 	display: none;
-	padding: 5px 20px;
-	background: #CB0;
+	padding: 5px 20px 5px 30px;
+	background: #CB0 url('../img/ajax_loader.gif') no-repeat 8px 50%;
 	color: #FFF;
 	text-shadow: 0 0 1px #000;
 	font-weight: bold;

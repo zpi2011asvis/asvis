@@ -16,7 +16,8 @@
 	<nav>
 		<h1>Spis treści</h1>
 		<ol>
-			<li><a href="#modules">Moduły</a></li>
+			<li><a href="#modules">Architektura klient-serwer</a></li>
+			<li><a href="#nodedb">NodeDB</a></li>
 			<li><a href="#backend">Backend</a></li>
 			<li><a href="#rest">REST API</a></li>
 			<li><a href="#frontend">Frontend</a></li>
@@ -25,33 +26,48 @@
 </header>
 
 <section id="modules">	
-	<h1>Moduły</h1>
+	<h1>Architektura klient-serwer</h1>
 	
 	<p>Aplikacja składa się z dwóch podstawowych części składowych: <a href="#backend">Backendu</a> (czyli aplikacji działającej na serwerze) i <a href="#frontend">Frontendu</a> (aplikacja napisana w JavaScriptcie i działająca w przegladarce internetowej).</p>
 	<p><a href="#backend">Backend</a> odpowiedzialny jest za dostarczanie danych <a href="#frontend">Frontendowi</a>. Realizuje to poprzez <a href="#rest">REST-owe API</a>.</p>
-	<p><a href="#frontend">Frontend</a> odpowiada za wyświetlanie GUI aplikacji. Żądania użytkownika realizuje odpytując <a href="#backend">Backend</a>.</p>
+	<p><a href="#frontend">Frontend</a> odpowiada za wyświetlanie GUI aplikacji. Żądania użytkownika realizuje wysyłając zapytania do <a href="#backend">Backendu</a>.</p>
+</section>
+
+<section id="nodedb">
+	<h1>NodeDB</h1>
+	
+	<p>NodeDB jest to nasza autorska implementacja bazy grafowej. Zastąpiła Javową bazę OrientDB, z której korzystaliśmy na początku. NodeDB wykorzystuje interpreter Node.JS (środowisko wykonawcze dla aplikacji napisanych w JavaScript). Implementacja ta zapewnia bardzo szybki dostęp do struktury grafu i danych o połączeniach wierzchołków. Wydajność względem bazy OrientDB wzorsła ponad 30 krotnie, a zużycie pamięci spadło 20 krotnie.</p>
+	
+	<p>Podczas uruchomienia baza ta importuje dane z bazy MySQL, tworzy w pamięci ich reprezentację grafową normalizując przy tym strukturę.</p>
+	
+	<p>Komunikacja z bazą odbywa się przez REST-owe API. Dostępne są dwa zasoby, których odpowiedzi zgodne są z dokumentacją dotyczącą <a href="#rest">REST-owego API stworzonego w PHP</a>:</p>
+	
+	<ul>
+		<li>GET /connections/meta/[num_for]</li>
+		<li>GET /structure/graph/[node_number]/[depth]</li>
+	</ul>
+	
 </section>
 
 <section id="backend">
 	<h1>Backend</h1>
 	
-	<p>Backend wykonuje się po stronie serwera. Jest to aplikacja napisana w języku PHP. Backend odpytuje bazy danych (MySQL i OrientDB), przetrwarza otrzymane wyniki i realizuje zadania przeszukiwania grafu.</p>
+	<p>Backend jest aplikacją działającą po po stronie serwera. Jest to aplikacja napisana w języku PHP. Backend odpytuje bazy danych (MySQL i NodeDB), przetrwarza otrzymane wyniki i realizuje zadania przeszukiwania grafu.</p>
 	<p>Backend składa się z trzech pakietów:</p>
 	
 	<h3>Tonic</h3>
 	<p>Tonic jest prostym frameworkiem PHP, umożliwiajacym wygodne stworzenie API REST-owego.</p>
 	
-	<h3>Orient</h3>
-	<p>Ten pakiet komunikuje się z bazą Orient DB, i przekształca otrzymane wyniki w ich reprezentację obiektową. Wszystkie zapytania i operacja na grafach są obslugiwane przez ten pakiet.</p>
-	<p>Najwazniejszymi klasami tego pakietu są OrientEngine oraz ObjectsMapper. OrientEngine, po odpytaniu bazy danych, przekazuje wynik zapytania do ObjectsMappera który przekształca je do postaci obiektowej. Po działaniach odpowiednich dla danego zasobu REST-owego generowny jest JSON który zwracany jest jako rezultat w REST API.</p>
-	<p>Do komunikacji z bazą Orient DB wykorzystywana jest biblioteka Congow Orient czyli driver do Orient DB dla PHP.</p>
+	<h3>NodeDB</h3>
+	<p>Ten pakiet komunikuje się z bazą NodeDB i przekształca otrzymane wyniki w ich reprezentację obiektową. Wszystkie zapytania i operacja na grafach są obsługiwane przez ten pakiet.</p>
+	<p>Najważniejszymi klasami tego pakietu są NodeDBEngine oraz ObjectsMapper. NodeDBsEngine, po odpytaniu bazy danych, przekazuje wynik zapytania do ObjectsMappera który przekształca je do postaci obiektowej. Po działaniach odpowiednich dla danego zasobu REST-owego generowny jest JSON który zwracany jest jako rezultat w REST API.</p>
+	<p>Do komunikacji z bazą NodeDB wykorzystywana jest biblioteka nodedb-driver czyli driver do NodeDB dla PHP.</p>
 
 	<h3>MySQL</h3>
-	<p>Ten pakiet uzupełnia funkcjonalność pakietu Orient o obsługe tych zapytań które są szybciej wykonywane przez bazę relacyjną.</p>
+	<p>Ten pakiet uzupełnia funkcjonalność bazy grafowej NodeDB o obsługę tych zapytań które są szybciej wykonywane przez bazę relacyjną.</p>
 	<p>W tym pakiecie wykorzystywana jest tylko jedna klasa: MySQLEngine. Odpytuje ona bazę MySQL i generuje JSON który zwracany jest jako rezultat w REST API.</p>
 	
-	<p>Pełna dokumentacja klas wchodzących w skład Backendu znajduje się <a href="phpdocs/index.html">TUTAJ</a></p>
-
+	<p>Pełna dokumentacja klas wchodzących w skład Backendu znajduje się <a href="phpdocs/index.html">tutaj</a>.</p>
 </section>
 	
 <section id="rest">
@@ -174,7 +190,7 @@
 			</ul>
 		</li>
 		<li>
-			<p>przykład: GET /structure/paths/306/27066/both - zwraca tablicę zawierającą struktury nodów, które reprezentują najkrótsze znalezione ścieżki połączeń "up" i "down" od noda końcowego do początkowego.</p>
+			<p>przykład: GET /structure/paths/306/27066/both - zwraca tablicę zawierającą struktury node'ów, które reprezentują najkrótsze znalezione ścieżki połączeń "up" i "down" od noda końcowego do początkowego.</p>
 			<p>odpowiedź:</p>
 			<pre><code>{
 	"paths":[[306,575,27064,...,27066]],
