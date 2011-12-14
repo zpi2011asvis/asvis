@@ -20,6 +20,9 @@ use asvis\lib\Engine as Engine;
 use asvis\lib\GraphAlgorithms as GraphAlgorithms;
 use asvis\lib\H as H;
 
+/**
+ * Implementation of Engine using NodeDB.
+ */
 class NodeDBEngine implements Engine {
 	
 	const MAX_WHEREIN_SIZE = 500;
@@ -120,6 +123,10 @@ class NodeDBEngine implements Engine {
 		return $graphAlgorithms->getTree($height, $dir);
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see asvis\lib.Engine::structurePath()
+	 */
 	public function structurePath($num_start, $num_end, $dir) {
 		$structure = array();
 		$depth_left = 1;

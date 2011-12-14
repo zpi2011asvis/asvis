@@ -2,6 +2,9 @@
 
 namespace asvis\lib\nodedb;
 
+/**
+ * Object representation of Autonomous System.
+ */
 class Node {
 	
 	/**

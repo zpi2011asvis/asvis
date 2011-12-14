@@ -14,6 +14,9 @@ use asvis\Config as Config;
 use asvis\lib\Engine as Engine;
 use asvis\lib\H as H;
 
+/**
+ * Engine implementation using MySQL.
+ */
 class MySQLEngine implements Engine {
 	
 	/**

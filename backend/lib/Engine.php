@@ -47,6 +47,7 @@ interface Engine {
 	 * 
 	 * @param int $nodeNum ASNode number
 	 * @param int $height tree height
+	 * @param string $dir search direction; 'in','out' or 'both'
 	 */
 	public function structureTree($nodeNum, $height, $dir);
 	
@@ -56,6 +57,7 @@ interface Engine {
 	 * 
 	 * @param int $num_start ASNode number
 	 * @param int $num_end ASNode number
+	 * @param string $dir search direction; 'in','out' or 'both'
 	 */
 	public function structurePath($num_start, $num_end, $dir);
 	

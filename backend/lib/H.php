@@ -8,7 +8,7 @@ namespace asvis\lib;
 class H {
 	
 	/**
-	 * Var_dumps supplied parameter surrounding it by <pre> tags.
+	 * Var_dumps supplied parameter surrounding it by HTML pre tags.
 	 * @param mixed $sth anything
 	 */
 	public static function pre($sth) {

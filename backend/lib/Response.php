@@ -3,6 +3,9 @@
 namespace asvis\lib;
 use \Response as TonicResponse;
 
+/**
+* An extension of Tonic Framework Response,
+*/
 class Response extends TonicResponse {
 	protected $_error = false;
 

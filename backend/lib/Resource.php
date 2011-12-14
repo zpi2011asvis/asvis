@@ -7,6 +7,9 @@ require_once __DIR__.'/nodedb/NodeDBEngine.php';
 use \Resource as TonicResource;
 use asvis\lib\nodedb\NodeDBEngine as Engine;
 
+/**
+ * An extension of Tonic Framework Resource.
+ */
 class Resource extends TonicResource {
 	protected $_request = null;
 
