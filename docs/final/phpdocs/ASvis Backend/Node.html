@@ -22,8 +22,9 @@
 					</div>
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Object representation of Autonomous System.</p>
 		<p class="notes">
-			Located in <a class="field" href="_orient---Node.php.html">/orient/Node.php</a> (line <span class="field">5</span>)
+			Located in <a class="field" href="_nodedb---Node.php.html">/nodedb/Node.php</a> (line <span class="field">8</span>)
 		</p>
 		
 				
@@ -78,16 +79,11 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																				
+																												
 												<div class="method-definition">
 											<span class="method-result">Node</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
-											([<span class="var-type">string</span>&nbsp;<span class="var-name">$rid</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$num</span> = <span class="var-default">null</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span> = <span class="var-default">null</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$out</span> = <span class="var-default">null</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$in</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$distance</span> = <span class="var-default">null</span>])
-									</div>
-																<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#calculateWeight" title="details" class="method-name">calculateWeight</a>
-										()
+											([<span class="var-type">int</span>&nbsp;<span class="var-name">$num</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$out</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$in</span> = <span class="var-default">null</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$distance</span> = <span class="var-default">null</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$weight</span> = <span class="var-default">null</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">$rid</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
@@ -123,7 +119,7 @@
 		<span class="var-title">
 			<span class="var-type">int</span>
 			<span class="var-name">$distance</span>
-						(line <span class="line-number">41</span>)
+						(line <span class="line-number">32</span>)
 		</span>
 	</div>
 
@@ -145,7 +141,7 @@
 		<span class="var-title">
 			<span class="var-type">array</span>
 			<span class="var-name">$in</span>
-						(line <span class="line-number">35</span>)
+						(line <span class="line-number">26</span>)
 		</span>
 	</div>
 
@@ -168,7 +164,7 @@
 		<span class="var-title">
 			<span class="var-type">array</span>
 			<span class="var-name">$out</span>
-						(line <span class="line-number">29</span>)
+						(line <span class="line-number">20</span>)
 		</span>
 	</div>
 
@@ -191,7 +187,7 @@
 		<span class="var-title">
 			<span class="var-type">int</span>
 			<span class="var-name">$weight</span>
-						(line <span class="line-number">47</span>)
+						(line <span class="line-number">38</span>)
 		</span>
 	</div>
 
@@ -226,7 +222,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number">57</span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">48</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -239,7 +235,7 @@
 		<span class="method-name">
 			__construct
 		</span>
-					([<span class="var-type">string</span>&nbsp;<span class="var-name">$rid</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$num</span> = <span class="var-default">null</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span> = <span class="var-default">null</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$out</span> = <span class="var-default">null</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$in</span> = <span class="var-default">null</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$distance</span> = <span class="var-default">null</span>])
+					([<span class="var-type">int</span>&nbsp;<span class="var-name">$num</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$out</span> = <span class="var-default">null</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$in</span> = <span class="var-default">null</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$distance</span> = <span class="var-default">null</span>], [<span class="var-type">array</span>&nbsp;<span class="var-name">$weight</span> = <span class="var-default">null</span>], <span class="var-type">string</span>&nbsp;<span class="var-name">$rid</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -253,47 +249,26 @@
 				<span class="var-type">string</span>
 				<span class="var-name">$name</span>			</li>
 					<li>
-				<span class="var-type">int</span>
-				<span class="var-name">$distance</span>			</li>
+				<span class="var-type">array</span>
+				<span class="var-name">$distance</span><span class="var-description">: of int $out</span>			</li>
 					<li>
 				<span class="var-type">array</span>
-				<span class="var-name">$out</span><span class="var-description">: of int $out</span>			</li>
+				<span class="var-name">$weight</span><span class="var-description">: of int $in</span>			</li>
 					<li>
-				<span class="var-type">array</span>
-				<span class="var-name">$in</span><span class="var-description">: of int $in</span>			</li>
+				<span class="var-type"></span>
+				<span class="var-name">$out</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$in</span>			</li>
 				</ul>
 		
 			
 	</div>
-<a name="methodcalculateWeight" id="calculateWeight"><!-- --></a>
+<a name="method__get" id="__get"><!-- --></a>
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">calculateWeight</span> (line <span class="line-number">72</span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Calculates node weight, stores it internally and returns it.</p>
-	<ul class="tags">
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			calculateWeight
-		</span>
-				()
-			</div>
-	
-		
-			
-	</div>
-<a name="method__get" id="__get"><!-- --></a>
-<div class="oddrow">
-	
-	<div class="method-header">
-		<span class="method-title">__get</span> (line <span class="line-number">77</span>)
+		<span class="method-title">__get</span> (line <span class="line-number">58</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -318,10 +293,10 @@
 			
 	</div>
 <a name="method__set" id="__set"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">__set</span> (line <span class="line-number">85</span>)
+		<span class="method-title">__set</span> (line <span class="line-number">66</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -354,7 +329,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 01 Dec 2011 08:10:36 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Wed, 14 Dec 2011 22:20:32 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

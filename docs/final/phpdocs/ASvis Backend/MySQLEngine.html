@@ -23,11 +23,12 @@
                 <p class="implements">
             Implements interfaces:
             <ul>
-                <li><a href="../default/Engine.html">Engine</a></li>            </ul>
+                <li><a href="../ASvis Backend/Engine.html">Engine</a></li>            </ul>
         </p>
         		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Engine implementation using MySQL.</p>
 		<p class="notes">
-			Located in <a class="field" href="_mysql---MySQLEngine.php.html">/mysql/MySQLEngine.php</a> (line <span class="field">17</span>)
+			Located in <a class="field" href="_mysql---MySQLEngine.php.html">/mysql/MySQLEngine.php</a> (line <span class="field">20</span>)
 		</p>
 		
 				
@@ -104,7 +105,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number">24</span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">27</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -127,7 +128,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">connectionsMeta</span> (line <span class="line-number">97</span>)
+		<span class="method-title">connectionsMeta</span> (line <span class="line-number">100</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -152,7 +153,7 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodconnectionsMeta">Engine::connectionsMeta()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodconnectionsMeta">Engine::connectionsMeta()</a></dt>
 						<dd>Returns an array of meta data for connections  taken from in and out fields of given node.</dd>
 					</dl>
 			
@@ -161,7 +162,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">nodesFind</span> (line <span class="line-number">35</span>)
+		<span class="method-title">nodesFind</span> (line <span class="line-number">38</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -186,7 +187,7 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodnodesFind">Engine::nodesFind()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodnodesFind">Engine::nodesFind()</a></dt>
 						<dd>Returns array of node_num =&gt; &quot;node_name&quot; which numbers begin  like given param, i.e.:  12 gives nodes with numbers:  12, 120, ..., 1252352355234, ...</dd>
 					</dl>
 			
@@ -195,7 +196,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">nodesMeta</span> (line <span class="line-number">52</span>)
+		<span class="method-title">nodesMeta</span> (line <span class="line-number">55</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -220,7 +221,7 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodnodesMeta">Engine::nodesMeta()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodnodesMeta">Engine::nodesMeta()</a></dt>
 						<dd>Returns array of meta data for given nodes numbers.</dd>
 					</dl>
 			
@@ -229,7 +230,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">structureGraph</span> (line <span class="line-number">81</span>)
+		<span class="method-title">structureGraph</span> (line <span class="line-number">84</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -257,7 +258,7 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodstructureGraph">Engine::structureGraph()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodstructureGraph">Engine::structureGraph()</a></dt>
 						<dd>Returns array of nodes and their connections for given  origin node number and depth of recurson.</dd>
 					</dl>
 			
@@ -266,7 +267,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">structurePath</span> (line <span class="line-number">93</span>)
+		<span class="method-title">structurePath</span> (line <span class="line-number">96</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -297,7 +298,7 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodstructurePath">Engine::structurePath()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodstructurePath">Engine::structurePath()</a></dt>
 						<dd>Returns array of nodes and their connections representing  the shortest path between two nodes.</dd>
 					</dl>
 			
@@ -306,7 +307,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">structureTree</span> (line <span class="line-number">89</span>)
+		<span class="method-title">structureTree</span> (line <span class="line-number">92</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -337,7 +338,7 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodstructureTree">Engine::structureTree()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodstructureTree">Engine::structureTree()</a></dt>
 						<dd>Returns array of nodes and their connections for given  origin node number and depth of recurson. Returned data  represents a tree which begins in root node (nodeNum) and  includes only nodes with single incoming link.</dd>
 					</dl>
 			
@@ -348,7 +349,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 01 Dec 2011 08:10:36 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Wed, 14 Dec 2011 22:20:32 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

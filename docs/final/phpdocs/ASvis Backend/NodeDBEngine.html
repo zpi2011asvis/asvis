@@ -3,13 +3,13 @@
   <html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
 			<!-- template designed by Marco Von Ballmoos -->
-			<title>Docs For Class OrientEngine</title>
+			<title>Docs For Class NodeDBEngine</title>
 			<link rel="stylesheet" href="../media/stylesheet.css" />
 			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
 		</head>
 		<body>
 			<div class="page-body">			
-<h2 class="class-name">Class OrientEngine</h2>
+<h2 class="class-name">Class NodeDBEngine</h2>
 
 <a name="sec-description"></a>
 <div class="info-box">
@@ -25,11 +25,12 @@
                 <p class="implements">
             Implements interfaces:
             <ul>
-                <li><a href="../default/Engine.html">Engine</a></li>            </ul>
+                <li><a href="../ASvis Backend/Engine.html">Engine</a></li>            </ul>
         </p>
         		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Implementation of Engine using NodeDB.</p>
 		<p class="notes">
-			Located in <a class="field" href="_orient---OrientEngine.php.html">/orient/OrientEngine.php</a> (line <span class="field">24</span>)
+			Located in <a class="field" href="_nodedb---NodeDBEngine.php.html">/nodedb/NodeDBEngine.php</a> (line <span class="field">26</span>)
 		</p>
 		
 				
@@ -77,9 +78,9 @@
 		</div>
 		<div class="info-box-body">			
 			<div class="method-summary">
-																																																																																												
+																																																																				
 												<div class="method-definition">
-											<span class="method-result">OrientEngine</span>
+											<span class="method-result">NodeDBEngine</span>
 										<a href="#__construct" title="details" class="method-name">__construct</a>
 										()
 									</div>
@@ -87,21 +88,6 @@
 											<span class="method-result">void</span>
 										<a href="#connectionsMeta" title="details" class="method-name">connectionsMeta</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$for_node</span>)
-									</div>
-																<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#getConnectionMetaFor" title="details" class="method-name">getConnectionMetaFor</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$rid</span>)
-									</div>
-																<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#getConnectionMetaForDir" title="details" class="method-name">getConnectionMetaForDir</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$rid</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$dir</span>)
-									</div>
-																<div class="method-definition">
-											<span class="method-result">void</span>
-										<a href="#hasCommonRids" title="details" class="method-name">hasCommonRids</a>
-											(<span class="var-type"></span>&nbsp;<span class="var-name">$rids_root</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rids_target</span>)
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
@@ -155,7 +141,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number">40</span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">42</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -164,7 +150,7 @@
 			</ul>
 	
 	<div class="method-signature">
-		<span class="method-result">OrientEngine</span>
+		<span class="method-result">NodeDBEngine</span>
 		<span class="method-name">
 			__construct
 		</span>
@@ -178,7 +164,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">connectionsMeta</span> (line <span class="line-number">113</span>)
+		<span class="method-title">connectionsMeta</span> (line <span class="line-number">68</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -205,106 +191,16 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodconnectionsMeta">Engine::connectionsMeta()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodconnectionsMeta">Engine::connectionsMeta()</a></dt>
 						<dd>Returns an array of meta data for connections  taken from in and out fields of given node.</dd>
 					</dl>
 			
 	</div>
-<a name="methodgetConnectionMetaFor" id="getConnectionMetaFor"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<span class="method-title">getConnectionMetaFor</span> (line <span class="line-number">311</span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">access:</span> protected</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			getConnectionMetaFor
-		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$rid</span>)
-			</div>
-	
-			<ul class="parameters">
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$rid</span>			</li>
-				</ul>
-		
-			
-	</div>
-<a name="methodgetConnectionMetaForDir" id="getConnectionMetaForDir"><!-- --></a>
-<div class="oddrow">
-	
-	<div class="method-header">
-		<span class="method-title">getConnectionMetaForDir</span> (line <span class="line-number">334</span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">access:</span> protected</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			getConnectionMetaForDir
-		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$rid</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$dir</span>)
-			</div>
-	
-			<ul class="parameters">
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$rid</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$dir</span>			</li>
-				</ul>
-		
-			
-	</div>
-<a name="methodhasCommonRids" id="hasCommonRids"><!-- --></a>
-<div class="evenrow">
-	
-	<div class="method-header">
-		<span class="method-title">hasCommonRids</span> (line <span class="line-number">306</span>)
-	</div> 
-	
-	<!-- ========== Info from phpDoc block ========= -->
-	<ul class="tags">
-				<li><span class="field">access:</span> protected</li>
-			</ul>
-	
-	<div class="method-signature">
-		<span class="method-result">void</span>
-		<span class="method-name">
-			hasCommonRids
-		</span>
-					(<span class="var-type"></span>&nbsp;<span class="var-name">$rids_root</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$rids_target</span>)
-			</div>
-	
-			<ul class="parameters">
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$rids_root</span>			</li>
-					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$rids_target</span>			</li>
-				</ul>
-		
-			
-	</div>
 <a name="methodnodesFind" id="nodesFind"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">nodesFind</span> (line <span class="line-number">56</span>)
+		<span class="method-title">nodesFind</span> (line <span class="line-number">51</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -331,16 +227,16 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodnodesFind">Engine::nodesFind()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodnodesFind">Engine::nodesFind()</a></dt>
 						<dd>Returns array of node_num =&gt; &quot;node_name&quot; which numbers begin  like given param, i.e.:  12 gives nodes with numbers:  12, 120, ..., 1252352355234, ...</dd>
 					</dl>
 			
 	</div>
 <a name="methodnodesMeta" id="nodesMeta"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">nodesMeta</span> (line <span class="line-number">76</span>)
+		<span class="method-title">nodesMeta</span> (line <span class="line-number">59</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -367,16 +263,16 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodnodesMeta">Engine::nodesMeta()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodnodesMeta">Engine::nodesMeta()</a></dt>
 						<dd>Returns array of meta data for given nodes numbers.</dd>
 					</dl>
 			
 	</div>
 <a name="methodstructureGraph" id="structureGraph"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">structureGraph</span> (line <span class="line-number">129</span>)
+		<span class="method-title">structureGraph</span> (line <span class="line-number">86</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -406,20 +302,22 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodstructureGraph">Engine::structureGraph()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodstructureGraph">Engine::structureGraph()</a></dt>
 						<dd>Returns array of nodes and their connections for given  origin node number and depth of recurson.</dd>
 					</dl>
 			
 	</div>
 <a name="methodstructurePath" id="structurePath"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">structurePath</span> (line <span class="line-number">183</span>)
+		<span class="method-title">structurePath</span> (line <span class="line-number">130</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">(non-PHPdoc)</p>
 	<ul class="tags">
+				<li><span class="field">see:</span> asvis\lib.Engine::structurePath()</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -446,16 +344,16 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodstructurePath">Engine::structurePath()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodstructurePath">Engine::structurePath()</a></dt>
 						<dd>Returns array of nodes and their connections representing  the shortest path between two nodes.</dd>
 					</dl>
 			
 	</div>
 <a name="methodstructureTree" id="structureTree"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">structureTree</span> (line <span class="line-number">160</span>)
+		<span class="method-title">structureTree</span> (line <span class="line-number">104</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -488,16 +386,16 @@
 				<hr class="separator" />
 		<div class="notes">Implementation of:</div>
 			<dl>
-			<dt><a href="../default/Engine.html#methodstructureTree">Engine::structureTree()</a></dt>
+			<dt><a href="../ASvis Backend/Engine.html#methodstructureTree">Engine::structureTree()</a></dt>
 						<dd>Returns array of nodes and their connections for given  origin node number and depth of recurson. Returned data  represents a tree which begins in root node (nodeNum) and  includes only nodes with single incoming link.</dd>
 					</dl>
 			
 	</div>
 <a name="method_mergePaths" id="_mergePaths"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">_mergePaths</span> (line <span class="line-number">296</span>)
+		<span class="method-title">_mergePaths</span> (line <span class="line-number">196</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -542,14 +440,14 @@
 					</div>
 		<div class="info-box-body">
 			<a name="constCURL_TIMEOUT" id="CURL_TIMEOUT"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="const-header">
 		<img src="../media/images/Variable.png" />
 		<span class="const-title">
 			<span class="const-name">CURL_TIMEOUT</span>
 			 = <span class="const-default"> 60</span>
-			(line <span class="line-number">27</span>)
+			(line <span class="line-number">29</span>)
 		</span>
 	</div>
 
@@ -558,14 +456,14 @@
 	
 </div>
 <a name="constMAX_WHEREIN_SIZE" id="MAX_WHEREIN_SIZE"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="const-header">
 		<img src="../media/images/Variable.png" />
 		<span class="const-title">
 			<span class="const-name">MAX_WHEREIN_SIZE</span>
 			 = <span class="const-default"> 500</span>
-			(line <span class="line-number">26</span>)
+			(line <span class="line-number">28</span>)
 		</span>
 	</div>
 
@@ -578,7 +476,7 @@
 	</div>
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 01 Dec 2011 08:10:36 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Wed, 14 Dec 2011 22:20:32 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>

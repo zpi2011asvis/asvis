@@ -67,12 +67,12 @@
 																<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#structurePath" title="details" class="method-name">structurePath</a>
-											(<span class="var-type">int</span>&nbsp;<span class="var-name">$num_start</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$num_end</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$dir</span>)
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$num_start</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$num_end</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$dir</span>)
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#structureTree" title="details" class="method-name">structureTree</a>
-											(<span class="var-type">int</span>&nbsp;<span class="var-name">$nodeNum</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$height</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$dir</span>)
+											(<span class="var-type">int</span>&nbsp;<span class="var-name">$nodeNum</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$height</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$dir</span>)
 									</div>
 								</div>
 		</div>
@@ -220,7 +220,7 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">structurePath</span> (line <span class="line-number">60</span>)
+		<span class="method-title">structurePath</span> (line <span class="line-number">62</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -234,7 +234,7 @@
 		<span class="method-name">
 			structurePath
 		</span>
-					(<span class="var-type">int</span>&nbsp;<span class="var-name">$num_start</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$num_end</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$dir</span>)
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$num_start</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$num_end</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$dir</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -245,8 +245,8 @@
 				<span class="var-type">int</span>
 				<span class="var-name">$num_end</span><span class="var-description">: ASNode number</span>			</li>
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$dir</span>			</li>
+				<span class="var-type">string</span>
+				<span class="var-name">$dir</span><span class="var-description">: search direction; 'in','out' or 'both'</span>			</li>
 				</ul>
 		
 			
@@ -255,7 +255,7 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">structureTree</span> (line <span class="line-number">51</span>)
+		<span class="method-title">structureTree</span> (line <span class="line-number">52</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -269,7 +269,7 @@
 		<span class="method-name">
 			structureTree
 		</span>
-					(<span class="var-type">int</span>&nbsp;<span class="var-name">$nodeNum</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$height</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$dir</span>)
+					(<span class="var-type">int</span>&nbsp;<span class="var-name">$nodeNum</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$height</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$dir</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -280,8 +280,8 @@
 				<span class="var-type">int</span>
 				<span class="var-name">$height</span><span class="var-description">: tree height</span>			</li>
 					<li>
-				<span class="var-type"></span>
-				<span class="var-name">$dir</span>			</li>
+				<span class="var-type">string</span>
+				<span class="var-name">$dir</span><span class="var-description">: search direction; 'in','out' or 'both'</span>			</li>
 				</ul>
 		
 			
@@ -292,7 +292,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Thu, 01 Dec 2011 08:10:36 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
+		Documentation generated on Wed, 14 Dec 2011 22:20:32 +0100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.3</a>
 	</p>
 	</div></body>
 </html>
