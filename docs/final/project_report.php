@@ -13,7 +13,7 @@
 	</hgroup>
 
 	<nav>
-		<p class="back"><a href="./">&crarr; Wstecz</a></p>
+		<p class="back"><a href="index.php">&crarr; Wstecz</a></p>
 	</nav>	
 </header>
 
@@ -24,7 +24,7 @@
 
 	<p>W początkowej fazie projektu otrzymaliśmy relacyjną bazę danych (MySQL), reprezntująca strukturę powiązanych ze sobą systemów autonomicznych. Ze względu na charakter danych jakie mieliśmy przetwarzać, rozpoczęliśmy poszukiwanie odpowiedniej bazy grafowej. Po zapoznaniu się z dokumentacją kilku projektów oraz przeprowadzeniem wstępnych testów zdecydowaliśmy sie na bazę OrientDB. Pozornie cechowała się ona wyczerpującą dokumentacją oraz ciągłym wsparciem od autorów.</p>
 	<p>Nie wiedzieliśmy wtedy, że pochopnie podjęta decyzja będzie miała tak fatalny wpływ na przebieg prac nad projektem. Baza OrientDB pomimo posiadania dość dobrej dokumentacji i będąc ciągle rozwijana, zawiera jeszcze zbyt wiele niedociągnięć, by mogła sprostać zadaniu jakie przed nią postawiliśmy. W trakcie prac nad aplikacją zgłosiliśmy dwa krytyczne błędy dotyczące zwracanych przez bazę wyników. W dodatku dwa dotyczące bardzo słabej wydajności, jeden związany z błędnymi wynikami podczas szybkiego wielokrotnego odpytywania i kilka mniej uciążliwych niedociągnięć. Błędy za każdym razem były szybko naprawiane, jednak łącznie na poprawianiu jakości bazy straciliśmy prawie dwa miesiące czasu, bardzo powoli posuwając się przy tym do przodu z naszymi pracami.</p>
-	<p>Więcej o historii związanej z OrientDB w <a href="../pres_02/#slide-5">prezentacji</a>.</p>
+	<p>Więcej o historii związanej z OrientDB w <a href="../pres_02/index.php#slide-5">prezentacji</a>.</p>
 	
 	<h2>WebGL</h2>
 	
