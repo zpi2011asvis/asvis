@@ -32,6 +32,7 @@ function f($c) {
 			<li><a href="#run">Uruchomienie</a></li>
 			<li><a href="#data">Dane</a></li>
 		</ol>
+		<p class="back"><a href="./">&crarr; Wstecz</a></p>
 	</nav>
 </header>
 

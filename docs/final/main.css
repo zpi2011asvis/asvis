@@ -11,6 +11,7 @@ header {
 	color: #FFF;
 	padding: 20px;
 	margin-bottom: 40px;
+	position: relative;
 }
 header > hgroup > * {
 	margin: 0;
@@ -40,6 +41,12 @@ header > nav a {
 }
 header > nav a:hover {
 	background-color: rgba(255, 255, 255, 0.1);
+}
+
+header > nav .back {
+	position: absolute;
+	top: 0;
+	right: 20px;
 }
 
 

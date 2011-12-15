@@ -35,6 +35,7 @@ function f($c) {
 			<li><a href="#trees">Wyszukiwanie drzew</a></li>
 			<li><a href="#paths">Wyszukiwanie ścieżek</a></li>
 		</ol>
+		<p class="back"><a href="./">&crarr; Wstecz</a></p>
 	</nav>
 </header>
 

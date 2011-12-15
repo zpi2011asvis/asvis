@@ -11,6 +11,10 @@
 		<h2>Dokumentacja</h2>
 		<h3>Sprawozdanie z postępów prac</h3>
 	</hgroup>
+
+	<nav>
+		<p class="back"><a href="./">&crarr; Wstecz</a></p>
+	</nav>	
 </header>
 
 <section> 

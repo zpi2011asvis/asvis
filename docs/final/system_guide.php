@@ -22,6 +22,7 @@
 			<li><a href="#rest">REST API</a></li>
 			<li><a href="#frontend">Frontend</a></li>
 		</ol>
+		<p class="back"><a href="./">&crarr; Wstecz</a></p>
 	</nav>
 </header>
 
