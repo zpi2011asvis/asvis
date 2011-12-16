@@ -539,6 +539,8 @@
 				num1, num2,
 				i, il;
 
+			line.type = T.LinePieces;
+
 			paths.forEach(function (path) {
 				var i;
 
