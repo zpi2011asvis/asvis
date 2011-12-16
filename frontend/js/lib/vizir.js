@@ -229,7 +229,7 @@
 			queue = [ queue ];
 			while (queue.length > 0) {
 				var args = queue.shift(),
-					todo = _recursiveVertexPos.apply(null, args);
+					todo = _recursiveVertexPos(args);
 
 				todo && (queue = queue.concat(todo));
 			}
@@ -244,7 +244,12 @@
 		 * * depth gives poor results - traverse while vertex has big
 		 * number of unnodes_done children
 		 */
-		_recursiveVertexPos = function _recursiveVertexPos(num, pos, vector) {
+		_recursiveVertexPos = function _recursiveVertexPos(opts) {
+			// arguments
+			var num = opts[0],
+				pos = opts[1],
+				vector = opts[2];
+
 			var node = _graph[num],				// node
 				conns = node.out.concat(node.in),
 				connsl = conns.length,
@@ -252,16 +257,10 @@
 				new_pos,
 				new_num,
 				todo = [],						// queue for _runRecursiveVertexPos
-				rotated = 0,					// already rotated in current surface 
+				rotated = 0.0,					// already rotated in current surface 
 				incl_angle, rot_angle,
-				m_incl, m_rot,
+				m_incl, m_rot, vec_top,
 				node_was_queued;
-
-			// this is done twice (also before node was added to the queue)
-			// because of order in BFS
-			if (_nodes_done.indexOf(num) > -1) {
-				return;
-			}
 
 			// position already set (for the mass centers)
 			// so use it
@@ -281,8 +280,6 @@
 			_nodes_done.push(num);
 			
 			// remove duplicated connections (bidirectional)
-			// here (not before) because of performance
-			// -- do this after upper return
 			conns = node.conns = uniq(conns);
 			connsl = conns.length;
 			// TODO for calculating angles use number of nodes already not done
@@ -292,51 +289,48 @@
 			rot_angle = _calculateRotationAngle(incl_angle);
 
 			// generating matrix for "circular" rotations
-			var m_rot = new T_Matrix4();
+			m_rot = new T_Matrix4();
 			m_rot.setRotationAxis(vector.clone().normalize(), rot_angle);
 		
 			//generating vector inclined from tree generation direction
-			var m_incl = new T_Matrix4(),
-				p = _nvec(0, 1, 0).crossSelf(vector).normalize();
+			m_incl = new T_Matrix4();
+			vec_top = _nvec(0, 1, 0).crossSelf(vector).normalize();
 
 			// if vector was (0,1,0) then cross product is (0,0,0)
 			// so try with other axis rotation
-			if (p.lengthSq() === 0) {
-				p = _nvec(0, 0, 1).crossSelf(vector).normalize();
+			if (vec_top.lengthSq() === 0) {
+				vec_top = _nvec(0, 0, 1).crossSelf(vector).normalize();
 			}
-			m_incl.setRotationAxis(p, incl_angle);
+			m_incl.setRotationAxis(vec_top, incl_angle);
 			m_incl.multiplyVector3(vector);
 			
 			for (var i = 0; i < connsl; ++i) {
 				new_num = conns[i];
 
 				if (!_hasEdge(num, new_num)) {
+					_pushEdge(num, new_num);
+
 					// traversing for the first time
 					if (_nodes_done.indexOf(new_num) === -1) {
-						new_pos = pos.clone().addSelf(vector);
-						
-						// add child to queue
-						todo.push([new_num, new_pos, vector.clone()]);
 						node_was_queued = _nodes_queued.indexOf(new_num);
-						_nodes_queued.push(new_num);
-
-						_pushEdge(num, new_num);
 					
 						// if node was already queued (will be done not as this node's neighbour,
 						// but someone else) then don't need to rotate
 						if (node_was_queued === -1) {
+							new_pos = pos.clone().addSelf(vector);
+
+							// add child to queue
+							todo.push([new_num, new_pos, vector.clone()]);
+							_nodes_queued.push(new_num);
+
 							// calculate new position on sphere
 							m_rot.multiplyVector3(vector);
 							rotated += rot_angle;
 							if (rotated >= A360) {
 								m_incl.multiplyVector3(vector);
-								rotated = 0;
+								rotated = 0.0;
 							}
 						}
-					}
-					// traversing this vertex again (push only edge)
-					else {
-						_pushEdge(num, new_num);
 					}
 				}
 			}
