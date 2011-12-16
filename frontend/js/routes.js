@@ -187,8 +187,8 @@
 							for_node: number
 						}),
 						that.db.get('nodes/meta', {
-							// don't ask for more than 10000 nodes - get the closest
-							numbers: graph_data.distance_order.slice(0, 10000)
+							// don't ask for more than 5000 nodes - get the closest
+							numbers: graph_data.distance_order.slice(0, 5000)
 						})						
 					];
 					

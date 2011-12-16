@@ -12,6 +12,7 @@
 		_selected: 0,
 		_size: 0,
 		_opts: null,
+		_request_id: 0,
 
 		_init: function _init() {
 			var that = this;
@@ -86,16 +87,23 @@
 			that._selected = 0;
 			that._size = 0;
 
+			that._request_id += 1;
+
 			global.app.db.get('nodes/find', {
 				number: that._value
 			})
-			(function (data) {
+			(function (request_id, data) {
+				// race condition - handle only the last request
+				if (request_id != that._request_id) {
+					return;
+				}
+
 				that._opts = data;
 				that._size = Object.keys(data).length;
 				that._view.loading(false);
 				that._view.updateOpts(data);
 				that._view.select(that._selected);
-			}).end(global.app.err);
+			}.bind(null, that._request_id)).end(global.app.err);
 		}
 	},
 	{
