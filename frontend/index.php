@@ -81,6 +81,8 @@ function includeTemplates() {
 				<li><a href="/">pokaż AS</a></li>
 				<li><a href="/find/trees">wyszukaj drzewa</a></li>
 				<li><a href="/find/paths">wyszukaj ścieżki</a></li>
+				<li class="help"><a href="/docs/final/system_guide.php">opis systemu</a></li>
+				<li class="help"><a href="/docs/final/user_guide.php">pomoc</a></li>
 			</ul>
 		</nav>
 	</header>
@@ -90,6 +92,7 @@ function includeTemplates() {
 	</div>
 	<aside id="sidebar">
 	</aside>
+	<p id="authors">Autorzy: (<a href="http://code42.pl">Piotrek Koszuliński</a>, Maciej Bański, Paweł Kościuk) @ <a href="http://pwr.wroc.pl">Politechnika Wrocławska</a></p>
 
 	<? includeJS(array(
 		'compatibility.js',

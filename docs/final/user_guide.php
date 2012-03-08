@@ -1,14 +1,5 @@
-<?
-
-function f($c) {
-	return htmlspecialchars(
-		preg_replace('/(^\n|\n$)/', '',
-			str_replace("\t", '    ', $c)
-		)
-	);
-}
-
-?><html>
+<!DOCTYPE html>
+<html>
 <head>
 	<meta charset="utf-8">
 	<title>ASvis &ndash; Podręcznik użytkownika</title>

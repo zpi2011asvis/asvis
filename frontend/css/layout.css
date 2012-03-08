@@ -44,6 +44,30 @@ body {
 	display: inline-block;
 	padding: 0 10px;
 }
+#menu li.help {
+	float: right;
+	position: relative;
+	right: 300px;
+}
+
+#authors {
+	position: absolute;
+	right: 310px;
+	bottom: 5px;
+	font-size: 11px;
+	z-index: 20;
+	color: #EEE;
+	opacity: 0.25;
+	-webkit-transition: opacity 0.5s;
+	-moz-transition: opacity 0.5s;
+	transition: opacity 0.5s;
+}
+#authors:hover {
+	opacity: 0.75;
+}
+#authors a {
+	color: #0BF;
+}
 
 
 /*

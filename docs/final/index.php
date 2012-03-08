@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -22,3 +23,16 @@
 		</ol>
 	</nav>
 </header>
+
+<section>
+	<h1>Autorzy aplikacji</h1>
+
+	<ul>
+		<li><a href="http://code42.pl">Piotrek Koszuliński</a></li>
+		<li>Maciej Bański</li>
+		<li>Paweł Kościuk</li>
+	</ul>
+</section>
+
+</body>
+</html>

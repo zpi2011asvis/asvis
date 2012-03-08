@@ -15,7 +15,7 @@
 		};
 
 		var _isInternalPath = function _isInternalPath(path) {
-			return path.indexOf('/') === 0;
+			return path.indexOf('/') === 0 && path.indexOf('/docs') === -1;
 		};
 
 		var dispatcher = global.crossroads.create();
