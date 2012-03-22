@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Copy this file into /etc/init.d
+# Run update-rc.d nodedb_service defaults
+
+case "$1" in
+	start)
+		/www/asvis/scripts/start_nodedb.sh
+	;;
+	stop)
+		/www/asvis/scripts/stop_nodedb.sh
+	;;
+	restart)
+		/www/asvis/scripts/restart_nodedb.sh
+	;;
+esac
