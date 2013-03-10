@@ -63,23 +63,21 @@ this.util = {};
 	(function () {
 		var window = global.window;
 
-		if (!window.requestAnimationFrame) {
-			requestAnimationFrame = (function () {
-				return window.webkitRequestAnimationFrame ||
-					window.mozRequestAnimationFrame ||
-					window.oRequestAnimationFrame ||
-					window.msRequestAnimationFrame ||
-					function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-						window.setTimeout( callback, 1000 / 60 );
-					};
-
-			}());
-		}
+		requestAnimationFrame = (function () {
+			return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				window.oRequestAnimationFrame ||
+				window.msRequestAnimationFrame ||
+				function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+					window.setTimeout( callback, 1000 / 60 );
+				};
+		}());
 	}());
 
 	(function () {
 		var s = Math.PI * 2 / 360,
-			si = 1 / s;	
+			si = 1 / s;
 
 		rad2Deg = function rad2Deg(rad) {
 			return rad * si;
@@ -121,7 +119,7 @@ this.util = {};
 					if (value === Object(value)) {
 						value = JSON.stringify(value);
 					}
-				
+
 					acc.push(toQueryPair(encodeURIComponent(key), value));
 				}
 
